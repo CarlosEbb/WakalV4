@@ -1,37 +1,58 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
+
+import { Image } from 'astro:assets';
+import localBirdImage from '../images/logo-wakal.png';
+
 ---
 
 <Layout title="Login Soluciones Laser">
 	<main>
-		<div class="grid grid-cols-12 gap-4">
-			<div class="col-start-1 col-end-13 md:col-start-7 md:col-end-12">
-			  <div class="login-container p-5 shadow-2xl w-auto h-screen bg-white bg-opacity-10 backdrop-blur-md flex flex-col justify-center items-center bg-no-repeat bg-top-right">
-				  <h1 class="m-0 p-0 text-5xl text-white">Bienvenido</h1>
-				  <h2 class="m-0 p-0 text-2xl text-white">Su Solución Digital</h2>
-				  
-				  <form action="/submit_login" method="post" class="flex flex-col items-center w-4/5 mt-70px">
-					  <p class="text-2.5xl m-0 p-0 text-white">Ingresa tu información</p>
-					  <input type="text" placeholder="Email" name="email" required class="w-full px-5 py-3 my-4 border border-gray-300 rounded-lg">
-		  
-					  <input type="password" placeholder="Contraseña" name="password" required class="w-full px-5 py-3 my-4 border border-gray-300 rounded-lg">
-		  
-					  <button type="submit" class="bg-blue-600 text-white px-5 py-3.5 my-5 border-none cursor-pointer w-auto rounded-lg text-lg hover:opacity-80">Iniciar Sesión</button>
-					  <a href="#" class="mt-5 text-white"><span class="psw">Olvidé mi contraseña</span></a>
-				  </form>
-			  </div>
-			</div>
+	  <div class="grid grid-cols-12 gap-4">
+		<div class="col-start-1 col-end-13 md:col-start-7 md:col-end-12">
+		  <div class="login-container p-5 shadow-2xl w-auto h-screen bg-white bg-opacity-10 backdrop-blur-md flex flex-col justify-center items-center bg-no-repeat bg-top-right">
+			<h1 class="m-0 p-0 text-5xl">Bienvenido</h1>
+			<h2 class="m-0 p-0 text-2xl">Su Solución Digital</h2>
+  
+			<form id="fr_login" method="post" class="flex flex-col items-center w-4/5 mt-70px">
+			  <p class="text-2.5xl m-0 p-0">Ingresa tu información</p>
+			  <input type="email" placeholder="Correo electrónico" id="email" name="email" required class="w-full px-5 py-3 my-4 border border-gray-300 rounded-lg">
+  
+			  <input type="password" placeholder="Contraseña" id="password" name="password" required class="w-full px-5 py-3 my-4 border border-gray-300 rounded-lg">
+  
+			  <button id="fr_btn_login" class="bg-blue-600 text-white px-5 py-3.5 my-5 border-none cursor-pointer w-auto rounded-lg text-lg hover:opacity-80">Iniciar Sesión</button>
+			  <a href="#" class="mt-5"><span class="psw">Olvidé mi contraseña</span></a>
+			</form>
 		  </div>
-				  
+		</div>
+	  </div>
 	</main>
 </Layout>
 
-<style>
-	.login-container {
-		background-image: url('../images/icon-wakal.png');
-		background-position: top right;
-		background-position: calc(100% - 8%) 0; /* Ajusta la posición de la imagen */
-		background-size: 110px;		
-	}
-</style>
+
+<script>
+	const url = import.meta.env.PUBLIC_BASE_URL;
+	import { apiController } from './hola/request.js';
+	
+	const handleLogin = async (event) => {
+		event.preventDefault(); // Evita el envío predeterminado del formulario
+
+		// Obtiene los valores de correo electrónico y contraseña del formulario
+		const email = document.getElementById('email').value;
+		const password = document.getElementById('password').value;
+
+		const requestBody = {
+			email,
+			password,
+		};
+		
+		const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/auth/login','POST',requestBody);
+		
+		if(responseData){
+			window.location.href = '/login'; // Ejemplo de redirección
+		}
+	};
+	document.getElementById('fr_login').addEventListener('submit', handleLogin);
+	
+</script>
