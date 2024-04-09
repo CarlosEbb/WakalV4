@@ -1,0 +1,63 @@
+---
+import { Icon } from 'astro-icon/components'
+
+interface Props {
+  id: string;
+  name: string;
+  type: 'text' | 'password' | 'number' | 'date' | 'file' | 'email';
+  icon: string;
+  placeholder: string;
+}
+
+const { id, name, type ="text", icon, placeholder =""} = Astro.props;
+
+---
+<div class="mb-4 relative">
+    
+    {type === 'password' && (
+        <Icon name="lock-open" class="hidden isPassword absolute left-3 top-1/2 transform -translate-y-1/2 text-custom-primary cursor-pointer" />
+    )}
+
+    <Icon name={icon}  class=`${type === 'password' ? 'isPassword cursor-pointer' : ''} absolute left-3 top-1/2 transform -translate-y-1/2 text-custom-primary ` />
+    
+    <input
+        id={id}
+        name={name}
+        type={type}
+        placeholder={placeholder}
+        class=`w-full px-4 py-2 rounded-full focus:border-blue-500 border focus:outline-none focus:border-blue-500 pl-10 text-sm bg-custom-quaternary select-none`
+    />
+</div>
+
+{type === 'password' && (
+  <script>
+    const lockOpenIcons = document.querySelectorAll('.isPassword');
+
+    lockOpenIcons.forEach(element => {
+      element.addEventListener('click', togglePasswordVisibility);
+    });
+
+    function togglePasswordVisibility(event) {
+      const input = getNextInputElement(event.target);
+      if (input) {
+        input.type = input.type === 'password' ? 'text' : 'password';
+
+        const icons = event.target.parentElement.querySelectorAll('.isPassword'); // Obtener ambos iconos del padre
+        icons.forEach(icon => {
+          icon.classList.toggle('hidden'); // Alternar la visibilidad de ambos iconos
+        });
+      }
+    }
+
+    function getNextInputElement(element) {
+      let sibling = element.nextElementSibling;
+      while (sibling) {
+        if (sibling.tagName.toLowerCase() === 'input') {
+          return sibling;
+        }
+        sibling = sibling.nextElementSibling;
+      }
+      return null;
+    }
+  </script>
+)}

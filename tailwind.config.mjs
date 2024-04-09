@@ -7,11 +7,12 @@ export default {
 				'custom-primary': '#7574b5',
 				'custom-secundary': '#464473',
 				'custom-tertiary': '#14275b',
-				
+				'custom-quaternary': '#eae6f4',
+			
 			},
 			fontSize: {
-				'min': '0.5rem',
-			  }
+				'min': '0.6rem',
+			}
 		}
 	},
 	plugins: [],

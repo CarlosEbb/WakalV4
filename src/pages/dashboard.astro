@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+
+import { Icon } from 'astro-icon/components'
+
+import Checkbox from '../components/Checkbox.astro';
+import Sidebar from '../components/Sidebar.astro';
+
+import { Image } from 'astro:assets';
+
+
+
+---
+
+<style>
+    .transition-height {
+        transition: height 2s ease;
+    }
+</style>
+
+<Layout title="Dashboard">
+    <div class="flex h-screen">
+        <Sidebar
+            cliente="soluciones_laser"
+        />
+        <!-- Contenido principal -->
+        <div class="flex-1 p-8">
+            <!-- Contenido de la página aquí -->
+        </div>
+    </div>
+</Layout>

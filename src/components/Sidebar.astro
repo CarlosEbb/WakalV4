@@ -1,0 +1,111 @@
+---
+import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon/components'
+
+import LogoWakal from '../components/LogoWakal.astro';
+
+interface Props {
+    cliente?: String;
+}
+
+import logoCliente from '../images/clientes/soluciones_laser/logo.png';
+
+const { cliente = null } = Astro.props;
+
+---
+
+ <!-- Sidebar -->
+ <div class="bg-white text-custom-secundary w-64 flex flex-col justify-between">
+    <!-- Logo de la empresa -->
+    <div class="flex items-center justify-center py-4">
+        <Image src={logoCliente} alt="Imagen" loading="eager" class="w-full h-22 object-cover p-3" />
+    </div>
+    <!-- Lista de páginas -->
+    <nav class="flex-1">
+        <ul class="space-y-2">
+            <li>
+                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white">
+                    <Icon name="chart-pie-filled"  class="text-3xl" />
+                    <span class="ml-2">Inicio</span>
+                </a>
+            </li>
+            <!-- acordeón -->
+            <li class="relative accordion">
+                <input type="checkbox" id="accordionOption1" class="accordionOption hidden">
+                <label for="accordionOption1" class="flex items-center justify-between px-6 py-2 w-full text-custom-secundary hover:bg-custom-secundary hover:text-white cursor-pointer select-none">
+                    <div class="flex items-center">
+                        <Icon name="search"  class="text-3xl" />
+                        <span class="ml-2">Consulta Avanzada</span>
+                    </div>
+                    <Icon name="chevron-down"  class="text-lg" />
+                </label>
+                <!-- Submenú -->
+                <ul class="accordionContent hidden py-2 transition-height">
+                    <li>
+                        <a href="#" class="block px-14 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white">Opción 1</a>
+                    </li>
+                    <li>
+                        <a href="#" class="block px-14 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white">Opción 2</a>
+                    </li>
+                    <!-- Agrega más opciones según sea necesario -->
+                </ul>
+            </li>
+            <li>
+                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white">
+                    <Icon name="file"  class="text-3xl" />
+                    <span class="ml-2">Reportes</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white">
+                    <Icon name="user"  class="text-3xl" />
+                    <span class="ml-2">Usuarios</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white">
+                    <Icon name="clock"  class="text-3xl" />
+                    <span class="ml-2">Historial</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- Botón de salir -->
+    <div class="py-4 flex justify-center text-center">
+        
+        <a href="#" class="flex items-center px-4 py-2 text-gray-400 hover:text-custom-secundary">
+            <Icon name="logout"  class="text-3xl" />
+            Salir
+        </a>
+    </div>
+    <!-- Logo del sistema -->
+    <div class="col-span-12 flex flex-col items-center mb-6">
+        <LogoWakal
+            position="center"
+        />
+    </div>
+</div>
+
+<script>
+    const accordions = document.querySelectorAll('.accordion');
+
+    accordions.forEach(accordion => {
+        const option = accordion.querySelector('.accordionOption');
+        const content = accordion.querySelector('.accordionContent');
+
+        option.addEventListener('change', () => {
+            // Cerrar todos los acordeones
+            accordions.forEach(a => {
+                if (a !== accordion) {
+                    const otherOption = a.querySelector('.accordionOption');
+                    const otherContent = a.querySelector('.accordionContent');
+                    otherOption.checked = false;
+                    otherContent.classList.add('hidden');
+                }
+            });
+
+            // Abrir o cerrar el acordeón actual
+            content.classList.toggle('hidden', !option.checked);
+        });
+    });
+</script>

@@ -1,56 +1,84 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
+import Layout from '../layouts/LayoutLogin.astro';
+
+import LogoWakal from '../components/LogoWakal.astro';
+import InputField from '../components/InputField.astro';
+import Checkbox from '../components/Checkbox.astro';
 
 import { Image } from 'astro:assets';
-import localImageLogin from '../images/fondoLogin.png';
-import localImageLogoWakal from '../images/logoWakal.png';
+
+import fondoLogin from '../images/login/fondoLogin.jpg';
+
 
 ---
 
 <Layout title="Login Soluciones Laser">
    
-        <!-- Card central en una rejilla -->
-        <div class="grid grid-cols-12 bg-white rounded-lg shadow-lg mx-4 md:mx-16">
-            <!-- Sección izquierda con imagen -->
-            <div class="col-span-7 w-full h-auto rounded-lg bg-gradient-to-r from-custom-secundary hidden md:block">
-				
-			</div>
+	<div class="relative">
+		 <!-- Círculo superior izquierdo -->
+		 <div class="absolute -top-28 -left-16 w-80 h-80 bg-custom-quaternary rounded-full z-10"></div>
+		 <!-- Círculo inferior derecho -->
+		 <div class="absolute -bottom-16 -right-10 w-48 h-48 bg-custom-primary rounded-full z-10"></div>
+		 
+		 <!-- Card central en una rejilla -->
+		 <div class="grid grid-cols-12 bg-white rounded-lg shadow-lg mx-4 md:mx-16 relative z-20">
+			 <!-- Sección izquierda con imagen -->
+			 <div class="col-span-7 w-full h-auto rounded-lg relative hidden md:block">
+				 <div class="absolute inset-0 bg-gradient-to-r from-custom-secundary rounded-lg"></div>
+				 <Image src={fondoLogin} alt="Imagen" loading="eager" class="w-full h-full object-cover" />
+			 </div>
+			
             <!-- Sección derecha con formulario -->
             <div class="col-span-12 md:col-span-5">
                 <!-- Imagen -->
-				<form class="p-16 mt-8">
-					<div class="text-right">
-						<img src={localImageLogoWakal.src} alt="Imagen" class="w-60 h-auto mx-auto rounded-lg">
-						<span class="text-gray-400 text-min mr-16 text-right">By Soluciones Laser Version 4.0</span>
+				<div class="text-right mt-16">
+					<div class="col-span-12 flex flex-col items-center">
+						<LogoWakal
+							position="right"
+						/>
 					</div>
-					
+				</div>
 
+				<form id="fr_login" class="p-16">
 					<h2 class="text-center text-lg mb-4 text-custom-primary">Ingresa tu información</h2>
-					<div class="mb-4 relative">
-						<input type="email" placeholder="Usuario o Correo electrónico" class="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:border-blue-500 pl-10">
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-							<!-- Agrega aquí el código SVG del icono de correo electrónico -->
-						</svg>
-					</div>
-					<div class="mb-4">
-						<input type="password" placeholder="Contraseña" class="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:border-blue-500">
-					</div>
+					<InputField
+						id="email"
+						name="email"
+						type="email"
+						icon="user"
+						placeholder="Usuario o correo electrónico"
+					/>
+
+					<InputField
+						id="password"
+						name="password"
+						type="password"
+						icon="lock"
+						placeholder="Contraseña"
+					/>
+					
+					
+					
 					<div class="flex items-center mb-4">
-						<input type="checkbox" id="recuerdame" class="mr-2">
-						<label for="recuerdame" class="text-left text-min">Recuérdame</label>
-						<a href="#" class="ml-auto text-blue-500 text-right text-min">¿Olvidaste tu contraseña?</a>
+						<Checkbox
+							id="recuerdame"
+							name="recuerdame"
+							icon="check"
+							text="Recuérdame"
+						/>
+						<a href="#" class="ml-auto text-blue-500 text-right text-sm text-custom-primary">¿Olvidaste tu contraseña?</a>
 					</div>
-					<button type="submit" class="w-full bg-gradient-to-r from-custom-secundary to-custom-tertiary text-white rounded-full py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mb-4 uppercase ">Ingresar</button>
+					<button id="fr_btn_login" class="w-full bg-gradient-to-r from-custom-secundary to-custom-tertiary text-white rounded-full py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mb-4 uppercase ">Ingresar</button>
 				</form>
             </div>
         </div>
+	</div>
 </Layout>
 
 
 <script>
 	const url = import.meta.env.PUBLIC_BASE_URL;
-	import { apiController } from './hola/request.js';
+	import { apiController } from './api/request.js';
 	
 	const handleLogin = async (event) => {
 		event.preventDefault(); // Evita el envío predeterminado del formulario
@@ -67,7 +95,7 @@ import localImageLogoWakal from '../images/logoWakal.png';
 		const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/auth/login','POST',requestBody);
 		
 		if(responseData){
-			window.location.href = '/login'; // Ejemplo de redirección
+			window.location.href = '/dashboard'; // Ejemplo de redirección
 		}
 	};
 	document.getElementById('fr_login').addEventListener('submit', handleLogin);
