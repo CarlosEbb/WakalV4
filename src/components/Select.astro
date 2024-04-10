@@ -1,0 +1,41 @@
+---
+import { Icon } from 'astro-icon/components'
+
+interface Props {
+    name: String;
+	id?: String;
+	rounded?: 'rounded-full' | 'rounded-r-full' | 'rounded-l-full';
+	class_add?: 'rounded-full' | 'rounded-r-full' | 'rounded-l-full';
+}
+
+const {id, name, rounded = '', class_add = ''} = Astro.props;
+
+---
+
+<div class=`relative inline-flex items-center justify-center bg-white border border-gray-300 select-container ${rounded} ${class_add}`>
+    <Icon name="bell"  class="text-lg  left-0  pointer-events-none m-2" />
+    <Icon name="chevron-down"  class="text-sm absolute  right-2 pointer-events-none" />
+    <select id={id} name={name} class=`${rounded} text-gray-600  pr-8 pl-2 bg-white hover:border-gray-400 focus:outline-none appearance-none`>
+        <slot />
+    </select>
+</div>
+
+<script>
+    // Obtener todos los elementos con la clase select-container
+    const selectContainers = document.querySelectorAll('.select-container');
+
+    selectContainers.forEach(element => {
+      element.addEventListener('click', select_click);
+    });
+
+    function select_click(event) {
+
+        // Buscar el elemento select hijo del contenedor actual
+        const select = event.currentTarget.querySelector('select');
+        console.log(select);
+        // Activar el foco en el elemento select
+        select.focus();
+    }
+
+   
+</script>

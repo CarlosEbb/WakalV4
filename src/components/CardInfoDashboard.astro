@@ -1,0 +1,21 @@
+---
+import logoWakal from '../images/login/logoWakal.png';
+import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+	value: String;
+	text: String;
+	icon: String;
+	color: String;
+}
+
+const { value = '0', text = 'Titulo', icon = 'chart-bar' , color = 'bg-gradient-to-r from-custom-secundary to-custom-tertiary'} = Astro.props;
+
+---
+<div class=`col-span-3 bg-white p-4 rounded-xl shadow-md ${color}`>
+    <!-- Contenido de la card 1 -->
+    <Icon name={icon} class="text-4xl text-white" />
+    <h3 class="text-3xl text-white font-semibold mb-2">{value}</h3>
+    <p class="text-white">{text}</p>
+</div>
