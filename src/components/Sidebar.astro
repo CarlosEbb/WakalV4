@@ -18,13 +18,13 @@ const { cliente = null } = Astro.props;
  <div class="bg-white text-custom-secundary w-64 flex flex-col justify-between">
     <!-- Logo de la empresa -->
     <div class="flex items-center justify-center py-4">
-        <Image src={logoCliente} alt="Imagen" loading="eager" class="w-full h-22 object-cover p-3" />
+        <Image src={logoCliente} alt="Imagen" loading="eager" class="w-full h-22 object-cover p-3 select-none" />
     </div>
     <!-- Lista de páginas -->
     <nav class="flex-1">
         <ul class="space-y-2">
             <li>
-                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white">
+                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white select-none">
                     <Icon name="chart-pie-filled"  class="text-3xl" />
                     <span class="ml-2">Inicio</span>
                 </a>
@@ -51,19 +51,19 @@ const { cliente = null } = Astro.props;
                 </ul>
             </li>
             <li>
-                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white">
+                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white select-none">
                     <Icon name="file"  class="text-3xl" />
                     <span class="ml-2">Reportes</span>
                 </a>
             </li>
             <li>
-                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white">
+                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white select-none">
                     <Icon name="user"  class="text-3xl" />
                     <span class="ml-2">Usuarios</span>
                 </a>
             </li>
             <li>
-                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white">
+                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white select-none">
                     <Icon name="clock"  class="text-3xl" />
                     <span class="ml-2">Historial</span>
                 </a>
