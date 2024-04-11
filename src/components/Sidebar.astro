@@ -90,14 +90,14 @@ const { cliente = null } = Astro.props;
     const accordions = document.querySelectorAll('.accordion');
 
     accordions.forEach(accordion => {
-        const option = accordion.querySelector('.accordionOption');
+        const option = accordion.querySelector('.accordionOption') as HTMLInputElement;
         const content = accordion.querySelector('.accordionContent');
 
         option.addEventListener('change', () => {
             // Cerrar todos los acordeones
             accordions.forEach(a => {
                 if (a !== accordion) {
-                    const otherOption = a.querySelector('.accordionOption');
+                    const otherOption = a.querySelector('.accordionOption') as HTMLInputElement;
                     const otherContent = a.querySelector('.accordionContent');
                     otherOption.checked = false;
                     otherContent.classList.add('hidden');

@@ -6,11 +6,12 @@ interface Props {
 	name: string;
 	icon: string;
 	text: string;
-    value: boolean;
+  value: boolean;
+  add_class: string;
 }
 
 
-const { id, name, icon, text} = Astro.props;
+const { id, name, icon, text, add_class} = Astro.props;
 
 ---
 
@@ -21,14 +22,14 @@ const { id, name, icon, text} = Astro.props;
     }
 </style>
 
-<div class="relative flex items-center">
+<div class=`relative flex items-center ${add_class}`>
     <input
       name={name}
       type="checkbox"
       id={id}
       class="appearance-none w-6 h-6 rounded-full border-2 border-gray-400 checked:bg-custom-primary checked:border-transparent focus:outline-none transition-all duration-300 mr-2"
     />
-    <label for={id} class="text-left text-white absolute justify-center items-center cursor-pointer">
+    <label id={'icon_'+id} for={id} class="text-left text-white absolute justify-center items-center cursor-pointer hidden">
       {icon && (
         <Icon
           name={icon}
@@ -43,3 +44,19 @@ const { id, name, icon, text} = Astro.props;
     </label>
 </div>
   
+<script define:vars={{id,name}}>
+  window.onload = function() {
+    var checkbox = document.getElementById(`${id}`);
+    var icon = document.getElementById('icon_'+`${name}`);
+
+    checkbox.addEventListener('change', function() {
+      if (this.checked) {
+        // Si el checkbox está seleccionado, mostramos el ícono
+        icon.classList.remove('hidden');
+      } else {
+        // Si el checkbox no está seleccionado, ocultamos el ícono
+        icon.classList.add('hidden');
+      }
+    });
+  }
+</script>

@@ -2,7 +2,6 @@ export async function apiController(baseURL, endpoint, method, requestBody) {
     try {
       // Construye la URL completa utilizando la URL base y el endpoint proporcionado
       const url = `${baseURL}${endpoint}`;
-  
       // Define las opciones de la solicitud
       const options = {
         method, // Utiliza el método pasado como parámetro
@@ -11,7 +10,7 @@ export async function apiController(baseURL, endpoint, method, requestBody) {
         },
         body: requestBody ? JSON.stringify(requestBody) : null, // Convierte el objeto de requestBody a formato JSON si está presente
       };
-  
+      
       // Realiza la solicitud a la API utilizando fetch con las opciones especificadas
       const response = await fetch(url, options);
   
@@ -23,7 +22,7 @@ export async function apiController(baseURL, endpoint, method, requestBody) {
       // Verifica si la solicitud fue exitosa (código de estado 2xx)
       if (response.ok) {
          // Almacena el token JWT en localStorage
-         alert(JSON.stringify(data.token));
+         //alert(JSON.stringify(data.token));
          //localStorage.setItem('token', response.token);
         // Si la solicitud es exitosa, devuelve los datos de respuesta obtenidos de la API
         return true;

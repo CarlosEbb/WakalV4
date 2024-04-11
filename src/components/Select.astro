@@ -2,10 +2,10 @@
 import { Icon } from 'astro-icon/components'
 
 interface Props {
-    name: String;
-	id?: String;
+    name: string;
+	id?: string;
 	rounded?: 'rounded-full' | 'rounded-r-full' | 'rounded-l-full';
-	class_add?: 'rounded-full' | 'rounded-r-full' | 'rounded-l-full';
+	class_add?: string;
 }
 
 const {id, name, rounded = '', class_add = ''} = Astro.props;
