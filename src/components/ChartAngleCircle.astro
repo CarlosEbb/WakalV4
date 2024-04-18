@@ -1,0 +1,115 @@
+---
+interface Props {
+  position?: "center" | "right" | "left";
+}
+
+const { position = "right" } = Astro.props;
+---
+
+<div id="chart"></div>
+
+<script>
+  import ApexCharts from "apexcharts";
+  const options = {
+    series: [76, 67, 61, 75, 30],
+    chart: {
+      width: '100%',
+      height: 390,
+      type: "radialBar",
+    },
+    title: {
+      text: 'Totales Diarios',
+      align: 'left',
+      style: {
+        fontSize: "16px",
+        color: '#666'
+      }
+    },
+    plotOptions: {
+      radialBar: {
+        offsetY: 0,
+        startAngle: -180,
+        endAngle: 180,
+        hollow: {
+          margin: 5,
+          size: "10%",
+          background: "transparent",
+          image: undefined,
+        },
+        track: {
+          show: false,
+        },
+        dataLabels: {
+          name: {
+            show: false,
+          },
+          value: {
+            show: false,
+          },
+        },
+      },
+    },
+    
+    colors: ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6","#ea5f5a"],
+    labels: ["FA", "ND", "NC", "GD", "otros"],
+    legend: {
+      show: true,
+      floating: true,
+      position: 'right',
+      offsetX: 280,
+      offsetY: 200
+    },
+    responsive: [
+      {
+        breakpoint: 2000,
+        options: {
+          legend: {
+            offsetX: 160,
+          },
+        },
+      },
+      {
+        breakpoint: 1500,
+        options: {
+          legend: {
+            offsetX: 60,
+          },
+        },
+      },
+      {
+        breakpoint: 1100,
+        options: {
+          legend: {
+            offsetX: -40,
+          },
+        },
+      },
+      {
+        breakpoint: 768,
+        options: {
+          legend: {
+            offsetX: 100,
+          },
+        },
+      },
+
+      
+      
+      
+    ],
+  };
+  
+  function init() {
+    if (document.getElementById("chart") && typeof ApexCharts !== 'undefined') {
+      const chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+    }
+  }
+
+  // Inicializar en la primera carga
+  init();
+
+  // Reinicializar después de cambiar de página
+  document.addEventListener("astro:after-swap", init);
+ 
+</script>

@@ -29,34 +29,8 @@ const { id, name, icon, text, add_class} = Astro.props;
       id={id}
       class="appearance-none w-6 h-6 rounded-full border-2 border-gray-400 checked:bg-custom-primary checked:border-transparent focus:outline-none transition-all duration-300 mr-2"
     />
-    <label id={'icon_'+id} for={id} class="text-left text-white absolute justify-center items-center cursor-pointer hidden">
-      {icon && (
-        <Icon
-          name={icon}
-          class="ml-1"
-          style="width: 1rem; height: 1rem;"
-        />
-      )}
-      
-    </label>
     <label for={id} class="text-sm cursor-pointer select-none">
         {text}
     </label>
 </div>
   
-<script define:vars={{id,name}}>
-  window.onload = function() {
-    var checkbox = document.getElementById(`${id}`);
-    var icon = document.getElementById('icon_'+`${name}`);
-
-    checkbox.addEventListener('change', function() {
-      if (this.checked) {
-        // Si el checkbox está seleccionado, mostramos el ícono
-        icon.classList.remove('hidden');
-      } else {
-        // Si el checkbox no está seleccionado, ocultamos el ícono
-        icon.classList.add('hidden');
-      }
-    });
-  }
-</script>

@@ -1,0 +1,105 @@
+---
+interface Props {
+    columnas: Array<String>;
+    content?: Array<Array<any>>;
+}
+
+const {columnas, content = []} = Astro.props;
+
+---
+
+<table class="w-full text-sm text-left rtl:text-right text-gray-500 miTabla">
+    <thead class="text-xs text-gray-700 uppercase border-b-2 border-gray-200">
+        <tr>
+            {columnas.map((columna, index) => (
+                <th scope="col" class="px-6 py-3" data-columna={columna}>
+                    {columna}
+                    <button class="toggle-visibilidad">
+                        Ocultar/Mostrar
+                    </button>
+                </th>
+            ))}
+        </tr>
+    </thead>
+    <tbody>
+        {content.map((fila, i) => (
+            <tr>
+                {fila.map((celda, j) => (
+                    <td class="px-6 py-3" data-columna={columnas[j]}>
+                        {celda}
+                    </td>
+                ))}
+            </tr>
+        ))}
+        <slot/>
+    </tbody>
+</table>
+
+<button class="mostrarTodo" style="display: none;">
+    Mostrar Columnas Ocultas
+</button>
+
+<div class="mensajeOculto" style="display: none;">
+    ¡Ups! Parece que ocultaste todo. <a href="#" class="text-custom-tertiary font-bold mostrarTodoLink">Haz clic aquí para mostrar todo</a>.
+</div>
+
+<script>
+
+function init() {
+   
+    const tabla = document.querySelector('.miTabla');
+    const botones = tabla.getElementsByClassName('toggle-visibilidad');
+    const botonMostrarTodo = document.querySelector('.mostrarTodo');
+    const mensajeOculto = document.querySelector('.mensajeOculto');
+
+    for (let i = 0; i < botones.length; i++) {
+        botones[i].addEventListener('click', (event:any) => {
+            const columna = event.target.parentElement.getAttribute('data-columna');
+            const celdas = tabla.querySelectorAll(`[data-columna="${columna}"]`);
+
+            let algunaVisible = false;
+            for (let j = 0; j < celdas.length; j++) {
+                const celda:any = celdas[j];
+                if (celda.style.display === 'none') {
+                    celda.style.display = '';
+                } else {
+                    celda.style.display = 'none';
+                    algunaVisible = true;
+                }
+            }
+
+            // Verificar si todas las columnas están ocultas
+            const todasOcultas = Array.from(tabla.querySelectorAll('th')).every(th => th.style.display === 'none');
+            
+            if (todasOcultas) { // Si todas las columnas están ocultas, mostramos el mensaje "¡Ups! Parece que ocultaste todo."
+                mensajeOculto.style.display = '';
+                botonMostrarTodo.style.display = 'none'; // También ocultamos el botón "Mostrar todo"
+            } else if (algunaVisible) { // Si alguna columna está oculta, mostramos el botón "Mostrar todo"
+                botonMostrarTodo.style.display = '';
+                mensajeOculto.style.display = 'none';
+            } else { // Si todas las columnas están visibles, ocultamos el botón "Mostrar todo" y el mensaje
+                botonMostrarTodo.style.display = 'none';
+                mensajeOculto.style.display = 'none';
+            }
+        });
+    }
+
+    botonMostrarTodo.addEventListener('click', () => {
+        const celdas:any = tabla.querySelectorAll('td, th');
+        for (let i = 0; i < celdas.length; i++) {
+            celdas[i].style.display = '';
+        }
+        botonMostrarTodo.style.display = 'none';
+        mensajeOculto.style.display = 'none';
+    });
+
+    // Agregamos evento al enlace en el mensaje oculto
+    document.querySelector('.mostrarTodoLink').addEventListener('click', (event) => {
+            event.preventDefault();
+            botonMostrarTodo.click();
+    });
+
+}
+
+init();
+</script>

@@ -1,58 +1,133 @@
 ---
 interface Props {
-	position?: 'center' | 'right' | 'left';
+  position?: "center" | "right" | "left";
 }
 
-const { position = 'right' } = Astro.props;
+const { position = "right" } = Astro.props;
 ---
 
-<canvas id="myChart"></canvas>
+<div id="chart-line"></div>
 
 <script>
-    import Chart from "chart.js/auto"
-// Tu código de Chart.js aquí
-const config = {
-  type: 'line',
-  data: {
-    labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio'],
-    datasets: [
-      {
-        label: 'Dataset 1',
-        data: [65, 59, 80, 81, 56, 55, 40],
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-      {
-        label: 'Dataset 2',
-        data: [28, 48, 40, 19, 86, 27, 90],
-        borderColor: 'rgb(54, 162, 235)',
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-      }
-    ]
-  },
-  options: {
-    animation: {
-      duration: 2000,
-      onProgress: function(context) {
-        console.log('Progress: ' + Math.round((context.currentStep / context.numSteps) * 100) + '%');
-      },
-      onComplete: function(context) {
-        console.log('Completed');
-      }
-    },
-    interaction: {
-      mode: 'nearest',
-      axis: 'x',
-      intersect: false
-    },
-    plugins: {
-      title: {
-        display: true,
-        text: 'Chart.js Line Chart - Animation Progress Bar'
-      }
-    },
-  },
-};
+  import ApexCharts from "apexcharts";
 
-const chart = new Chart(document.getElementById("myChart") as HTMLCanvasElement, config as any);
+  const options = {
+      series: [
+      {
+        name: "Sales",
+        data: [4, 3, 10, 9, 29, 19, 22, 9, 12, 7, 19, 5, 13, 9, 17, 2, 7, 5],
+      },
+      {
+        name: "Sales",
+        data: [0, 80, 40, 100, 30, 10, 60, 90, 8, 7, 80, 60, 13, 0, 70, 20, 7, 5],
+        fill: {
+          type: "gradient",
+          gradient: {
+            shade: "dark",
+            type: "horizontal",
+            shadeIntensity: 1,
+            opacityFrom: 1,
+            opacityTo: 1,
+            stops: [0, 100, 100, 100],
+            gradientToColors: ["#8f64a9"], // color final del gradiente para la segunda serie
+          },
+        },
+      },
+    ],
+    colors: ["#e2cf41", '#8f64a9'],
+    chart: {
+      height: 300,
+      type: "line",
+    },
+    forecastDataPoints: {
+      count: 7,
+    },
+    stroke: {
+      width: 5,
+      curve: "smooth",
+    },
+    markers: {
+      discrete: [{
+        seriesIndex: 1,
+        dataPointIndex: 7,
+        fillColor: '#eee',
+        strokeColor: '#8f64a9',
+        size: 15,
+        shape: "circle" // "circle" | "square" | "rect"
+      }, {
+        seriesIndex: 1,
+        dataPointIndex: 11,
+        fillColor: '#eee',
+        strokeColor: '#8f64a9',
+        size: 15,
+        shape: "circle" // "circle" | "square" | "rect"
+      }]
+    },
+    xaxis: {
+      type: "datetime",
+      categories: [
+        "1/11/2000",
+        "2/11/2000",
+        "3/11/2000",
+        "4/11/2000",
+        "5/11/2000",
+        "6/11/2000",
+        "7/11/2000",
+        "8/11/2000",
+        "9/11/2000",
+        "10/11/2000",
+        "11/11/2000",
+        "12/11/2000",
+        "1/11/2001",
+        "2/11/2001",
+        "3/11/2001",
+        "4/11/2001",
+        "5/11/2001",
+        "6/11/2001",
+      ],
+      tickAmount: 10,
+      labels: {
+        formatter: function (value, timestamp, opts) {
+          return opts.dateFormatter(new Date(timestamp), "dd MMM");
+        },
+      },
+    },
+    title: {
+      text: "Totales Diarios",
+      align: "left",
+      style: {
+        fontSize: "16px",
+        color: "#666",
+      },
+    },
+    fill: {
+      type: "gradient",
+      gradient: {
+        shade: "dark",
+        gradientToColors: ["#d56c5f"],
+        shadeIntensity: 1,
+        type: "horizontal",
+        opacityFrom: 1,
+        opacityTo: 1,
+        stops: [0, 100, 100, 100],
+      },
+    },
+    yaxis: {
+      min: -10,
+      max: 120,
+    },
+  };
+
+  function init() {
+    if (document.getElementById("chart-line") && typeof ApexCharts !== 'undefined') {
+      const chart = new ApexCharts(document.querySelector("#chart-line"), options);
+        chart.render();
+    }
+  }
+
+  // Inicializar en la primera carga
+  init();
+
+  // Reinicializar después de cambiar de página
+  document.addEventListener("astro:after-swap", init);
 </script>

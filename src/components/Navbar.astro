@@ -1,0 +1,43 @@
+---
+import SearchBar from "../components/SearchBar.astro";
+import { Icon } from "astro-icon/components";
+import Dropdown from "../components/Dropdown.astro";
+import {convertDateTime} from "../scripts/utils.js";
+
+const user = JSON.parse(Astro.cookies.get("session").value);
+const nombre = user.nombre;
+const apellido = user.apellido;
+const ultimaConexion = convertDateTime(user.ultima_conexion);
+
+let iniciales = (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
+---
+<div class="flex bg-custom-quaternary justify-between items-center">
+  <!-- Saludo al usuario -->
+  <!-- Botón -->
+  <div class="flex items-center">
+    <Icon id="sidebarToggle" name="menu-2"  class="text-2xl ml-5 cursor-pointer text-gray-700" />
+    <div class="text-lg font-semibold ml-4 p-4">
+      <p class="text-1xl md:text-2xl text-gray-700">Hola {nombre}!</p>
+      <p class="text-min -mt-2 text-gray-500">
+        Última conexión: {ultimaConexion}
+      </p>
+    </div>
+  </div>
+    <div class="flex items-center ml-auto relative">
+      <button type="button" class="relative inline-flex items-center mr-4 text-sm font-medium text-center text-white">
+        <Icon name="bell" class="text-3xl text-gray-600" />
+        <div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">3</div>
+      </button>
+
+      <button type="button" class="relative inline-flex items-center mr-4 text-sm font-medium text-center text-white">
+        <Icon name="mail" class="text-3xl text-gray-600" />
+        <div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">6</div>
+      </button>
+        
+    </div>
+    
+   
+    <Dropdown text={iniciales}  id="dropdownDefaultButton" />
+  </div>
+
+  <SearchBar />

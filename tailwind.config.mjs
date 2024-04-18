@@ -1,6 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+	content: [
+		'./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
+		'./node_modules/flowbite/**/*.js',
+	],
 	theme: {
 		extend: {
 			colors: {
@@ -14,16 +17,18 @@ export default {
 				'custom-nonary': '#4a4b97',
 				'custom-denary': '#e77a82',
 				'custom-undenary': '#f29140',
-				//'custom-Tredenary': '#',
-				//'custom-Quattuordenary': '#',
-				//'custom-Quinquadrenary': '#',
-				//'custom-Sedenary': '#',
-			
+				'custom-Tredenary': '#859fd2',
+				'custom-Quattuordenary': '#4e4f9d',
+				'custom-Quinquadrenary': '#f73131',
+				'custom-Sedenary': '#27a243',
 			},
 			fontSize: {
 				'min': '0.6rem',
 			}
 		}
 	},
-	plugins: [],
+	plugins: [
+		//
+		require('flowbite/plugin'),
+	],
 }

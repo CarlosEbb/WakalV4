@@ -1,142 +1,69 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
 
+import { Icon } from "astro-icon/components";
 
-import { Icon } from 'astro-icon/components';
+import Checkbox from "../components/Checkbox.astro";
+import Sidebar from "../components/Sidebar.astro";
 
-import Checkbox from '../components/Checkbox.astro';
-import Sidebar from '../components/Sidebar.astro';
-import Select from '../components/Select.astro';
-import ChartLine from '../components/ChartLine.astro';
-import ChartSeriesPie from '../components/ChartSeriesPie.astro';
+import ChartLine from "../components/ChartLine.astro";
+import ChartAngleCircle from "../components/ChartAngleCircle.astro";
+import ChartLineArea from "../components/ChartLineArea.astro";
+import Dropdown from "../components/Dropdown.astro";
 
-import CardInfoDashboard from '../components/CardInfoDashboard.astro';
+import CardInfoDashboard from "../components/CardInfoDashboard.astro";
 
-import { Image } from 'astro:assets';
-
+import { Image } from "astro:assets";
 ---
 
-<Layout title="Dashboard">
-    <div class="flex h-screen">
-        <Sidebar
-            cliente="soluciones_laser"
-        />
-        <!-- Contenido principal -->
-        <div class="flex-1">
-            <!-- Contenido de la barra de navegación -->
-            <div class="grid grid-cols-12 bg-custom-quaternary">
-                <!-- Saludo al usuario -->
-                <div class="col-span-6 text-lg font-semibold ml-4 p-8">
-                    <p class="text-3xl text-gray-700">Hola Genobellys!</p>
-                    <p class="text-sm text-gray-500">Última conexión: 17 Nov 2023</p>
-                </div>
-                <!-- Iconos y foto de perfil -->
-                <div class="col-span-6 flex justify-end items-center">
-                    <div class="mr-4 text-gray-600">
-                        <Icon name="bell"  class="text-3xl" />
-                    </div>
-                    
-                    <div class="mr-4 text-gray-600">
-                        <Icon name="mail"  class="text-3xl" />
-                    </div>
-                    <!-- Foto de perfil del usuario -->
-                    <!-- Circulo con iniciales -->
-                    <div class="col-span-6 flex justify-end items-center mr-5">
-                        <div class="h-11 w-11 rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white">
-                            <p class="text-xl font-semibold pb-0.5">GR</p>
-                        </div>
-                        <Icon name="chevron-down"  class="text-lg" />
-                    </div>
-                </div>
-            </div>
+<Layout title="Dashboard" bodyClass="bg-gray-100">
+  
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pl-6 pr-6 -mt-16">
+      <!-- Card 1 -->
+      <CardInfoDashboard
+        value="15K"
+        text="Totales Generales"
+        icon="chart-area-line"
+        color="bg-gradient-to-r from-custom-senary to-custom-tertiary"
+      />
 
-            <div class="bg-custom-quinary p-6 pb-24">
-                <h2 class="text-2xl font-semibold mb-4 text-center text-custom-tertiary">Consulta Rápida</h2>
-                <div class="flex items-center justify-center">
-                    <div class="">
-                        <Select name="" rounded="rounded-full" class_add="p-0.5">
-                            <option value="">Opción 1</option>
-                            <option value="">Opción 2</option>
-                            <option value="">Opción 3</option>
-                        </Select>
-    
-                        <Select name="" rounded="rounded-full" class_add="p-0.5">
-                            <option value="">Opción 1</option>
-                            <option value="">Opción 2</option>
-                            <option value="">Opción 3</option>
-                        </Select>
-    
-                        <Select name="" rounded="rounded-full" class_add="p-0.5">
-                            <option value="">Opción 1</option>
-                            <option value="">Opción 2</option>
-                            <option value="">Opción 3</option>
-                        </Select>
-    
-                        <Select name="" rounded="rounded-full" class_add="p-0.5">
-                            <option value="">Opción 1</option>
-                            <option value="">Opción 2</option>
-                            <option value="">Opción 3</option>
-                        </Select>
+      <CardInfoDashboard
+        value="102.5K"
+        text="Facturas"
+        icon="chart-bar"
+        color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
+      />
 
-                        <!-- Botón buscar -->
-                    </div>
-                    
-                    <button class="ml-2 p-2 px-4 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 rounded-full bg-gradient-to-r from-custom-secundary to-custom-tertiary">Buscar</button>
-                   
-                    
-                </div>
-            </div>
-                
-            <div class="grid grid-cols-12  gap-6 pl-6 pr-6 -mt-16">
-                <!-- Card 1 -->
-                <CardInfoDashboard
-                    value="15K"
-                    text="Totales Generales"
-                    icon="chart-area-line" 
-                    color="bg-gradient-to-r from-custom-senary to-custom-tertiary"
-                />
+      <CardInfoDashboard
+        value="4.5K"
+        text="Notas de Débito"
+        icon="timeline"
+        color="bg-gradient-to-r from-custom-denary to-custom-undenary"
+      />
 
-                <CardInfoDashboard
-                    value="102.5K"
-                    text="Facturas"
-                    icon="chart-bar" 
-                    color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
-                />
-
-                <CardInfoDashboard
-                    value="4.5K"
-                    text="Notas de Débito"
-                    icon="timeline" 
-                    color="bg-gradient-to-r from-custom-denary to-custom-undenary"
-                />
-
-                <CardInfoDashboard
-                    value="256.5K"
-                    text="Notas de Crédito"
-                    icon="book" 
-                    color="bg-gradient-to-r from-custom-denary to-custom-undenary"
-                />
-            </div>
-            
-            <div class="grid grid-cols-2 gap-4 p-6 mt-2">
-                <div class="col-span-1">
-                    <div class="bg-white p-4 mb-4 rounded-xl m-1">
-                        <!-- Contenido de la primera card izquierda -->
-                        <ChartLine />
-                    </div>
-                    <div class="bg-white p-4 rounded-xl m-1 mt-5">
-                        <!-- Contenido de la segunda card izquierda -->
-                        Card 2
-                    </div>
-                </div>
-                <div class="col-span-1 m-1">
-                    <div class="bg-white p-4 h-full rounded-xl">
-                        <!-- Contenido de la card derecha -->
-                        Card 3
-                    </div>
-                </div>
-            </div>
-
-        </div>
+      <CardInfoDashboard
+        value="256.5K"
+        text="Notas de Crédito"
+        icon="book"
+        color="bg-gradient-to-r from-custom-denary to-custom-undenary"
+      />
     </div>
+
+    <div class="grid md:grid-cols-2 gap-4 p-6 mt-2">
+      <div>
+        <div class="bg-white p-4 mb-4 rounded-xl m-1">
+          <ChartLine />
+        </div>
+        <div class="bg-white p-4 rounded-xl m-1 mt-5">
+          <ChartLineArea />
+        </div>
+      </div>
+      <div class="m-1">
+        <div class="bg-white p-4 h-full rounded-xl">
+          <ChartAngleCircle />
+        </div>
+      </div>
+    </div>
+
+
 </Layout>

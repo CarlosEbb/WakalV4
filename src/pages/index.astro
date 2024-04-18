@@ -4,12 +4,39 @@ import Layout from '../layouts/LayoutLogin.astro';
 import LogoWakal from '../components/LogoWakal.astro';
 import InputField from '../components/InputField.astro';
 import Checkbox from '../components/Checkbox.astro';
+import { apiController } from '../scripts/request.js';
 
-import { Image } from 'astro:assets';
+let errors = {all: [] };
+let successMessage = {all: []};
 
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const email = data.get("email");
+    const password = data.get("password");
 
+    const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/auth/login','POST',{email, password});
+
+    if(responseData.data.errors || responseData.code !== 200){
+      errors.all = responseData.data.errors;
+    }else{
+      successMessage.all = responseData.message;
+	  Astro.cookies.delete('session');
+      Astro.cookies.set('session', responseData.data);
+      return Astro.redirect("/auth/selectedAction");
+    }
+    
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+      errors.all = ["¡Ups! Parece que algo no salió como se esperaba. Por favor, intenta de nuevo."];
+    }
+  }
+}
+
+Astro.cookies.delete('session');
 ---
-<Layout title="Login Soluciones Laser">
+<Layout title="Login Soluciones Laser" bodyClass="bg-gray-100 flex justify-center items-center mt-16 md:mt-0 md:h-screen md:p-24">
 	<div class="relative">
 		<!-- Círculo superior izquierdo -->
 		<div class="absolute -top-28 -left-0 md:-top-28 md:-left-16 w-80 h-80 bg-custom-quaternary rounded-full"></div>
@@ -29,7 +56,7 @@ import { Image } from 'astro:assets';
 			<div class="absolute inset-0 md:bg-gradient-to-r from-custom-secundary bg-opacity-0 rounded-xl opacity-65 z-5"></div>
 			
 			<!-- Sección derecha con formulario -->
-			<div class="col-span-12 md:col-span-5 right-0 bg-white md:bg-opacity-45 backdrop-filter p-8 md:p-10 rounded-r-xl b z-10">
+			<div transition:name="card-login" class="col-span-12 md:col-span-5 right-0 bg-white md:bg-opacity-45 backdrop-filter p-8 md:px-10 md:py-16 rounded-r-xl b z-10">
 				<!-- Imagen de fondo -->
 				<div class="bg-cover bg-center h-full md:h-auto md:w-full rounded-l-xl">
 					<!-- Contenido del formulario -->
@@ -39,21 +66,20 @@ import { Image } from 'astro:assets';
 						</div>
 					</div>
 					<!-- Formulario -->
-					<form id="fr_login" class="mt-8 mb-6">
+					<form id="fr_login" class="mt-8 mb-6" method="POST">
 						<h2 class="text-center text-lg mb-4 text-custom-primary font-semibold">Ingresa tu información</h2>
 						<InputField isrequired={true} id="email" name="email" type="email" icon="user" placeholder="Usuario o correo electrónico" />
 						<InputField isrequired={true} id="password" name="password" type="password" icon="lock" placeholder="Contraseña" />
 						
+						{errors.all && <p class="text-min -mt-3 ml-4 text-custom-Quinquadrenary">{errors.all}</p>}
+						
 						<div class="flex flex-wrap justify-center items-center mb-4">
 							<Checkbox add_class="mt-2" id="recuerdame" name="recuerdame" icon="check" text="Recuérdame" value={true}/>
-							<a href="#" class="text-blue-500 text-sm text-custom-primary ml-2 mt-2">¿Olvidaste tu contraseña?</a>
+							<a href="/auth/forgetPassword" class="ml-2 mt-2 text-sm text-custom-tertiary font-semibold">¿Olvidaste tu contraseña?</a>
 						</div>
 						
 						<button id="fr_btn_login" class="w-full bg-gradient-to-r from-custom-secundary to-custom-tertiary text-white rounded-full py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mt-6 uppercase">Ingresar</button>
 					</form>
-					
-					
-					
 				</div>
 			</div>
 		</div>
@@ -61,41 +87,3 @@ import { Image } from 'astro:assets';
 	
 	
 </Layout>
-
-
-
-
-<script>
-	const url = import.meta.env.PUBLIC_BASE_URL;
-	import { apiController } from './api/request.js';
-	
-	const handleLogin = async (event) => {
-		event.preventDefault(); // Evita el envío predeterminado del formulario
-		
-		// Obtiene los valores de correo electrónico y contraseña del formulario
-		const email = document.getElementById('email').value;
-		const password = document.getElementById('password').value;
-		
-		const requestBody = {
-			email,
-			password,
-		};
-		
-		const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/auth/login','POST',requestBody);
-		
-		
-		if(responseData){
-			window.location.href = '/dashboard'; // Ejemplo de redirección
-		}
-	};
-	
-	document.getElementById('fr_login').addEventListener('submit', handleLogin);
-	
-	document.addEventListener("DOMContentLoaded", function() {
-		let img = document.querySelector('.bg-cover');
-		if (img) {
-			img.loading = 'eager';
-		}
-	});
-
-</script>

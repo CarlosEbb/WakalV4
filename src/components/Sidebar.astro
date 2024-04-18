@@ -2,110 +2,174 @@
 import { Image } from 'astro:assets';
 import { Icon } from 'astro-icon/components'
 
-import LogoWakal from '../components/LogoWakal.astro';
-
 interface Props {
     cliente?: String;
 }
 
-import logoCliente from '../images/clientes/soluciones_laser/logo.png';
+import logoCliente from '../images/clientes/soluciones_laser/logo.webp';
+import logoWakal from '../images/login/logoWakal.webp';
 
-const { cliente = null } = Astro.props;
+
+const ispage = Astro.url.pathname;;
+const { cliente = null, } = Astro.props;
 
 ---
 
  <!-- Sidebar -->
- <div class="bg-white text-custom-secundary w-64 flex flex-col justify-between">
-    <!-- Logo de la empresa -->
-    <div class="flex items-center justify-center py-4">
-        <Image src={logoCliente} alt="Imagen" loading="eager" class="w-full h-22 object-cover p-3 select-none" />
-    </div>
-    <!-- Lista de páginas -->
-    <nav class="flex-1">
-        <ul class="space-y-2">
-            <li>
-                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white select-none">
-                    <Icon name="chart-pie-filled"  class="text-3xl" />
-                    <span class="ml-2">Inicio</span>
-                </a>
-            </li>
-            <!-- acordeón -->
-            <li class="relative accordion">
-                <input type="checkbox" id="accordionOption1" class="accordionOption hidden">
-                <label for="accordionOption1" class="flex items-center justify-between px-6 py-2 w-full text-custom-secundary hover:bg-custom-secundary hover:text-white cursor-pointer select-none">
-                    <div class="flex items-center">
-                        <Icon name="search"  class="text-3xl" />
-                        <span class="ml-2">Consulta Avanzada</span>
-                    </div>
-                    <Icon name="chevron-down"  class="text-lg" />
-                </label>
-                <!-- Submenú -->
-                <ul class="accordionContent hidden py-2 transition-height">
-                    <li>
-                        <a href="#" class="block px-14 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white">Opción 1</a>
-                    </li>
-                    <li>
-                        <a href="#" class="block px-14 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white">Opción 2</a>
-                    </li>
-                    <!-- Agrega más opciones según sea necesario -->
-                </ul>
+ <div id="sidebar" class=" flex flex-col top-0 left-0 w-14 md:w-64 bg-white dark:bg-gray-900 h-auto text-white transition-all duration-300 border-none z-10 sidebar">
+      <!-- Sidebar -->
+      <div id="sidebar-container" class="fixed h-full flex-col top-0 left-0 w-14 md:w-64 bg-white dark:bg-gray-900 text-white transition-all duration-300 border-none z-10 sidebar">
+        <div class="overflow-y-auto overflow-x-hidden flex flex-col justify-between flex-grow h-full">
+         <ul class="flex flex-col py-4 space-y-1">
+            <li class="mt-6 mb-8">
+              <div class="relative flex flex-row items-center h-11 focus:outline-none text-white-600 hover:text-white-800 border-l-4 border-transparent pr-6">
+                <div class="flex items-center justify-center p-5">
+                    <Image src={logoCliente} alt="Imagen" loading="eager" class="w-full h-22 object-cover  select-none" />
+                </div>
+              </div>
             </li>
             <li>
-                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white select-none">
-                    <Icon name="file"  class="text-3xl" />
-                    <span class="ml-2">Reportes</span>
-                </a>
+              <a href="/dashboard" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage === '/dashboard' ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+                  <span class="inline-flex justify-center items-center ml-4">
+                      <Icon name="chart-pie-filled"  class="w-5 h-5" />
+                  </span>
+                  <span class="ml-2 text-sm tracking-wide truncate">Inicio</span>
+              </a>
             </li>
-            <li>
-                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white select-none">
-                    <Icon name="user"  class="text-3xl" />
-                    <span class="ml-2">Usuarios</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" class="flex items-center px-6 py-2 text-custom-secundary hover:bg-custom-secundary hover:text-white select-none">
-                    <Icon name="clock"  class="text-3xl" />
-                    <span class="ml-2">Historial</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-    <!-- Botón de salir -->
-    <div class="py-4 flex justify-center text-center">
-        
-        <a href="#" class="flex items-center px-4 py-2 text-gray-400 hover:text-custom-secundary">
-            <Icon name="logout"  class="text-3xl" />
-            Salir
-        </a>
-    </div>
-    <!-- Logo del sistema -->
-    <div class="col-span-12 flex flex-col items-center mb-6">
-        <LogoWakal
-            position="center"
-        />
-    </div>
-</div>
 
+            <li>
+              <a href="#" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage === '/consultaAvanzada' ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+                <span class="inline-flex justify-center items-center ml-4">
+                  <Icon name="search"  class="w-5 h-5" />
+                </span>
+                <span class="ml-2 text-sm tracking-wide truncate">Consulta Avanzada</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage === '/reportes' ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+                <span class="inline-flex justify-center items-center ml-4">
+                  <Icon name="file"  class="w-5 h-5" />
+                </span>
+                <span class="ml-2 text-sm tracking-wide truncate">Reportes</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="/usuarios" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage === '/usuarios' ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+                <span class="inline-flex justify-center items-center ml-4">
+                  <Icon name="user"  class="w-5 h-5" />
+                </span>
+                <span class="ml-2 text-sm tracking-wide truncate">Usuarios</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage === '/historial' ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+                <span class="inline-flex justify-center items-center ml-4">
+                  <Icon name="clock"  class="w-5 h-5" />
+                </span>
+                <span class="ml-2 text-sm tracking-wide truncate">Historial</span>
+              </a>
+            </li>
+            <li>
+              <a href="/" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage === '/' ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+                <span class="inline-flex justify-center items-center ml-4">
+                  <Icon name="logout"  class="w-5 h-5" />
+                </span>
+                <span class="ml-2 text-sm tracking-wide truncate">Salir</span>
+              </a>
+            </li>
+
+            
+          </ul>
+         
+          <div>
+            <div class="flex items-center justify-center p-6">
+                <Image src={logoWakal} alt="Imagen" loading="eager" class="w-32 h-22 object-cover p-3 select-none overflow-hidden" />
+            </div>
+            <div class="flex items-center justify-center p-6 -mt-16">
+                <span class="ml-2  text-sm tracking-wide truncate"><p class={`text-gray-700 text-min text-center md:select-none`}>By Soluciones Laser <br>Version 4.0</p></span>
+            </div>
+          </div>
+            
+              
+             
+          </ul>
+        </div>
+      </div>
+    </div>
 <script>
-    const accordions = document.querySelectorAll('.accordion');
+  function init() {
+    // Obtén los elementos del DOM
+    var sidebar = document.getElementById('sidebar');
+    var sidebarContainer = document.getElementById('sidebar-container');
+    var sidebarToggle = document.getElementById('sidebarToggle');
+  
+    // Agrega un evento de clic al botón
+    sidebarToggle.addEventListener('click', function() {
+        // Comprueba si el sidebar tiene la clase 'w-64'
+        if (sidebar.classList.contains('w-14')) {
+            // Si la tiene, quítasela
+            sidebar.classList.remove('w-14');
+            sidebarContainer.classList.remove('w-14');
 
-    accordions.forEach(accordion => {
-        const option = accordion.querySelector('.accordionOption') as HTMLInputElement;
-        const content = accordion.querySelector('.accordionContent');
+            sidebar.classList.add('w-64');
+            sidebarContainer.classList.add('w-64');
+           
+        } else if (sidebar.classList.contains('w-64')) {
+          // Si la tiene, quítasela
+          sidebar.classList.remove('w-64');
+          sidebarContainer.classList.remove('w-64');
 
-        option.addEventListener('change', () => {
-            // Cerrar todos los acordeones
-            accordions.forEach(a => {
-                if (a !== accordion) {
-                    const otherOption = a.querySelector('.accordionOption') as HTMLInputElement;
-                    const otherContent = a.querySelector('.accordionContent');
-                    otherOption.checked = false;
-                    otherContent.classList.add('hidden');
-                }
-            });
+          sidebar.classList.add('w-14');
+          sidebarContainer.classList.add('w-14');
+        
+        } 
 
-            // Abrir o cerrar el acordeón actual
-            content.classList.toggle('hidden', !option.checked);
-        });
+        if (sidebar.classList.contains('md:w-64')) {
+            // Si la tiene, quítasela
+            sidebar.classList.remove('md:w-64');
+            sidebarContainer.classList.remove('md:w-64');
+
+            sidebar.classList.add('md:w-14');
+            sidebarContainer.classList.add('md:w-14');
+           
+        } else if (sidebar.classList.contains('md:w-14')) {
+          // Si la tiene, quítasela
+          sidebar.classList.remove('md:w-14');
+          sidebarContainer.classList.remove('md:w-14');
+
+          sidebar.classList.add('md:w-64');
+          sidebarContainer.classList.add('md:w-64');
+        
+        }
     });
+
+    // Primero, selecciona todos los botones
+    const buttons = document.querySelectorAll('.button_option');
+
+    // Luego, agrega un evento de click a cada botón
+    buttons.forEach((button) => {
+      button.addEventListener('click', (event:any) => {
+        // Cuando se haga click en un botón, primero quita las clases de todos los botones
+        buttons.forEach((btn) => {
+          btn.classList.remove('bg-custom-secundary', 'text-white');
+          btn.classList.add('text-custom-secundary');
+        });
+
+        // Luego, agrega las clases al botón que fue clickeado
+        event.currentTarget.classList.add('bg-custom-secundary', 'text-white');
+      });
+    });
+
+  }
+
+  // Inicializar en la primera carga
+  init();
+
+  // Reinicializar después de cambiar de página
+  document.addEventListener("astro:after-swap", init);
+  
+  
 </script>

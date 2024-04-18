@@ -1,0 +1,62 @@
+---
+import Layout from '../../layouts/LayoutLogin.astro';
+
+import LogoWakal from '../../components/LogoWakal.astro';
+import InputField from '../../components/InputField.astro';
+import Checkbox from '../../components/Checkbox.astro';
+import CardInfoDashboard from '../../components/CardInfoDashboard.astro';
+
+---
+<Layout title="Login Soluciones Laser" bodyClass="bg-gray-100 flex justify-center items-center mt-16 md:mt-0 md:h-screen md:p-24" isSidebar={false}>
+	<div class="relative">
+		<!-- Círculo superior izquierdo -->
+		<div class="absolute -top-28 -left-0 md:-top-28 md:-left-16 w-80 h-80 bg-custom-quaternary rounded-full"></div>
+		<!-- Círculo inferior derecho -->
+		<div class="absolute -bottom-16 -right-0 md:-bottom-16 md:-right-10 w-48 h-48 bg-custom-primary rounded-full"></div>
+	
+		<!-- Card central en una rejilla -->
+		<div class="grid grid-cols-12 rounded-xl shadow-lg mx-4 md:mx-16 relative bg-cover md:bg-[url('/fondoLogin.webp')]">
+			
+			<div class="col-span-7 w-full h-auto rounded-xl relative hidden md:block z-10">
+				<h1 class="flex flex-col text-white text-4xl font-bold pt-20 pl-16">Bienvenido a</h1>
+				<p class="text-white text-lg  text pl-16">Su solución digital</p>
+			</div>
+			
+			
+			<!-- Capa de degradado -->
+			<div class="absolute inset-0 md:bg-gradient-to-r from-custom-secundary bg-opacity-0 rounded-xl opacity-65 z-5"></div>
+			
+			<!-- Sección derecha con formulario -->
+			<div transition:name="card-login" class="col-span-12 md:col-span-5 right-0 bg-white md:bg-opacity-45 backdrop-filter p-8 md:px-10 md:py-16 rounded-r-xl b z-10">
+				<!-- Imagen de fondo -->
+				<div class="bg-cover bg-center h-full md:h-auto md:w-full rounded-l-xl">
+
+					<!-- Formulario -->
+					<form class="mt-8 mb-6" method="POST">
+						<h2 class="text-center text-lg mb-4 text-custom-primary font-semibold">Selecciona como deseas ingresar</h2>
+						<div class="p-2">
+							<a href="/dashboard">
+								<CardInfoDashboard
+								value="Contribuyente"
+								text="Ingresar"
+								icon="briefcase"
+								color="bg-gradient-to-r from-custom-senary to-custom-tertiary"
+								/>
+							</a>
+						</div>
+						<div class="p-2">
+								<CardInfoDashboard
+									value="Imprenta"
+									text="Ingresar"
+									icon="printer"
+									color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
+								/>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+</Layout>

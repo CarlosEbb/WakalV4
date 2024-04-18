@@ -12,10 +12,10 @@ const {id, name, rounded = '', class_add = ''} = Astro.props;
 
 ---
 
-<div class=`relative inline-flex items-center justify-center bg-white border border-gray-300 select-container ${rounded} ${class_add}`>
+<div class=`relative inline-flex items-center justify-center bg-white border border-gray-300 border-gray-300 select-container ${rounded} ${class_add}`>
     <Icon name="bell"  class="text-lg  left-0  pointer-events-none m-2" />
-    <Icon name="chevron-down"  class="text-sm absolute  right-2 pointer-events-none" />
-    <select id={id} name={name} class=`${rounded} text-gray-600  pr-8 pl-2 bg-white hover:border-gray-400 focus:outline-none appearance-none`>
+    
+    <select id={id} name={name} class=`${rounded} text-gray-600  pr-8 pl-2 bg-white border-none focus:outline-none focus:ring-0 appearance-none`>
         <slot />
     </select>
 </div>
@@ -25,17 +25,13 @@ const {id, name, rounded = '', class_add = ''} = Astro.props;
     const selectContainers = document.querySelectorAll('.select-container');
 
     selectContainers.forEach(element => {
-      element.addEventListener('click', select_click);
+        element.addEventListener('mousedown', select_click);
     });
 
     function select_click(event) {
-
         // Buscar el elemento select hijo del contenedor actual
         const select = event.currentTarget.querySelector('select');
-        console.log(select);
         // Activar el foco en el elemento select
         select.focus();
     }
-
-   
 </script>

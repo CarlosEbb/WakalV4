@@ -1,0 +1,45 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+import { Icon } from "astro-icon/components";
+
+import Checkbox from "../components/Checkbox.astro";
+import Sidebar from "../components/Sidebar.astro";
+import Select from "../components/Select.astro";
+import ChartLine from "../components/ChartLine.astro";
+import ChartAngleCircle from "../components/ChartAngleCircle.astro";
+import ChartLineArea from "../components/ChartLineArea.astro";
+import Dropdown from "../components/Dropdown.astro";
+
+import CardInfoDashboard from "../components/CardInfoDashboard.astro";
+
+import { Image } from "astro:assets";
+import Navbar from "../components/Navbar.astro";
+import DynamicTable from "../components/DynamicTable.astro";
+---
+
+<Layout title="Dashboard" bodyClass="bg-gray-100">
+ 
+    <div class="bg-white px-6 -mt-16 mx-6 rounded-lg ">
+        
+        <div class="relative overflow-x-auto sm:rounded-lg py-6">
+            <DynamicTable 
+                columnas={[
+                    "Nº",
+                    "Nombre | Apellido | Correo",
+                    "Usuario",
+                    "Fecha de Registro",
+                    "Cédula",
+                    "Departamento",
+                    "Acciones",
+                ]}
+                content={[
+                    [1,2,3,4,5,6,7],
+                    [1,2,3,4,5,6,7],
+                ]}>
+            </DynamicTable>
+            
+        </div>
+    </div>
+      
+</Layout>
