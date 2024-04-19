@@ -6,37 +6,32 @@ export function onRequest ({ locals, request, url, cookies}, next) {
     
     let isPrivate = [
         '/auth/selectedAction',
-        '/dashboard',
-        '/usuarios',
-        '/dashboardSearch',
     ];
     let path = url.pathname;
- 
-    if (isPrivate.includes(path)) {
+
+    if (path.includes('/dashboard') || isPrivate.includes(path)) {
         let session = cookies.get('session');
-        console.log("paso 1",session);
         if (!session) {
+            console.log("pasooo 1: ", session);
            // Si no hay sesión, redirige al usuario a la raíz
            return new Response(null, {status: 302, headers: {'Location': '/'}});
         }
         session = JSON.parse(session.value);
        
         try {
-        console.log("paso 2");
+
 
             jwt.verify(session.token, 'secretKey', (err, decodedToken) => {
                 if (err) {
-                    console.log('error token: ', err);
+                    console.log("pasooo 2");
                     return new Response(null, {status: 302, headers: {'Location': '/'}});
                 } else {
-        console.log("paso 3");
 
                     return next();
                 }
             });
         } catch (err) {
-        console.log("paso 5");
-
+            console.log("pasooo 3");
             // Si el token es inválido, redirige al usuario a la raíz
             return new Response(null, {status: 302, headers: {'Location': '/'}});
         }

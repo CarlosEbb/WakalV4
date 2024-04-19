@@ -3,14 +3,16 @@ import  { ViewTransitions }  from 'astro:transitions';
 import Sidebar from "../components/Sidebar.astro";
 import Navbar from "../components/Navbar.astro";
 import Head from "./includes/Head.astro";
+import SearchBar from "../components/SearchBar.astro";
 
 interface Props {
 	title: string;
+	subTitle?: string;
 	bodyClass?: string;
-	isSidebar?: boolean;
+	isSearchBar?: boolean;
 }
 
-const { title, bodyClass = ''} = Astro.props;
+const { title, subTitle = 'Seleccione su consulta', bodyClass = '', isSearchBar = true} = Astro.props;
 ---
 
 <!doctype html>
@@ -18,12 +20,13 @@ const { title, bodyClass = ''} = Astro.props;
 	<Head title={title} />
 	<body class={bodyClass}>
 		<div class="flex">
-			<div transition:persist>
+			<div>
 				<Sidebar cliente="soluciones_laser" />
 			</div>
 			<div class="flex-grow">
 				<div  class="h-full bg-custom-quaternary transition-all duration-300">
-				<Navbar />
+					<Navbar />
+					<SearchBar isSearchBar={isSearchBar} subTitle={subTitle}/>
 					<slot />
 				</div>
 			</div>

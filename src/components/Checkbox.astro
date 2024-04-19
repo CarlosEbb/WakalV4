@@ -6,12 +6,13 @@ interface Props {
 	name: string;
 	icon: string;
 	text: string;
-  value: boolean;
+  value?: string;
+  checked?: boolean;
   add_class: string;
 }
 
 
-const { id, name, icon, text, add_class} = Astro.props;
+const { id, name, icon, text, add_class, value, checked} = Astro.props;
 
 ---
 
@@ -24,9 +25,11 @@ const { id, name, icon, text, add_class} = Astro.props;
 
 <div class=`relative flex items-center ${add_class}`>
     <input
+      id={id}
       name={name}
       type="checkbox"
-      id={id}
+      value={value}
+      checked={checked}
       class="appearance-none w-6 h-6 rounded-full border-2 border-gray-400 checked:bg-custom-primary checked:border-transparent focus:outline-none transition-all duration-300 mr-2"
     />
     <label for={id} class="text-sm cursor-pointer select-none">

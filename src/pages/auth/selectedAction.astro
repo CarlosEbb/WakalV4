@@ -35,7 +35,7 @@ import CardInfoDashboard from '../../components/CardInfoDashboard.astro';
 					<form class="mt-8 mb-6" method="POST">
 						<h2 class="text-center text-lg mb-4 text-custom-primary font-semibold">Selecciona como deseas ingresar</h2>
 						<div class="p-2">
-							<a href="/dashboard">
+							<a href="/dashboard/home">
 								<CardInfoDashboard
 								value="Contribuyente"
 								text="Ingresar"
@@ -45,12 +45,14 @@ import CardInfoDashboard from '../../components/CardInfoDashboard.astro';
 							</a>
 						</div>
 						<div class="p-2">
+							<a href="/dashboard/home">
 								<CardInfoDashboard
 									value="Imprenta"
 									text="Ingresar"
 									icon="printer"
 									color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
 								/>
+							</a>
 						</div>
 					</form>
 				</div>

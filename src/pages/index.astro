@@ -8,21 +8,41 @@ import { apiController } from '../scripts/request.js';
 
 let errors = {all: [] };
 let successMessage = {all: []};
+let recuerdame_cookies = Astro.cookies.get('recuerdame');
+let recuerdame_value = "";
+let recuerdame_checked = false;
+if(recuerdame_cookies){
+  recuerdame_value = recuerdame_cookies.value;
+  recuerdame_checked = true;
+}
 
 if (Astro.request.method === "POST") {
   try {
     const data = await Astro.request.formData();
     const email = data.get("email");
     const password = data.get("password");
-
+    const recuerdame = data.get("recuerdame");
+	
     const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/auth/login','POST',{email, password});
 
     if(responseData.data.errors || responseData.code !== 200){
       errors.all = responseData.data.errors;
     }else{
       successMessage.all = responseData.message;
-	  Astro.cookies.delete('session');
-      Astro.cookies.set('session', responseData.data);
+      Astro.cookies.delete('recuerdame');
+      if(recuerdame){
+        Astro.cookies.set('recuerdame', email);
+      }
+      
+      Astro.cookies.delete('session');
+      let date = new Date();
+      date.setFullYear(date.getFullYear() + 100); // Añade 100 años a la fecha actual
+
+      Astro.cookies.set('session', responseData.data, {
+        expires: date,
+        httpOnly: true
+      });
+
       return Astro.redirect("/auth/selectedAction");
     }
     
@@ -68,13 +88,13 @@ Astro.cookies.delete('session');
 					<!-- Formulario -->
 					<form id="fr_login" class="mt-8 mb-6" method="POST">
 						<h2 class="text-center text-lg mb-4 text-custom-primary font-semibold">Ingresa tu información</h2>
-						<InputField isrequired={true} id="email" name="email" type="email" icon="user" placeholder="Usuario o correo electrónico" />
-						<InputField isrequired={true} id="password" name="password" type="password" icon="lock" placeholder="Contraseña" />
+						<InputField isrequired={true} id="email" name="email" type="text" icon="user" placeholder="Usuario o correo electrónico" value={recuerdame_value} addClass="mb-4" />
+						<InputField isrequired={true} id="password" name="password" type="password" icon="lock" placeholder="Contraseña" addClass="mb-8"/>
 						
 						{errors.all && <p class="text-min -mt-3 ml-4 text-custom-Quinquadrenary">{errors.all}</p>}
 						
 						<div class="flex flex-wrap justify-center items-center mb-4">
-							<Checkbox add_class="mt-2" id="recuerdame" name="recuerdame" icon="check" text="Recuérdame" value={true}/>
+							<Checkbox add_class="mt-2" id="recuerdame" name="recuerdame" icon="check" text="Recuérdame" value={"1"} checked={recuerdame_checked}/>
 							<a href="/auth/forgetPassword" class="ml-2 mt-2 text-sm text-custom-tertiary font-semibold">¿Olvidaste tu contraseña?</a>
 						</div>
 						

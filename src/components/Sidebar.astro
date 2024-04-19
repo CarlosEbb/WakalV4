@@ -8,9 +8,8 @@ interface Props {
 
 import logoCliente from '../images/clientes/soluciones_laser/logo.webp';
 import logoWakal from '../images/login/logoWakal.webp';
+const ispage = Astro.url.pathname;
 
-
-const ispage = Astro.url.pathname;;
 const { cliente = null, } = Astro.props;
 
 ---
@@ -29,16 +28,23 @@ const { cliente = null, } = Astro.props;
               </div>
             </li>
             <li>
-              <a href="/dashboard" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage === '/dashboard' ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+              <a href="/dashboard/home" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage.includes('/dashboard/home') ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
                   <span class="inline-flex justify-center items-center ml-4">
                       <Icon name="chart-pie-filled"  class="w-5 h-5" />
                   </span>
                   <span class="ml-2 text-sm tracking-wide truncate">Inicio</span>
               </a>
             </li>
-
             <li>
-              <a href="#" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage === '/consultaAvanzada' ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+              <a href="/dashboard/usuarios" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage.includes('/dashboard/usuarios') ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+                <span class="inline-flex justify-center items-center ml-4">
+                  <Icon name="user"  class="w-5 h-5" />
+                </span>
+                <span class="ml-2 text-sm tracking-wide truncate">Usuarios</span>
+              </a>
+            </li>
+            <li>
+              <a class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage === '/consultaAvanzada' ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
                 <span class="inline-flex justify-center items-center ml-4">
                   <Icon name="search"  class="w-5 h-5" />
                 </span>
@@ -47,7 +53,7 @@ const { cliente = null, } = Astro.props;
             </li>
 
             <li>
-              <a href="#" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage === '/reportes' ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+              <a class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage.includes('/dashboard/reportes') ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
                 <span class="inline-flex justify-center items-center ml-4">
                   <Icon name="file"  class="w-5 h-5" />
                 </span>
@@ -55,17 +61,10 @@ const { cliente = null, } = Astro.props;
               </a>
             </li>
 
-            <li>
-              <a href="/usuarios" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage === '/usuarios' ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
-                <span class="inline-flex justify-center items-center ml-4">
-                  <Icon name="user"  class="w-5 h-5" />
-                </span>
-                <span class="ml-2 text-sm tracking-wide truncate">Usuarios</span>
-              </a>
-            </li>
+           
 
             <li>
-              <a href="#" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage === '/historial' ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+              <a class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage.includes('/dashboard/historial') ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
                 <span class="inline-flex justify-center items-center ml-4">
                   <Icon name="clock"  class="w-5 h-5" />
                 </span>
@@ -144,23 +143,6 @@ const { cliente = null, } = Astro.props;
           sidebarContainer.classList.add('md:w-64');
         
         }
-    });
-
-    // Primero, selecciona todos los botones
-    const buttons = document.querySelectorAll('.button_option');
-
-    // Luego, agrega un evento de click a cada botón
-    buttons.forEach((button) => {
-      button.addEventListener('click', (event:any) => {
-        // Cuando se haga click en un botón, primero quita las clases de todos los botones
-        buttons.forEach((btn) => {
-          btn.classList.remove('bg-custom-secundary', 'text-white');
-          btn.classList.add('text-custom-secundary');
-        });
-
-        // Luego, agrega las clases al botón que fue clickeado
-        event.currentTarget.classList.add('bg-custom-secundary', 'text-white');
-      });
     });
 
   }

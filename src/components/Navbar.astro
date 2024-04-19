@@ -1,5 +1,4 @@
 ---
-import SearchBar from "../components/SearchBar.astro";
 import { Icon } from "astro-icon/components";
 import Dropdown from "../components/Dropdown.astro";
 import {convertDateTime} from "../scripts/utils.js";
@@ -7,7 +6,7 @@ import {convertDateTime} from "../scripts/utils.js";
 const user = JSON.parse(Astro.cookies.get("session").value);
 const nombre = user.nombre;
 const apellido = user.apellido;
-const ultimaConexion = convertDateTime(user.ultima_conexion);
+const ultimaConexion = convertDateTime(user.ultima_conexion, 'DD MMM YYYY hh:mm:ss A');
 
 let iniciales = (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
 ---
@@ -40,4 +39,3 @@ let iniciales = (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
     <Dropdown text={iniciales}  id="dropdownDefaultButton" />
   </div>
 
-  <SearchBar />

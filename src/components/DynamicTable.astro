@@ -14,9 +14,11 @@ const {columnas, content = []} = Astro.props;
             {columnas.map((columna, index) => (
                 <th scope="col" class="px-6 py-3" data-columna={columna}>
                     {columna}
+                    <!-- 
                     <button class="toggle-visibilidad">
                         Ocultar/Mostrar
                     </button>
+                    -->
                 </th>
             ))}
         </tr>
@@ -34,14 +36,14 @@ const {columnas, content = []} = Astro.props;
         <slot/>
     </tbody>
 </table>
+<!-- 
+    <button class="mostrarTodo" style="display: none;">
+        Mostrar Columnas Ocultas
+    </button>
 
-<button class="mostrarTodo" style="display: none;">
-    Mostrar Columnas Ocultas
-</button>
-
-<div class="mensajeOculto" style="display: none;">
-    ¡Ups! Parece que ocultaste todo. <a href="#" class="text-custom-tertiary font-bold mostrarTodoLink">Haz clic aquí para mostrar todo</a>.
-</div>
+    <div class="mensajeOculto" style="display: none;">
+        ¡Ups! Parece que ocultaste todo. <a href="#" class="text-custom-tertiary font-bold mostrarTodoLink">Haz clic aquí para mostrar todo</a>.
+    </div>
 
 <script>
 
@@ -102,4 +104,9 @@ function init() {
 }
 
 init();
+
+// Reinicializar después de cambiar de página
+document.addEventListener("astro:after-swap", init);
 </script>
+
+-->

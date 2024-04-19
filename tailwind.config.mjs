@@ -21,6 +21,9 @@ export default {
 				'custom-Quattuordenary': '#4e4f9d',
 				'custom-Quinquadrenary': '#f73131',
 				'custom-Sedenary': '#27a243',
+
+				
+				'custom-select': '#6b7280',
 			},
 			fontSize: {
 				'min': '0.6rem',
