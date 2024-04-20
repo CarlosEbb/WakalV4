@@ -75,7 +75,8 @@ const users = responseData.data;
                             {user.department}
                         </td>
                         <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit user</a>
+                            <a href=`/dashboard/usuarios/update/${user.id}` class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                            <a href=`/dashboard/usuarios/show/${user.id}` class="font-medium text-blue-600 dark:text-blue-500 hover:underline">show</a>
                         </td>
                     </tr>
                 ))}

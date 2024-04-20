@@ -35,35 +35,44 @@ const { id, name, type ="text", icon, placeholder ="", isrequired = false, value
     />
 </div>
 
-{type === 'password' && (
+
   <script>
-    const lockOpenIcons = document.querySelectorAll('.isPassword');
+    function init() {
+      
+      const lockOpenIcons = document.querySelectorAll('.isPassword');
 
-    lockOpenIcons.forEach(element => {
-      element.addEventListener('click', togglePasswordVisibility);
-    });
+      lockOpenIcons.forEach(element => {
+        element.addEventListener('click', togglePasswordVisibility);
+      });
 
-    function togglePasswordVisibility(event) {
-      const input = getNextInputElement(event.target);
-      if (input) {
-        input.type = input.type === 'password' ? 'text' : 'password';
+      function togglePasswordVisibility(event) {
+        const input = getNextInputElement(event.target);
+        if (input) {
+          input.type = input.type === 'password' ? 'text' : 'password';
 
-        const icons = event.target.parentElement.querySelectorAll('.isPassword'); // Obtener ambos iconos del padre
-        icons.forEach(icon => {
-          icon.classList.toggle('hidden'); // Alternar la visibilidad de ambos iconos
-        });
-      }
-    }
-
-    function getNextInputElement(element) {
-      let sibling = element.nextElementSibling;
-      while (sibling) {
-        if (sibling.tagName.toLowerCase() === 'input') {
-          return sibling;
+          const icons = event.target.parentElement.querySelectorAll('.isPassword'); // Obtener ambos iconos del padre
+          icons.forEach(icon => {
+            icon.classList.toggle('hidden'); // Alternar la visibilidad de ambos iconos
+          });
         }
-        sibling = sibling.nextElementSibling;
       }
-      return null;
+
+      function getNextInputElement(element) {
+        let sibling = element.nextElementSibling;
+        while (sibling) {
+          if (sibling.tagName.toLowerCase() === 'input') {
+            return sibling;
+          }
+          sibling = sibling.nextElementSibling;
+        }
+        return null;
+      }
     }
+
+    // Inicializar en la primera carga
+    init();
+
+    // Reinicializar después de cambiar de página
+    document.addEventListener("astro:after-swap", init);
+    
   </script>
-)}
