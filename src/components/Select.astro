@@ -3,16 +3,19 @@ import { Icon } from 'astro-icon/components'
 
 interface Props {
     name: string;
-	id?: string;
-	rounded?: 'rounded-full' | 'rounded-r-full' | 'rounded-l-full';
-	addClass?: string;
-	icon?: string;
+    id?: string;
+    rounded?: 'rounded-full' | 'rounded-r-full' | 'rounded-l-full';
+    addClass?: string;
+    icon?: string;
     addWith?: 'w-full' | 'w-auto';
     multiple?: boolean;
     disabled?: boolean;
+    options?: {value: string, label: string}[];
+    value?: string;
+    placeholder?: string;
 }
 
-const {id, name, rounded = '', addClass = '', icon = '', addWith = "w-full", multiple = false, disabled = false} = Astro.props;
+const {id, name, rounded = '', addClass = '', icon = '', addWith = "w-full", multiple = false, disabled = false, options = [], value, placeholder} = Astro.props;
 
 ---
 
@@ -22,22 +25,9 @@ const {id, name, rounded = '', addClass = '', icon = '', addWith = "w-full", mul
     }
     
     <select id={id} name={name} class=`${addWith} py-2.5 text-sm text-gray-600 bg-custom-quaternary text-custom-select border-none focus:outline-none focus:ring-0 ${rounded}` multiple={multiple} disabled={disabled}>
-        <slot />
+        {placeholder && <option value="" disabled selected>{placeholder}</option>}
+        {options.map(option => 
+            <option value={option.value} selected={option.value === value}>{option.label}</option>
+        )}
     </select>
 </div>
-
-<script>
-    // Obtener todos los elementos con la clase select-container
-    const selectContainers = document.querySelectorAll('.select-container');
-
-    selectContainers.forEach(element => {
-        element.addEventListener('mousedown', select_click);
-    });
-
-    function select_click(event) {
-        // Buscar el elemento select hijo del contenedor actual
-        const select = event.currentTarget.querySelector('select');
-        // Activar el foco en el elemento select
-        select.focus();
-    }
-</script>

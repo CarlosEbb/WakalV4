@@ -2,118 +2,49 @@
 import ButtonAction from "../../../components/ButtonAction.astro";
 import ButtonBack from "../../../components/ButtonBack.astro";
 import CardContentPage from "../../../components/CardContentPage.astro";
+import Checkbox from "../../../components/Checkbox.astro";
 import InputField from "../../../components/InputField.astro";
 import Select from "../../../components/Select.astro";
 import Layout from "../../../layouts/Layout.astro";
+import DataForm from "../../../components/DataForm/Usuarios.astro";
 
 import { Icon } from "astro-icon/components";
+import { apiController } from '../../../scripts/request.js';
 
+const locals:any = Astro.locals;
+
+let errors = {all: [] };
+let successMessage = {all: []};
+let data = {};
+
+if (Astro.request.method === "POST") {
+  try {
+    
+    const formData = await Astro.request.formData();
+   
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/usuarios','POST',data, locals.token);
+   
+    if(responseData.data.errors || responseData.code !== 200){
+      errors.all = responseData.data.errors;
+    }else{
+      
+    }
+    
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+      errors.all = ["¡Ups! Parece que algo no salió como se esperaba. Por favor, intenta de nuevo."];
+    }
+  }
+}
 
 ---
 <Layout title="Dashboard" subTitle="Configuración de Nuevo Usuario" bodyClass="bg-gray-100" isSearchBar={false}>
     <CardContentPage>
-        <form class="mx-full text-center mr-2">
-            <h2 class="font-semibold text-custom-secundary text-xl mb-5">Datos Personales</h2>
-            <div class="grid md:grid-cols-1">
-                <div class="px-2">
-                    <div class="grid md:grid-cols-3 md:gap-6">
-                        <div class="relative z-0 w-full m-2 group">
-                            <InputField isrequired={true} id="nombre" name="nombre" type="text" icon="user-circle" placeholder="Nombre" />
-                        </div>
-                        <div class="relative z-0 w-full m-2 group">
-                            <InputField isrequired={true} id="apellido" name="apellido" type="text" icon="user-circle" placeholder="Apellido" />
-                        </div>
-                        <div class="relative z-0 w-full m-2 group">
-                            <InputField isrequired={true} id="cedula" name="cesula" type="text" icon="id" placeholder="Cédula" />
-                        </div>
-                    </div>
-                </div>
-                <div class="px-2">
-                    <div class="grid md:grid-cols-2 md:gap-6">
-                        <div class="relative z-0 w-full m-2 group">
-                            <InputField isrequired={true} id="email" name="email" type="text" icon="mail" placeholder="E-mail" />
-                        </div>
-                        <div class="relative z-0 w-full m-2 group">
-                            <InputField isrequired={true} id="email_alternativo" name="email_alternativo" type="text" icon="mail-ai" placeholder="E-mail alternativo" />
-                        </div>
-                    </div>
-                </div>
-                <div class="px-2">
-                    <div class="grid md:grid-cols-2 md:gap-6">
-                        <div class="relative z-0 w-full m-2 group">
-                            <InputField isrequired={true} id="telefono" name="telefono" type="text" icon="device-mobile" placeholder="Teléfono" />
-                        </div>
-                        <div class="relative z-0 w-full m-2 group">
-                            <InputField isrequired={true} id="departamento" name="departamento" type="text" icon="hexagons" placeholder="Departamento" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr class="my-6">
-            <div class="grid md:grid-cols-2">
-                <div class="px-2 pl-4 md:border-r">
-                    <h2 class="font-semibold text-custom-secundary text-xl mb-5">Jurisdicción</h2>
-                    <div class="grid md:grid-cols-1 md:gap-3">
-                        <div class="md:mr-2">
-                            <Select id="estado" icon="map" name="estado" rounded="rounded-full" addClass="mt-4 md:mt-1.5">
-                                 <option value="" disabled selected>Estado</option>
-                                
-                            </Select>
-                        </div>
-                        <div class="md:mr-2">
-                            <Select id="region" icon="map-pin-2" name="region" rounded="rounded-full" addClass="mt-4 md:mt-1.5" disabled>
-                                 <option value="" disabled selected>Región</option>
-                                
-                            </Select>
-                        </div>
-                        <div class="md:mr-2">
-                            <Select id="sector" icon="map-pin" name="sector" rounded="rounded-full" addClass="mt-4 md:mt-1.5" disabled>
-                                <option value="" disabled selected>Sector / Unidad</option>
-                               
-                            </Select>
-                        </div>
-                       
-                    </div>
-                </div>
-                <hr class="my-6 md:hidden sm:block">
-                <div class="px-2">
-                    <h2 class="font-semibold text-custom-secundary text-xl mb-5">Datos de Usuario</h2>
-                    <div class="grid md:grid-cols-2 md:gap-5">
-                        <div class="relative z-0 w-full group">
-                            <InputField isrequired={true} id="username" name="username" type="text" icon="user" placeholder="Nombre de Usuario" />
-                        </div>
-                        <div class="relative z-0 w-full group">
-                            <Select id="rol_id" icon="mood-search" name="rol_id" rounded="rounded-full" addClass="">
-                                <option value="" disabled selected>Roles</option>
-                                <option value="">Opción 2</option>
-                                <option value="">Opción 3</option>
-                            </Select>
-                        </div>
-                    
-                        <div class="relative z-0 w-full group">
-                            <InputField isrequired={true} id="password" name="password" type="password" icon="lock" placeholder="Contraseña" />
-                        </div>
-                        <div class="relative z-0 w-full group">
-                            <InputField isrequired={true} id="newpassword" name="newpassword" type="password" icon="lock" placeholder="Confirmar contraseña" />
-                        </div>
-                    
-                        <div class="relative z-0 w-full group">
-                            <InputField isrequired={true} id="cargo" name="cargo" type="text" icon="building-estate" placeholder="Cargo" />
-                        </div>
-                        <div class="relative z-0 w-full group">
-                            <InputField isrequired={true} id="permisos" name="permisos" type="text" icon="certificate" placeholder="Permisos de consultas" />
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
-            <div class="flex justify-center mt-5">
-                <ButtonAction icon="device-floppy" text="Guardar"/>
-            </div>
-            
-            
-        </form>
-
+        <DataForm method="POST" formData={data} />
     </CardContentPage>
 </Layout>
 

@@ -45,11 +45,11 @@ const users = responseData.data;
                         </td>
                         <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                             {user.img_profile ? (
-                                <a href="">
+                                <a href=`/dashboard/usuarios/show/${user.id}` data-tippy-content="Perfil">
                                     <Image src={user.img_profile} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
                                 </a>
                             ) : (
-                                <a href="" id={user.id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center">
+                                <a href=`/dashboard/usuarios/show/${user.id}` data-tippy-content="Perfil" id={user.id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center">
                                     <div class="menu-trigger h-11 w-11 ml-auto rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white select-none text-lg font-semibold">
                                         {(user.nombre.charAt(0) + user.apellido.charAt(0)).toUpperCase()}
                                     </div>
@@ -74,10 +74,16 @@ const users = responseData.data;
                         <td class="px-6 py-4">
                             {user.department}
                         </td>
-                        <td class="px-6 py-4">
-                            <a href=`/dashboard/usuarios/update/${user.id}` class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                            <a href=`/dashboard/usuarios/show/${user.id}` class="font-medium text-blue-600 dark:text-blue-500 hover:underline">show</a>
+                        <td class="px-6 py-4 justify-center items-center">
+                            <div class="flex">
+                                <!-- Agrega el atributo data-tippy-content con el texto del tooltip -->
+                                <a href=`/dashboard/usuarios/update/${user.id}` class="text-blue-600 dark:text-blue-500 hover:underline" data-tippy-content="Editar"><Icon name="edit" size="25px" /></a>
+                                <!-- Agrega el atributo data-tippy-content con el texto del tooltip -->
+                                <a href=`/dashboard/usuarios/show/${user.id}` class="text-blue-600 dark:text-blue-500 hover:underline ml-1" data-tippy-content="Ver Perfil"><Icon name="eye" size="25px" /></a>
+                            </div>
                         </td>
+
+
                     </tr>
                 ))}
             </DynamicTable>

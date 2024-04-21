@@ -1,0 +1,197 @@
+---
+import { Icon } from 'astro-icon/components';
+import InputField from '../InputField.astro';
+import Select from '../Select.astro';
+import Checkbox from '../Checkbox.astro';
+import ButtonAction from '../ButtonAction.astro';
+
+
+interface Props {
+    id?: string;
+    method: "POST" | "PUT" | "GET";
+    formData?: any;
+}
+
+const { id = '', method, formData = {}} = Astro.props;
+---
+
+<form id={id} class="mx-full text-center mr-2" method={method}>
+    <h2 class="font-semibold text-custom-secundary text-xl mb-5">Datos Personales</h2>
+    <div class="grid md:grid-cols-1">
+        <div class="px-2">
+            <div class="grid md:grid-cols-3 md:gap-6">
+                <div class="relative z-0 w-full m-2 group">
+                    <InputField isrequired={true} id="nombre" name="nombre" value={formData.nombre || ''} type="text" icon="user-circle" placeholder="Nombre" />
+                </div>
+                <div class="relative z-0 w-full m-2 group">
+                    <InputField isrequired={true} id="apellido" name="apellido" value={formData.apellido || ''} type="text" icon="user-circle" placeholder="Apellido" />
+                </div>
+                <div class="relative z-0 w-full m-2 group">
+                    <InputField isrequired={true} id="department" name="department" value={formData.department || ''} type="text" icon="hexagons" placeholder="Departamento" />
+                </div>
+            </div>
+        </div>
+        <div class="px-2">
+            <div class="grid md:grid-cols-2 md:gap-6">
+                <div class="relative z-0 w-full m-2 group">
+                    <InputField isrequired={true} id="email" name="email" value={formData.email || ''} type="text" icon="mail" placeholder="E-mail" />
+                </div>
+                <div class="relative z-0 w-full m-2 group">
+                    <InputField isrequired={true} id="email_alternativo" name="email_alternativo" value={formData.email_alternativo || ''} type="text" icon="mail-ai" placeholder="E-mail alternativo" />
+                </div>
+            </div>
+        </div>
+        <div class="px-2">
+            <div class="grid md:grid-cols-2 md:gap-6">
+                <div class="flex z-0 w-full m-2 group">
+                    <div class="w-32 mr-4">
+                        <Select
+                            id="cod_area"
+                            icon="mood-search"
+                            name="cod_area"
+                            rounded="rounded-full"
+                            addClass=""
+                            options={[
+                                {value: "0424", label: "0424"},
+                                {value: "0414", label: "0414"},
+                                {value: "0412", label: "0412"},
+                                {value: "0416", label: "0416"},
+                                {value: "0426", label: "0426"},
+                            ]}
+                            value={formData.rol_id || ''}
+                            placeholder="Cod"
+                        />
+                    </div>
+                    <div class="w-full">
+                        <InputField isrequired={true} id="telefono" name="telefono" value={formData.telefono || ''} type="text" icon="device-mobile" placeholder="Teléfono"/>
+                    </div>
+                </div>
+                <div class="flex z-0 w-full m-2 group">
+                    <div class="w-32 mr-4">
+                        <Select
+                            id="prefijo_cedula"
+                            icon="mood-search"
+                            name="prefijo_cedula"
+                            rounded="rounded-full"
+                            addClass=""
+                            options={[
+                                {value: "V", label: "V"},
+                                {value: "E", label: "E"},
+                                {value: "P", label: "P"},
+                                {value: "J", label: "J"},
+                                {value: "G", label: "G"},
+                            ]}
+                            value={formData.prefijo_cedula || ''}
+                        />
+                    </div>
+                    <div class="w-full">
+                        <InputField isrequired={true} id="cedula" name="cedula" value={formData.cedula || ''} type="text" icon="id" placeholder="Cédula" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr class="my-6">
+    <div class="grid md:grid-cols-2">
+        <div class="px-2 pl-4 md:border-r">
+            <h2 class="font-semibold text-custom-secundary text-xl mb-5">Jurisdicción</h2>
+            <div class="grid md:grid-cols-1 md:gap-3">
+                <div class="md:mr-2">
+                    <Select 
+                        id="estado"
+                        icon="map"
+                        name="jurisdiccion_estado"
+                        rounded="rounded-full"
+                        addClass="mt-4 md:mt-1.5"
+                        placeholder="Estado"
+                    />
+                </div>
+                <div class="md:mr-2">
+                    <Select 
+                        id="region"
+                        icon="map-pin-2"
+                        name="jurisdiccion_region"
+                        rounded="rounded-full"
+                        addClass="mt-4 md:mt-1.5" disabled
+                        placeholder="Región"
+                    />
+                </div>
+                <div class="md:mr-2">
+                    <Select
+                        id="sector"
+                        icon="map-pin"
+                        name="jurisdiccion_sector"
+                        rounded="rounded-full"
+                        addClass="mt-4 md:mt-1.5" disabled
+                        placeholder="Sector / Unidad"
+                    />
+                </div>
+               
+            </div>
+        </div>
+        <hr class="my-6 md:hidden sm:block">
+        <div class="px-2">
+            <h2 class="font-semibold text-custom-secundary text-xl mb-5">Datos de Usuario</h2>
+            <div class="grid md:grid-cols-2 md:gap-5">
+                <div class="relative z-0 w-full group">
+                    <InputField isrequired={true} id="username" name="username" value={formData.username || ''} type="text" icon="user" placeholder="Nombre de Usuario" />
+                </div>
+                <div class="relative z-0 w-full group">
+                    <Select
+                        id="rol_id"
+                        icon="mood-search"
+                        name="rol_id"
+                        rounded="rounded-full"
+                        addClass=""
+                        options={[{value: "1", label: "Opción 2"}, {value: "2", label: "Opción 3"}]}
+                        value={formData.rol_id || ''}
+                        placeholder="Roles"
+                    />
+                </div>
+            
+                <div class="relative z-0 w-full group">
+                    <InputField isrequired={true} id="password" name="password" value={formData.password || ''} type="password" icon="lock" placeholder="Contraseña" />
+                </div>
+                <div class="relative z-0 w-full group">
+                    <InputField isrequired={true} id="newpassword" name="newpassword" value={formData.newpassword || ''} type="password" icon="lock" placeholder="Confirmar contraseña" />
+                </div>
+            
+                <div class="relative z-0 w-full group">
+                    <InputField isrequired={true} id="cargo" name="cargo" value={formData.cargo || ''} type="text" icon="building-estate" placeholder="Cargo" />
+                </div>
+                <div class="relative z-0 w-full group">
+                    
+                    <button id="dropdownPermisos" data-dropdown-toggle="dropdownDefaultCheckbox" class="justify-between rounded-full text-sm py-2.5 inline-flex items-center w-full border-none text-custom-select bg-custom-quaternary select-none" type="button">
+                        <span class="flex"><Icon name="certificate"  class=" left-0  pointer-events-none ml-3 text-custom-primary mr-3" />Permisos de consultas</span> 
+                        <Icon name="chevron-down" size={16} stroke-width="3"  class="pointer-events-none mr-2.5 text-gray-500" />
+                    </button>
+                    
+                    <!-- Dropdown menu -->
+                    <div id="dropdownDefaultCheckbox" class="z-10 hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+                        <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownPermisos">
+                            <li>
+                                <Checkbox add_class="mt-2" id="reportes" name="reportes" icon="check" text="Reportes"/>
+                            </li>
+                            <li>
+                                <Checkbox add_class="mt-2" id="metricas" name="metricas" icon="check" text="Métricas"/>
+                            </li>
+                            <li>
+                                <Checkbox add_class="mt-2" id="libro_ventas" name="libro_ventas" icon="check" text="Libro de ventas"/>
+                            </li>
+                            <li>
+                                <Checkbox add_class="mt-2" id="Documentos fiscales" name="Documentos fiscales" icon="check" text="Documentos fiscales"/>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <div class="flex justify-center mt-5">
+        <ButtonAction icon="device-floppy" text="Guardar"/>
+    </div>
+    
+    
+</form>

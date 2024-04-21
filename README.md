@@ -5,3 +5,4 @@ npm install chart.js
 npm install flowbite
 npm install apexcharts --save
 jsonwebtoken
+npm i tippy.js
