@@ -1,0 +1,56 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+    type?: 'success' | 'error' | 'warning' | 'info';
+    textArray?: string[];
+}
+
+const { type = 'success', textArray = [] } = Astro.props;
+
+let iconName = '';
+let colorName = '';
+let colorBgName = '';
+switch(type) {
+    case 'success':
+        iconName = 'circle-check';
+        colorName = 'custom-Sedenary';
+        colorBgName = 'bg-custom-Sedenary/10';
+        break;
+    case 'error':
+        iconName = 'x';
+        colorName = 'custom-Quinquadrenary';
+        colorBgName = 'bg-custom-Quinquadrenary/10';
+        break;
+    case 'warning':
+        iconName = 'alert-circle';
+        colorName = 'custom-undenary';
+        colorBgName = 'bg-custom-undenary/10';
+        break;
+    case 'info':
+        iconName = 'info-circle';
+        colorName = 'custom-tertiary';
+        colorBgName = 'bg-custom-tertiary/10';
+        break;
+    default:
+        iconName = 'circle-check';
+        colorName = 'custom-Sedenary';
+        colorBgName = 'bg-custom-Sedenary/10';
+}
+---
+
+<div id={`toast-${type}`} class="fixed flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-gray-200 rounded-lg shadow right-5 bottom-5 space-x " role="alert">
+    <div class={`inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-${colorName} ${colorBgName} rounded-lg`}>
+        <Icon name={iconName}/>
+        <span class="sr-only">Check icon</span>
+    </div>
+    <div class="text-sm font-normal">
+        {textArray.map((error) => (
+            <p>• {error.charAt(0).toUpperCase() + error.slice(1)}</p>
+        ))}
+    </div>
+    <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8" data-dismiss-target={`#toast-${type}`} aria-label="Close">
+        <span class="sr-only">Close</span>
+        <Icon name="x" size={40} stroke-width={2}/>
+    </button>
+</div>

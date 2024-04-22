@@ -13,15 +13,16 @@ interface Props {
     options?: {value: string, label: string}[];
     value?: string;
     placeholder?: string;
+    iconSize?: number;
 }
 
-const {id, name, rounded = '', addClass = '', icon = '', addWith = "w-full", multiple = false, disabled = false, options = [], value, placeholder} = Astro.props;
+const {id, name, rounded = '', addClass = '', icon = '', addWith = "w-full", multiple = false, disabled = false, options = [], value, placeholder, iconSize} = Astro.props;
 
 ---
 
 <div class=`w-full inline-flex items-center bg-custom-quaternary select-container ${rounded} ${addClass}`>
     {icon !== '' &&
-        <Icon name={icon}  class=" left-0  pointer-events-none ml-3 text-custom-primary" />
+        <Icon name={icon}  class=" left-0  pointer-events-none ml-3 text-custom-primary" size={iconSize} />
     }
     
     <select id={id} name={name} class=`${addWith} py-2.5 text-sm text-gray-600 bg-custom-quaternary text-custom-select border-none focus:outline-none focus:ring-0 ${rounded}` multiple={multiple} disabled={disabled}>

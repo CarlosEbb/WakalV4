@@ -11,8 +11,8 @@ import CardContentPage from "../../components/CardContentPage.astro";
 import ButtonAction from "../../components/ButtonAction.astro";
 
 
-const session = JSON.parse(Astro.cookies.get("session").value);
-const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/usuarios','GET',null,session.token);
+const locals:any = Astro.locals;
+const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/usuarios','GET',null,locals.token);
 const users = responseData.data;
 
 ---

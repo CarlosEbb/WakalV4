@@ -1,5 +1,151 @@
 ---
+import CardContentPage from "../../../../components/CardContentPage.astro";
+import Layout from "../../../../layouts/Layout.astro";
+import DataForm from "../../../../components/DataForm/Usuarios.astro";
 
+import { apiController } from '../../../../scripts/request.js';
+import ToastNotification from "../../../../components/ToastNotification.astro";
+
+const locals:any = Astro.locals;
+
+let errors = {all: [] };
+let successMessage = {all: []};
+let data = {};
+let dataActualizar:any = {};
+
+const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/usuarios/'+Astro.params.id,'GET',null, locals.token);
+data = responseData.data;
+
+
+if (Astro.request.method === "POST") {
+  try {
+    const formData = await Astro.request.formData();
+    
+    const password = formData.get("password");
+    const newPassword = formData.get("newPassword");
+    for (let [key, value] of formData.entries()) {
+        dataActualizar[key] = value;
+    }
+
+    // Eliminar newPassword de dataActualizar
+    delete dataActualizar.newPassword;
+
+    if(password == '' || password === newPassword){
+        console.log(password == '' ? 11111111 : 222222222);
+
+        const responseDataActualizar = await apiController(import.meta.env.PUBLIC_BASE_URL,'/usuarios/'+Astro.params.id,'PUT',dataActualizar, locals.token);
+        if(responseDataActualizar.data.errors || responseDataActualizar.code !== 200){
+            errors.all = responseDataActualizar.data.errors ? responseDataActualizar.data.errors : [];
+        }else{
+            successMessage.all = [responseDataActualizar.message];
+            data = dataActualizar;
+        }
+    }else{
+      errors.all = ["¡Vaya! Las contraseñas que ingresaste no son iguales. Por favor, inténtalo de nuevo."];
+    }
+    
+    
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+      errors.all = ["¡Ups! Parece que algo no salió como se esperaba. Por favor, intenta de nuevo."];
+    }
+  }
+}
+
+      
 ---
+<Layout title="Dashboard" subTitle="Actualizar Usuario" bodyClass="bg-gray-100" isSearchBar={false}>
+    <CardContentPage>
+        <DataForm method="PUT" formData={data} />
+    </CardContentPage>
+    {errors.all.length > 0 && <ToastNotification slot="toast" type={'error'} textArray={errors.all}/>}
+    {successMessage.all.length > 0 && <ToastNotification slot="toast" type={'success'} textArray={successMessage.all}/>}
+</Layout>
 
-update
+<script>
+    const data = {
+      "Estado1": {
+        "region1": ["sector1", "sector2"],
+        "region2": ["sector3", "sector4"]
+      },
+      "Estado2": {
+        "region3": ["sector5", "sector6"],
+        "region4": ["sector7", "sector8"]
+      }
+    };
+  
+    function init() {
+        const estadoSelect:any = document.getElementById('estado');
+        const regionSelect:any = document.getElementById('region');
+        const sectorSelect:any = document.getElementById('sector');
+    
+        for (const estado in data) {
+            const option = document.createElement('option');
+            option.text = estado;
+            option.value = estado;
+            estadoSelect.add(option);
+        }
+    
+        estadoSelect.onchange = function() {
+            regionSelect.innerHTML = '<option value="">Región</option>';
+            sectorSelect.innerHTML = '<option value="">Sector / Unidad</option>';
+            regionSelect.disabled = false; // Habilitar el selector de region
+            const regiones = data[this.value];
+            for (const region in regiones) {
+            const option = document.createElement('option');
+            option.text = region;
+            option.value = region;
+            regionSelect.add(option);
+            }
+        };
+    
+        regionSelect.onchange = function() {
+            sectorSelect.innerHTML = '<option value="">Sector / Unidad</option>';
+            sectorSelect.disabled = false; // Habilitar el selector de sector
+            const sectors = data[estadoSelect.value][this.value];
+            for (const sector of sectors) {
+            const option = document.createElement('option');
+            option.text = sector;
+            option.value = sector;
+            sectorSelect.add(option);
+            }
+        };
+
+        function selectOptions(estadoValue, regionValue, sectorValue) {
+            if(estadoValue && regionValue && sectorValue){
+                const estadoSelect:any = document.getElementById('estado');
+                const regionSelect:any = document.getElementById('region');
+                const sectorSelect:any = document.getElementById('sector');
+    
+                // Seleccionar el valor en el dropdown de estado
+                estadoSelect.value = estadoValue;
+                estadoSelect.dispatchEvent(new Event('change'));
+    
+                // Esperar a que se carguen las opciones de región
+               
+                regionSelect.value = regionValue;
+                regionSelect.dispatchEvent(new Event('change'));
+
+                // Esperar a que se carguen las opciones de sector
+                
+                sectorSelect.value = sectorValue;
+                   
+            }
+        }
+
+        const estadoSelect_temp:any = document.getElementById('estado_temp');
+        const regionSelect_temp:any = document.getElementById('region_temp');
+        const sectorSelect_temp:any = document.getElementById('sector_temp');
+
+        selectOptions(estadoSelect_temp.value, regionSelect_temp.value, sectorSelect_temp.value);
+
+    }
+
+    // Inicializar en la primera carga
+    init();
+
+    // Reinicializar después de cambiar de página
+    document.addEventListener("astro:after-swap", init);
+    
+  </script>

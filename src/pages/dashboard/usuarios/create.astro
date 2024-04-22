@@ -1,15 +1,10 @@
 ---
-import ButtonAction from "../../../components/ButtonAction.astro";
-import ButtonBack from "../../../components/ButtonBack.astro";
 import CardContentPage from "../../../components/CardContentPage.astro";
-import Checkbox from "../../../components/Checkbox.astro";
-import InputField from "../../../components/InputField.astro";
-import Select from "../../../components/Select.astro";
 import Layout from "../../../layouts/Layout.astro";
 import DataForm from "../../../components/DataForm/Usuarios.astro";
 
-import { Icon } from "astro-icon/components";
 import { apiController } from '../../../scripts/request.js';
+import ToastNotification from "../../../components/ToastNotification.astro";
 
 const locals:any = Astro.locals;
 
@@ -19,19 +14,29 @@ let data = {};
 
 if (Astro.request.method === "POST") {
   try {
-    
+   
     const formData = await Astro.request.formData();
-   
+    const password = formData.get("password");
+    const newPassword = formData.get("newPassword");
     for (let [key, value] of formData.entries()) {
-        data[key] = value;
+          data[key] = value;
     }
-    const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/usuarios','POST',data, locals.token);
-   
-    if(responseData.data.errors || responseData.code !== 200){
-      errors.all = responseData.data.errors;
-    }else{
+
+    if(password === newPassword){
       
+      const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/usuarios','POST',data, locals.token);
+      
+      if(responseData.data.errors || responseData.code !== 201){
+        errors.all = responseData.data.errors ? responseData.data.errors : [];
+      }else{
+        successMessage.all = [responseData.message];
+        data = {};
+      }
+
+    }else{
+      errors.all = ["¡Vaya! Las contraseñas que ingresaste no son iguales. Por favor, inténtalo de nuevo."];
     }
+   
     
   } catch (error) {
     if (error instanceof Error) {
@@ -46,6 +51,8 @@ if (Astro.request.method === "POST") {
     <CardContentPage>
         <DataForm method="POST" formData={data} />
     </CardContentPage>
+    {errors.all.length > 0 && <ToastNotification slot="toast" type={'error'} textArray={errors.all}/>}
+    {successMessage.all.length > 0 && <ToastNotification slot="toast" type={'success'} textArray={successMessage.all}/>}
 </Layout>
 
 <script>

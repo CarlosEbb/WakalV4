@@ -3,17 +3,18 @@ import { Icon } from 'astro-icon/components'
 
 interface Props {
   id: string;
-  name: string;
+  name?: string;
   type: 'text' | 'password' | 'number' | 'date' | 'file' | 'email';
-  icon: string;
+  icon?: string;
   placeholder?: string;
   isrequired?: boolean;
   value?: string;
   hidden?: boolean;
   addClass?: String;
+  addClassInput?: String;
 }
 
-const { id, name, type ="text", icon, placeholder ="", isrequired = false, value="", hidden = false, addClass=""} = Astro.props;
+const { id, name, type ="text", icon, placeholder ="", isrequired = false, value="", hidden = false, addClass="", addClassInput=""} = Astro.props;
 
 ---
 <div class=`relative ${addClass}` hidden={hidden}>
@@ -22,8 +23,9 @@ const { id, name, type ="text", icon, placeholder ="", isrequired = false, value
         <Icon name="lock-open" class="hidden isPassword absolute left-3 top-1/2 transform -translate-y-1/2 text-custom-primary cursor-pointer" />
     )}
 
-    <Icon name={icon}  class=`${type === 'password' ? 'isPassword cursor-pointer' : ''} absolute left-3 top-1/2 transform -translate-y-1/2 text-custom-primary ` />
-    
+    {icon && (
+      <Icon name={icon}  class=`${type === 'password' ? 'isPassword cursor-pointer' : ''} absolute left-3 top-1/2 transform -translate-y-1/2 text-custom-primary` />
+    )}
     <input
         id={id}
         name={name}
@@ -31,7 +33,7 @@ const { id, name, type ="text", icon, placeholder ="", isrequired = false, value
         placeholder={placeholder}
         required={isrequired}
         value={value}
-        class=`w-full px-4 py-2.5 rounded-full focus:border-blue-500 border-none pl-10 text-sm bg-custom-quaternary select-none`
+        class=`w-full px-4 py-2.5 rounded-full focus:border-blue-500 border-none pl-10 text-sm bg-custom-quaternary select-none ${addClassInput}`
     />
 </div>
 
@@ -67,6 +69,40 @@ const { id, name, type ="text", icon, placeholder ="", isrequired = false, value
         }
         return null;
       }
+
+      // Selecciona todos los elementos input con la clase .number
+      let inputsNumber = document.querySelectorAll('input.number');
+
+      // Añade un controlador de eventos a cada input
+      inputsNumber.forEach(input => {
+        input.addEventListener('keypress', function(event:any) {
+          // Comprueba si el carácter es un número
+          let isNumber = /^[0-9]+$/.test(String.fromCharCode(event.which));
+          
+          // Si el carácter no es un número, previene la entrada
+          if (!isNumber) {
+            event.preventDefault();
+          }
+        });
+      });
+
+      // Selecciona todos los elementos input con la clase .string
+      let inputsString = document.querySelectorAll('input.string');
+
+      // Añade un controlador de eventos a cada input
+      inputsString.forEach(input => {
+        input.addEventListener('keypress', function(event:any) {
+          // Comprueba si el carácter es una letra
+          let isLetter = /^[a-zA-Z]+$/.test(String.fromCharCode(event.which));
+          
+          // Si el carácter no es una letra, previene la entrada
+          if (!isLetter) {
+            event.preventDefault();
+          }
+        });
+      });
+
+
     }
 
     // Inicializar en la primera carga

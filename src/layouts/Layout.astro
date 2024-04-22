@@ -31,6 +31,9 @@ const { title, subTitle = 'Seleccione su consulta', bodyClass = '', isSearchBar 
 				</div>
 			</div>
 		</div>
+		
+		<slot name="toast" />
+	
 		<script>
 			import { initFlowbite } from 'flowbite'
 			import tippy from 'tippy.js';

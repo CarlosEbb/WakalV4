@@ -6,3 +6,5 @@ npm install flowbite
 npm install apexcharts --save
 jsonwebtoken
 npm i tippy.js
+npx astro add node
+npm i moment    

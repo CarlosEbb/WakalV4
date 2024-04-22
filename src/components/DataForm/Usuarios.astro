@@ -13,18 +13,30 @@ interface Props {
 }
 
 const { id = '', method, formData = {}} = Astro.props;
+let textBotton = "Guardar";
+let textMethod = method;
+let isRequired = method == "POST";
+
+if(method == "POST"){
+    textBotton = "Guardar";
+    textMethod = "POST";
+}
+if(method == "PUT"){
+    textBotton = "Actualizar"
+    textMethod = "POST";
+}
 ---
 
-<form id={id} class="mx-full text-center mr-2" method={method}>
+<form id={id} class="mx-full text-center mr-2" method={textMethod}>
     <h2 class="font-semibold text-custom-secundary text-xl mb-5">Datos Personales</h2>
     <div class="grid md:grid-cols-1">
         <div class="px-2">
             <div class="grid md:grid-cols-3 md:gap-6">
                 <div class="relative z-0 w-full m-2 group">
-                    <InputField isrequired={true} id="nombre" name="nombre" value={formData.nombre || ''} type="text" icon="user-circle" placeholder="Nombre" />
+                    <InputField isrequired={true} id="nombre" name="nombre" value={formData.nombre || ''} type="text" icon="user-circle" placeholder="Nombre" addClassInput="string"/>
                 </div>
                 <div class="relative z-0 w-full m-2 group">
-                    <InputField isrequired={true} id="apellido" name="apellido" value={formData.apellido || ''} type="text" icon="user-circle" placeholder="Apellido" />
+                    <InputField isrequired={true} id="apellido" name="apellido" value={formData.apellido || ''} type="text" icon="user-circle" placeholder="Apellido" addClassInput="string"/>
                 </div>
                 <div class="relative z-0 w-full m-2 group">
                     <InputField isrequired={true} id="department" name="department" value={formData.department || ''} type="text" icon="hexagons" placeholder="Departamento" />
@@ -34,20 +46,20 @@ const { id = '', method, formData = {}} = Astro.props;
         <div class="px-2">
             <div class="grid md:grid-cols-2 md:gap-6">
                 <div class="relative z-0 w-full m-2 group">
-                    <InputField isrequired={true} id="email" name="email" value={formData.email || ''} type="text" icon="mail" placeholder="E-mail" />
+                    <InputField isrequired={true} id="email" name="email" value={formData.email || ''} type="email" icon="mail" placeholder="E-mail" />
                 </div>
                 <div class="relative z-0 w-full m-2 group">
-                    <InputField isrequired={true} id="email_alternativo" name="email_alternativo" value={formData.email_alternativo || ''} type="text" icon="mail-ai" placeholder="E-mail alternativo" />
+                    <InputField isrequired={true} id="email_alternativo" name="email_alternativo" value={formData.email_alternativo || ''} type="email" icon="mail-ai" placeholder="E-mail alternativo" />
                 </div>
             </div>
         </div>
         <div class="px-2">
             <div class="grid md:grid-cols-2 md:gap-6">
                 <div class="flex z-0 w-full m-2 group">
-                    <div class="w-32 mr-4">
+                    <div class="w-40 mr-4">
                         <Select
                             id="cod_area"
-                            icon="mood-search"
+                            icon="device-sim"
                             name="cod_area"
                             rounded="rounded-full"
                             addClass=""
@@ -58,19 +70,19 @@ const { id = '', method, formData = {}} = Astro.props;
                                 {value: "0416", label: "0416"},
                                 {value: "0426", label: "0426"},
                             ]}
-                            value={formData.rol_id || ''}
-                            placeholder="Cod"
+                            value={formData.cod_area || ''}
+                            iconSize={35}
                         />
                     </div>
                     <div class="w-full">
-                        <InputField isrequired={true} id="telefono" name="telefono" value={formData.telefono || ''} type="text" icon="device-mobile" placeholder="Teléfono"/>
+                        <InputField isrequired={true} id="telefono" name="telefono" value={formData.telefono || ''} type="text" icon="device-mobile" placeholder="Teléfono" addClassInput="number"/>
                     </div>
                 </div>
                 <div class="flex z-0 w-full m-2 group">
-                    <div class="w-32 mr-4">
+                    <div class="w-40 mr-4">
                         <Select
                             id="prefijo_cedula"
-                            icon="mood-search"
+                            icon="user-scan"
                             name="prefijo_cedula"
                             rounded="rounded-full"
                             addClass=""
@@ -82,10 +94,11 @@ const { id = '', method, formData = {}} = Astro.props;
                                 {value: "G", label: "G"},
                             ]}
                             value={formData.prefijo_cedula || ''}
+                            iconSize={35}
                         />
                     </div>
                     <div class="w-full">
-                        <InputField isrequired={true} id="cedula" name="cedula" value={formData.cedula || ''} type="text" icon="id" placeholder="Cédula" />
+                        <InputField isrequired={true} id="cedula" name="cedula" value={formData.cedula || ''} type="text" icon="id" placeholder="Cédula" addClassInput="number" />
                     </div>
                 </div>
             </div>
@@ -105,6 +118,7 @@ const { id = '', method, formData = {}} = Astro.props;
                         addClass="mt-4 md:mt-1.5"
                         placeholder="Estado"
                     />
+                    <InputField id="estado_temp" value={formData.jurisdiccion_estado || ''} type="text" hidden />
                 </div>
                 <div class="md:mr-2">
                     <Select 
@@ -115,6 +129,7 @@ const { id = '', method, formData = {}} = Astro.props;
                         addClass="mt-4 md:mt-1.5" disabled
                         placeholder="Región"
                     />
+                    <InputField id="region_temp" value={formData.jurisdiccion_region || ''} type="text" hidden />
                 </div>
                 <div class="md:mr-2">
                     <Select
@@ -125,6 +140,7 @@ const { id = '', method, formData = {}} = Astro.props;
                         addClass="mt-4 md:mt-1.5" disabled
                         placeholder="Sector / Unidad"
                     />
+                    <InputField id="sector_temp" value={formData.jurisdiccion_sector || ''} type="text" hidden />
                 </div>
                
             </div>
@@ -150,10 +166,10 @@ const { id = '', method, formData = {}} = Astro.props;
                 </div>
             
                 <div class="relative z-0 w-full group">
-                    <InputField isrequired={true} id="password" name="password" value={formData.password || ''} type="password" icon="lock" placeholder="Contraseña" />
+                    <InputField isrequired={isRequired} id="password" name="password" value={formData.password || ''} type="password" icon="lock" placeholder="Contraseña" />
                 </div>
                 <div class="relative z-0 w-full group">
-                    <InputField isrequired={true} id="newpassword" name="newpassword" value={formData.newpassword || ''} type="password" icon="lock" placeholder="Confirmar contraseña" />
+                    <InputField isrequired={isRequired} id="newPassword" name="newPassword" value={formData.newPassword || ''} type="password" icon="lock" placeholder="Confirmar contraseña" />
                 </div>
             
                 <div class="relative z-0 w-full group">
@@ -170,16 +186,16 @@ const { id = '', method, formData = {}} = Astro.props;
                     <div id="dropdownDefaultCheckbox" class="z-10 hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
                         <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownPermisos">
                             <li>
-                                <Checkbox add_class="mt-2" id="reportes" name="reportes" icon="check" text="Reportes"/>
+                                <Checkbox add_class="mt-2" id="reportes" icon="check" text="Reportes" checked={formData.reportes === 'on' ? true : false} />
                             </li>
                             <li>
-                                <Checkbox add_class="mt-2" id="metricas" name="metricas" icon="check" text="Métricas"/>
+                                <Checkbox add_class="mt-2" id="metricas" icon="check" text="Métricas" checked={formData.metricas === 'on' ? true : false}/>
                             </li>
                             <li>
-                                <Checkbox add_class="mt-2" id="libro_ventas" name="libro_ventas" icon="check" text="Libro de ventas"/>
+                                <Checkbox add_class="mt-2" id="libro_ventas" icon="check" text="Libro de ventas" checked={formData.libro_ventas === 'on' ? true : false}/>
                             </li>
                             <li>
-                                <Checkbox add_class="mt-2" id="Documentos fiscales" name="Documentos fiscales" icon="check" text="Documentos fiscales"/>
+                                <Checkbox add_class="mt-2" id="Documentos fiscales" icon="check" text="Documentos fiscales" checked={formData.documentos_fiscales === 'on' ? true : false}/>
                             </li>
                         </ul>
                     </div>
@@ -190,7 +206,7 @@ const { id = '', method, formData = {}} = Astro.props;
         
     </div>
     <div class="flex justify-center mt-5">
-        <ButtonAction icon="device-floppy" text="Guardar"/>
+        <ButtonAction icon="device-floppy" text={textBotton}/>
     </div>
     
     
