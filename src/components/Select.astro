@@ -6,6 +6,7 @@ interface Props {
     id?: string;
     rounded?: 'rounded-full' | 'rounded-r-full' | 'rounded-l-full';
     addClass?: string;
+    addClassSelect?: string;
     icon?: string;
     addWith?: 'w-full' | 'w-auto';
     multiple?: boolean;
@@ -16,7 +17,7 @@ interface Props {
     iconSize?: number;
 }
 
-const {id, name, rounded = '', addClass = '', icon = '', addWith = "w-full", multiple = false, disabled = false, options = [], value, placeholder, iconSize} = Astro.props;
+const {id, name, rounded = '', addClass = '', icon = '', addWith = "w-full", multiple = false, disabled = false, options = [], value, placeholder, iconSize, addClassSelect} = Astro.props;
 
 ---
 
@@ -25,8 +26,8 @@ const {id, name, rounded = '', addClass = '', icon = '', addWith = "w-full", mul
         <Icon name={icon}  class=" left-0  pointer-events-none ml-3 text-custom-primary" size={iconSize} />
     }
     
-    <select id={id} name={name} class=`${addWith} py-2.5 text-sm text-gray-600 bg-custom-quaternary text-custom-select border-none focus:outline-none focus:ring-0 ${rounded}` multiple={multiple} disabled={disabled}>
-        {placeholder && <option value="" disabled selected>{placeholder}</option>}
+    <select id={id} name={name} class=`${addWith} py-2.5 text-sm text-gray-600 bg-custom-quaternary text-custom-select border-none focus:outline-none focus:ring-0 ${rounded} ${addClassSelect}` multiple={multiple} disabled={disabled}>
+        {placeholder && <option value="" disabled>{placeholder}</option>}
         {options.map(option => 
             <option value={option.value} selected={option.value === value}>{option.label}</option>
         )}

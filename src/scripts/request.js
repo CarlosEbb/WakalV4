@@ -1,9 +1,7 @@
-export async function apiController(baseURL, endpoint, method, requestBody, token = null) {
+export async function apiController(baseURL, endpoint, method, requestBody, token = null, contentType = 'application/json') {
   try {
     const url = `${baseURL}${endpoint}`;
-    let headers = {
-      'Content-Type': 'application/json'
-    };
+    let headers = {};
     if (token) {
       headers['Authorization'] = 'Bearer ' + token;
     }
@@ -13,7 +11,12 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
     };
     
     if (method !== 'GET' && method !== 'HEAD' && requestBody) {
-      options.body = JSON.stringify(requestBody);
+      if (requestBody instanceof FormData || contentType === 'multipart/form-data') {
+        options.body = requestBody;
+      } else {
+        headers['Content-Type'] = contentType;
+        options.body = JSON.stringify(requestBody);
+      }
     }
     
     const response = await fetch(url, options);

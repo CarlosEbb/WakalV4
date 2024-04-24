@@ -4,52 +4,110 @@ import InputField from '../InputField.astro';
 import Select from '../Select.astro';
 import Checkbox from '../Checkbox.astro';
 import ButtonAction from '../ButtonAction.astro';
-
+import { apiController } from '../../scripts/request.js';
+import { Image } from 'astro:assets';
 
 interface Props {
     id?: string;
     method: "POST" | "PUT" | "GET";
     formData?: any;
+    locals?: any;
+    disabled?: boolean;
+    name?: string;
 }
 
-const { id = '', method, formData = {}} = Astro.props;
+const { id = '', method, formData = {}, locals, disabled = false, name} = Astro.props;
+
 let textBotton = "Guardar";
 let textMethod = method;
 let isRequired = method == "POST";
 
+let ocultarValoresSelect =  true;
+let mostrarImgPerfil =  false;
+
+let transactionName = formData.id ? 'imagen-perfil-' + formData.id : undefined;
+
 if(method == "POST"){
     textBotton = "Guardar";
     textMethod = "POST";
+    
 }
 if(method == "PUT"){
     textBotton = "Actualizar"
     textMethod = "POST";
+
 }
+if(method == "GET"){
+    textBotton = "Actualizar"
+    textMethod = "POST";
+    ocultarValoresSelect =  false;
+    mostrarImgPerfil =  true;
+}
+
+let data_roles = [];
+
+if(locals.rol_id == 1){
+  const responseDataRoles = await apiController(import.meta.env.PUBLIC_BASE_URL,'/roles','GET',null, locals.token);
+  if(responseDataRoles.data.errors || responseDataRoles.code !== 200){
+      
+    }else{
+        data_roles = responseDataRoles.data.map(item => ({
+            value: item.id.toString(),
+            label: item.nombre
+        }));
+    }
+}
+
 ---
 
-<form id={id} class="mx-full text-center mr-2" method={textMethod}>
+<div class="absolute right-1/2 -top-12 translate-x-1/2">
+    <label for="img_profile_file" data-tippy-content="Perfil" class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center cursor-pointer">
+    
+        <div transition:name={transactionName} id="imageContainer" class="menu-trigger h-24 w-24 ml-auto rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white select-none text-4xl font-semibold">
+            {mostrarImgPerfil ? (
+                
+                formData && (
+                    formData.img_profile ? (
+                        <Image src={import.meta.env.PUBLIC_BASE_URL + formData.img_profile} alt="Descripción de la imagen" width={100} height={100} class="rounded-full select-none"/>  
+                    ) : (
+                        <div class="menu-trigger h-24 w-24 ml-auto rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white select-none text-4xl font-semibold">
+                            {(formData.nombre.charAt(0) + formData.apellido.charAt(0)).toUpperCase()}
+                        </div>
+                    )
+                )
+            ) : (
+                <Icon id="icon-camera" name="camera-plus"  class="w-10 h-10" />
+            )}
+        </div>
+    </label>
+</div>
+<br><br>
+
+
+<form class="mx-full text-center mr-2" method={textMethod} name={name} enctype="multipart/form-data">
+    <InputField id="img_profile_file" name="img_profile_file" type="file" hidden/>
     <h2 class="font-semibold text-custom-secundary text-xl mb-5">Datos Personales</h2>
     <div class="grid md:grid-cols-1">
         <div class="px-2">
             <div class="grid md:grid-cols-3 md:gap-6">
                 <div class="relative z-0 w-full m-2 group">
-                    <InputField isrequired={true} id="nombre" name="nombre" value={formData.nombre || ''} type="text" icon="user-circle" placeholder="Nombre" addClassInput="string"/>
+                    <InputField disabled={disabled} isrequired={true} id="nombre" name="nombre" value={formData.nombre || ''} type="text" icon="user-circle" placeholder="Nombre" addClassInput="string"/>
                 </div>
                 <div class="relative z-0 w-full m-2 group">
-                    <InputField isrequired={true} id="apellido" name="apellido" value={formData.apellido || ''} type="text" icon="user-circle" placeholder="Apellido" addClassInput="string"/>
+                    <InputField disabled={disabled} isrequired={true} id="apellido" name="apellido" value={formData.apellido || ''} type="text" icon="user-circle" placeholder="Apellido" addClassInput="string"/>
                 </div>
                 <div class="relative z-0 w-full m-2 group">
-                    <InputField isrequired={true} id="department" name="department" value={formData.department || ''} type="text" icon="hexagons" placeholder="Departamento" />
+                    <InputField disabled={disabled} isrequired={true} id="department" name="department" value={formData.department || ''} type="text" icon="hexagons" placeholder="Departamento" />
                 </div>
             </div>
         </div>
         <div class="px-2">
             <div class="grid md:grid-cols-2 md:gap-6">
                 <div class="relative z-0 w-full m-2 group">
-                    <InputField isrequired={true} id="email" name="email" value={formData.email || ''} type="email" icon="mail" placeholder="E-mail" />
+                    <InputField disabled={disabled} isrequired={true} id="email" name="email" value={formData.email || ''} type="email" icon="mail" placeholder="E-mail" />
                 </div>
                 <div class="relative z-0 w-full m-2 group">
-                    <InputField isrequired={true} id="email_alternativo" name="email_alternativo" value={formData.email_alternativo || ''} type="email" icon="mail-ai" placeholder="E-mail alternativo" />
+                    <InputField disabled={disabled} isrequired={true} id="email_alternativo" name="email_alternativo" value={formData.email_alternativo || ''} type="email" icon="mail-ai" placeholder="E-mail alternativo" />
                 </div>
             </div>
         </div>
@@ -72,10 +130,11 @@ if(method == "PUT"){
                             ]}
                             value={formData.cod_area || ''}
                             iconSize={35}
+                            disabled={disabled}
                         />
                     </div>
                     <div class="w-full">
-                        <InputField isrequired={true} id="telefono" name="telefono" value={formData.telefono || ''} type="text" icon="device-mobile" placeholder="Teléfono" addClassInput="number"/>
+                        <InputField disabled={disabled} isrequired={true} id="telefono" name="telefono" value={formData.telefono || ''} type="text" icon="device-mobile" placeholder="Teléfono" addClassInput="number"/>
                     </div>
                 </div>
                 <div class="flex z-0 w-full m-2 group">
@@ -95,10 +154,11 @@ if(method == "PUT"){
                             ]}
                             value={formData.prefijo_cedula || ''}
                             iconSize={35}
+                            disabled={disabled}
                         />
                     </div>
                     <div class="w-full">
-                        <InputField isrequired={true} id="cedula" name="cedula" value={formData.cedula || ''} type="text" icon="id" placeholder="Cédula" addClassInput="number" />
+                        <InputField disabled={disabled} isrequired={true} id="cedula" name="cedula" value={formData.cedula || ''} type="text" icon="id" placeholder="Cédula" addClassInput="number" />
                     </div>
                 </div>
             </div>
@@ -110,37 +170,43 @@ if(method == "PUT"){
             <h2 class="font-semibold text-custom-secundary text-xl mb-5">Jurisdicción</h2>
             <div class="grid md:grid-cols-1 md:gap-3">
                 <div class="md:mr-2">
-                    <Select 
-                        id="estado"
-                        icon="map"
-                        name="jurisdiccion_estado"
-                        rounded="rounded-full"
-                        addClass="mt-4 md:mt-1.5"
-                        placeholder="Estado"
-                    />
-                    <InputField id="estado_temp" value={formData.jurisdiccion_estado || ''} type="text" hidden />
+                    {!disabled &&
+                        <Select 
+                            id="estado"
+                            icon="map"
+                            name="jurisdiccion_estado"
+                            rounded="rounded-full"
+                            addClass="mt-4 md:mt-1.5"
+                            placeholder="Estado"
+                        />
+                    }
+                    <InputField icon="map" disabled={disabled} id="estado_temp" value={formData.jurisdiccion_estado || ''} type="text" hidden={ocultarValoresSelect} />
                 </div>
                 <div class="md:mr-2">
-                    <Select 
-                        id="region"
-                        icon="map-pin-2"
-                        name="jurisdiccion_region"
-                        rounded="rounded-full"
-                        addClass="mt-4 md:mt-1.5" disabled
-                        placeholder="Región"
-                    />
-                    <InputField id="region_temp" value={formData.jurisdiccion_region || ''} type="text" hidden />
+                    {!disabled &&
+                        <Select 
+                            id="region"
+                            icon="map-pin-2"
+                            name="jurisdiccion_region"
+                            rounded="rounded-full"
+                            addClass="mt-4 md:mt-1.5" disabled
+                            placeholder="Región"
+                        />
+                    }
+                    <InputField icon="map-pin-2" disabled={disabled} id="region_temp" value={formData.jurisdiccion_region || ''} type="text" hidden={ocultarValoresSelect} />
                 </div>
                 <div class="md:mr-2">
-                    <Select
-                        id="sector"
-                        icon="map-pin"
-                        name="jurisdiccion_sector"
-                        rounded="rounded-full"
-                        addClass="mt-4 md:mt-1.5" disabled
-                        placeholder="Sector / Unidad"
-                    />
-                    <InputField id="sector_temp" value={formData.jurisdiccion_sector || ''} type="text" hidden />
+                    {!disabled &&
+                        <Select
+                            id="sector"
+                            icon="map-pin"
+                            name="jurisdiccion_sector"
+                            rounded="rounded-full"
+                            addClass="mt-4 md:mt-1.5" disabled
+                            placeholder="Sector / Unidad"
+                        />
+                    }
+                    <InputField icon="map-pin" disabled={disabled} id="sector_temp" value={formData.jurisdiccion_sector || ''} type="text" hidden={ocultarValoresSelect} />
                 </div>
                
             </div>
@@ -150,30 +216,35 @@ if(method == "PUT"){
             <h2 class="font-semibold text-custom-secundary text-xl mb-5">Datos de Usuario</h2>
             <div class="grid md:grid-cols-2 md:gap-5">
                 <div class="relative z-0 w-full group">
-                    <InputField isrequired={true} id="username" name="username" value={formData.username || ''} type="text" icon="user" placeholder="Nombre de Usuario" />
+                    <InputField disabled={disabled} isrequired={true} id="username" name="username" value={formData.username || ''} type="text" icon="user" placeholder="Nombre de Usuario" />
                 </div>
-                <div class="relative z-0 w-full group">
-                    <Select
-                        id="rol_id"
-                        icon="mood-search"
-                        name="rol_id"
-                        rounded="rounded-full"
-                        addClass=""
-                        options={[{value: "1", label: "Opción 2"}, {value: "2", label: "Opción 3"}]}
-                        value={formData.rol_id || ''}
-                        placeholder="Roles"
-                    />
-                </div>
+                {locals.rol_id == 1 &&
+                    <div class="relative z-0 w-full group">
+                        <Select
+                            id="rol_id"
+                            icon="mood-search"
+                            name="rol_id"
+                            rounded="rounded-full"
+                            addClass=""
+                            options={data_roles}
+                            value={formData.rol_id || ''}
+                            placeholder="Roles"
+                            disabled={disabled}
+                        />
+                    </div>
+                }
             
+                {!disabled && 
+                    <div class="relative z-0 w-full group">
+                        <InputField disabled={disabled} isrequired={isRequired} id="password" name="password" value={formData.password || ''} type="password" icon="lock" placeholder="Contraseña" />
+                    </div>
+                
+                    <div class="relative z-0 w-full group">
+                        <InputField disabled={disabled} isrequired={isRequired} id="newPassword" name="newPassword" value={formData.newPassword || ''} type="password" icon="lock" placeholder="Confirmar contraseña" />
+                    </div>
+                }
                 <div class="relative z-0 w-full group">
-                    <InputField isrequired={isRequired} id="password" name="password" value={formData.password || ''} type="password" icon="lock" placeholder="Contraseña" />
-                </div>
-                <div class="relative z-0 w-full group">
-                    <InputField isrequired={isRequired} id="newPassword" name="newPassword" value={formData.newPassword || ''} type="password" icon="lock" placeholder="Confirmar contraseña" />
-                </div>
-            
-                <div class="relative z-0 w-full group">
-                    <InputField isrequired={true} id="cargo" name="cargo" value={formData.cargo || ''} type="text" icon="building-estate" placeholder="Cargo" />
+                    <InputField disabled={disabled} isrequired={true} id="cargo" name="cargo" value={formData.cargo || ''} type="text" icon="building-estate" placeholder="Cargo" />
                 </div>
                 <div class="relative z-0 w-full group">
                     
@@ -205,9 +276,112 @@ if(method == "PUT"){
         </div>
         
     </div>
-    <div class="flex justify-center mt-5">
-        <ButtonAction icon="device-floppy" text={textBotton}/>
-    </div>
+    {!disabled && 
+        <div class="flex justify-center mt-5">
+            <ButtonAction icon="device-floppy" text={textBotton}/>
+        </div>
+    }
     
     
 </form>
+
+<script>
+    const data = {
+      "Estado1": {
+        "region1": ["sector1", "sector2"],
+        "region2": ["sector3", "sector4"]
+      },
+      "Estado2": {
+        "region3": ["sector5", "sector6"],
+        "region4": ["sector7", "sector8"]
+      }
+    };
+  
+    function init() {
+        const estadoSelect:any = document.getElementById('estado');
+        const regionSelect:any = document.getElementById('region');
+        const sectorSelect:any = document.getElementById('sector');
+    
+        for (const estado in data) {
+            const option = document.createElement('option');
+            option.text = estado;
+            option.value = estado;
+            estadoSelect.add(option);
+        }
+    
+        estadoSelect.onchange = function() {
+            regionSelect.innerHTML = '<option value="">Región</option>';
+            sectorSelect.innerHTML = '<option value="">Sector / Unidad</option>';
+            regionSelect.disabled = false; // Habilitar el selector de region
+            const regiones = data[this.value];
+            for (const region in regiones) {
+            const option = document.createElement('option');
+            option.text = region;
+            option.value = region;
+            regionSelect.add(option);
+            }
+        };
+    
+        regionSelect.onchange = function() {
+            sectorSelect.innerHTML = '<option value="">Sector / Unidad</option>';
+            sectorSelect.disabled = false; // Habilitar el selector de sector
+            const sectors = data[estadoSelect.value][this.value];
+            for (const sector of sectors) {
+            const option = document.createElement('option');
+            option.text = sector;
+            option.value = sector;
+            sectorSelect.add(option);
+            }
+        };
+
+        function selectOptions(estadoValue, regionValue, sectorValue) {
+            if(estadoValue && regionValue && sectorValue){
+                const estadoSelect:any = document.getElementById('estado');
+                const regionSelect:any = document.getElementById('region');
+                const sectorSelect:any = document.getElementById('sector');
+    
+                // Seleccionar el valor en el dropdown de estado
+                estadoSelect.value = estadoValue;
+                estadoSelect.dispatchEvent(new Event('change'));
+    
+                // Esperar a que se carguen las opciones de región
+               
+                regionSelect.value = regionValue;
+                regionSelect.dispatchEvent(new Event('change'));
+
+                // Esperar a que se carguen las opciones de sector
+                
+                sectorSelect.value = sectorValue;
+                   
+            }
+        }
+
+        const estadoSelect_temp:any = document.getElementById('estado_temp');
+        const regionSelect_temp:any = document.getElementById('region_temp');
+        const sectorSelect_temp:any = document.getElementById('sector_temp');
+
+        selectOptions(estadoSelect_temp.value, regionSelect_temp.value, sectorSelect_temp.value);
+
+
+        document.getElementById('img_profile_file').addEventListener('change', function(event:any) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var output = document.getElementById('imageContainer');
+                output.style.backgroundImage = 'url(' + reader.result + ')';
+                output.style.backgroundSize = 'cover'; // Ajusta la imagen al tamaño del círculo
+                output.style.backgroundPosition = 'center'; // Centra la imagen
+                document.getElementById('icon-camera').style.visibility = 'hidden'; // Oculta el icono
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        });
+    }
+
+    // Inicializar en la primera carga
+    init();
+
+    // Reinicializar después de cambiar de página
+    document.addEventListener("astro:after-swap", init);
+    
+      
+    
+  </script>

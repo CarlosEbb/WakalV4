@@ -5,6 +5,7 @@ import DataForm from "../../../components/DataForm/Usuarios.astro";
 
 import { apiController } from '../../../scripts/request.js';
 import ToastNotification from "../../../components/ToastNotification.astro";
+import { Icon } from "astro-icon/components";
 
 const locals:any = Astro.locals;
 
@@ -12,10 +13,12 @@ let errors = {all: [] };
 let successMessage = {all: []};
 let data = {};
 
+
 if (Astro.request.method === "POST") {
   try {
    
     const formData = await Astro.request.formData();
+
     const password = formData.get("password");
     const newPassword = formData.get("newPassword");
     for (let [key, value] of formData.entries()) {
@@ -23,14 +26,13 @@ if (Astro.request.method === "POST") {
     }
 
     if(password === newPassword){
+      const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/usuarios','POST',formData, locals.token, 'multipart/form-data;');
       
-      const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/usuarios','POST',data, locals.token);
-      
-      if(responseData.data.errors || responseData.code !== 201){
+      if(responseData.data.errors || responseData.code !== 200){
         errors.all = responseData.data.errors ? responseData.data.errors : [];
       }else{
         successMessage.all = [responseData.message];
-        data = {};
+        //data = {};
       }
 
     }else{
@@ -49,68 +51,8 @@ if (Astro.request.method === "POST") {
 ---
 <Layout title="Dashboard" subTitle="Configuración de Nuevo Usuario" bodyClass="bg-gray-100" isSearchBar={false}>
     <CardContentPage>
-        <DataForm method="POST" formData={data} />
+        <DataForm method="POST" formData={data} locals={locals}/>
     </CardContentPage>
     {errors.all.length > 0 && <ToastNotification slot="toast" type={'error'} textArray={errors.all}/>}
     {successMessage.all.length > 0 && <ToastNotification slot="toast" type={'success'} textArray={successMessage.all}/>}
 </Layout>
-
-<script>
-    const data = {
-      "Estado1": {
-        "region1": ["sector1", "sector2"],
-        "region2": ["sector3", "sector4"]
-      },
-      "Estado2": {
-        "region3": ["sector5", "sector6"],
-        "region4": ["sector7", "sector8"]
-      }
-    };
-  
-    function init() {
-        const estadoSelect:any = document.getElementById('estado');
-        const regionSelect:any = document.getElementById('region');
-        const sectorSelect:any = document.getElementById('sector');
-    
-        for (const estado in data) {
-            const option = document.createElement('option');
-            option.text = estado;
-            option.value = estado;
-            estadoSelect.add(option);
-        }
-    
-        estadoSelect.onchange = function() {
-            regionSelect.innerHTML = '<option value="">Región</option>';
-            sectorSelect.innerHTML = '<option value="">Sector / Unidad</option>';
-            regionSelect.disabled = false; // Habilitar el selector de region
-            const regiones = data[this.value];
-            for (const region in regiones) {
-            const option = document.createElement('option');
-            option.text = region;
-            option.value = region;
-            regionSelect.add(option);
-            }
-        };
-    
-        regionSelect.onchange = function() {
-            sectorSelect.innerHTML = '<option value="">Sector / Unidad</option>';
-            sectorSelect.disabled = false; // Habilitar el selector de sector
-            const sectors = data[estadoSelect.value][this.value];
-            for (const sector of sectors) {
-            const option = document.createElement('option');
-            option.text = sector;
-            option.value = sector;
-            sectorSelect.add(option);
-            }
-        };
-    }
-
-    // Inicializar en la primera carga
-    init();
-
-    // Reinicializar después de cambiar de página
-    document.addEventListener("astro:after-swap", init);
-    
-      
-    
-  </script>

@@ -9,11 +9,22 @@ import { Image } from 'astro:assets';
 import {convertDateTime} from "../../scripts/utils.js";
 import CardContentPage from "../../components/CardContentPage.astro";
 import ButtonAction from "../../components/ButtonAction.astro";
-
+import ToastNotification from "../../components/ToastNotification.astro";
 
 const locals:any = Astro.locals;
+
+let errors = {all: [] };
+let successMessage = {all: []};
+
+
 const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/usuarios','GET',null,locals.token);
-const users = responseData.data;
+const users = Array.isArray(responseData.data) ? responseData.data : [];
+
+if(responseData.data.errors || responseData.code !== 200){
+    errors.all = responseData.data.errors ? responseData.data.errors : [];
+}//else{
+//    successMessage.all = [responseData.message];
+//}
 
 ---
 <Layout title="Dashboard" bodyClass="bg-gray-100">
@@ -32,6 +43,7 @@ const users = responseData.data;
                     "Nº",
                     "Nombre | Apellido | Correo",
                     "Usuario",
+                    "Tipo",
                     "Fecha de Registro",
                     "Cédula",
                     "Departamento",
@@ -44,29 +56,42 @@ const users = responseData.data;
                         {index+1}
                         </td>
                         <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                            {user.img_profile ? (
-                                <a href=`/dashboard/usuarios/show/${user.id}` data-tippy-content="Perfil">
-                                    <Image src={user.img_profile} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
-                                </a>
-                            ) : (
-                                <a href=`/dashboard/usuarios/show/${user.id}` data-tippy-content="Perfil" id={user.id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center">
-                                    <div class="menu-trigger h-11 w-11 ml-auto rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white select-none text-lg font-semibold">
-                                        {(user.nombre.charAt(0) + user.apellido.charAt(0)).toUpperCase()}
-                                    </div>
-                                </a>
-                            )}
+                            <div transition:name=`imagen-perfil-${user.id}`>
+                                {user.img_profile ? (
+                                    <a href=`/dashboard/usuarios/show/${user.id}` data-tippy-content="Perfil">
+                                        <Image src={import.meta.env.PUBLIC_BASE_URL+user.img_profile} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
+                                    </a>
+                                ) : (
+                                    <a href=`/dashboard/usuarios/show/${user.id}` data-tippy-content="Perfil" id={user.id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center">
+                                        <div class="menu-trigger h-11 w-11 ml-auto rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white select-none text-lg font-semibold">
+                                            {(user.nombre.charAt(0) + user.apellido.charAt(0)).toUpperCase()}
+                                        </div>
+                                    </a>
+                                )}
+                            </div>
                             <div class="ps-3">
                                 <div class="text-base font-semibold">{user.nombre} {user.apellido}</div>
                                 <div class="font-normal text-gray-500">{user.email}</div>
                             </div>  
                         </th>
                         <td class="px-6 py-4">
+                            {user.username}
+                        </td>
+                        <td class="px-6 py-4">
                             {user.nombre_rol}
                         </td>
                         <td class="px-6 py-4">
+                            
                             <div class="flex items-center">
-                                <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> {convertDateTime(user.created_at,'DD/MM/YYYY')}
+                                {user.enabled == 1 &&
+                                    <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2" data-tippy-content="Activo"></div>
+                                }
+                                {user.enabled == 0 &&
+                                    <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2" data-tippy-content="Deshabilitado"></div>
+                                }
+                                {convertDateTime(user.created_at,'DD/MM/YYYY')}
                             </div>
+                            
                         </td>
                         <td class="px-6 py-4">
                             {user.prefijo_cedula}{user.cedula}
@@ -88,5 +113,6 @@ const users = responseData.data;
                 ))}
             </DynamicTable>
     </CardContentPage>
-        
+    {errors.all.length > 0 && <ToastNotification slot="toast" type={'error'} textArray={errors.all}/>}
+    {successMessage.all.length > 0 && <ToastNotification slot="toast" type={'success'} textArray={successMessage.all}/>}
 </Layout>

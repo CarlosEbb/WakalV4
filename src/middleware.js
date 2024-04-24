@@ -22,6 +22,7 @@ export function onRequest ({ locals, request, url, cookies}, next) {
                 } else {
                     // Agrega el token a locals
                     locals.token = session.token;
+                    locals.rol_id = session.rol_id;
                     return next();
                 }
             });
