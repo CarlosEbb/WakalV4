@@ -22,6 +22,15 @@ let textBotton = "Guardar";
 let textMethod = method;
 let isRequired = method == "POST";
 
+let isSeniat = true;
+let isCliente = true;
+if(locals.rol_id == 1){
+    isSeniat = !(formData.rol_id == 2);
+    isCliente = !(formData.rol_id == 3);
+}else{
+    isSeniat = !(locals.rol_id == 2);
+}
+
 let ocultarValoresSelect =  true;
 let mostrarImgPerfil =  false;
 
@@ -30,7 +39,6 @@ let transactionName = formData.id ? 'imagen-perfil-' + formData.id : undefined;
 if(method == "POST"){
     textBotton = "Guardar";
     textMethod = "POST";
-    
 }
 if(method == "PUT"){
     textBotton = "Actualizar"
@@ -45,17 +53,28 @@ if(method == "GET"){
 }
 
 let data_roles = [];
+let data_clientes = [];
 
 if(locals.rol_id == 1){
   const responseDataRoles = await apiController(import.meta.env.PUBLIC_BASE_URL,'/roles','GET',null, locals.token);
   if(responseDataRoles.data.errors || responseDataRoles.code !== 200){
       
-    }else{
-        data_roles = responseDataRoles.data.map(item => ({
-            value: item.id.toString(),
-            label: item.nombre
-        }));
-    }
+  }else{
+      data_roles = responseDataRoles.data.map(item => ({
+          value: item.id.toString(),
+          label: item.nombre
+      }));
+  }
+
+  const responseDataClientes = await apiController(import.meta.env.PUBLIC_BASE_URL,'/clientes','GET',null, locals.token);
+  if(responseDataClientes.data.errors || responseDataClientes.code !== 200){
+      
+  }else{
+      data_clientes = responseDataClientes.data.map(item => ({
+          value: item.id.toString(),
+          label: item.nombre_cliente
+      }));
+  }
 }
 
 ---
@@ -166,55 +185,11 @@ if(locals.rol_id == 1){
     </div>
     <hr class="my-6">
     <div class="grid md:grid-cols-2">
-        <div class="px-2 pl-4 md:border-r">
-            <h2 class="font-semibold text-custom-secundary text-xl mb-5">Jurisdicción</h2>
-            <div class="grid md:grid-cols-1 md:gap-3">
-                <div class="md:mr-2">
-                    {!disabled &&
-                        <Select 
-                            id="estado"
-                            icon="map"
-                            name="jurisdiccion_estado"
-                            rounded="rounded-full"
-                            addClass="mt-4 md:mt-1.5"
-                            placeholder="Estado"
-                        />
-                    }
-                    <InputField icon="map" disabled={disabled} id="estado_temp" value={formData.jurisdiccion_estado || ''} type="text" hidden={ocultarValoresSelect} />
-                </div>
-                <div class="md:mr-2">
-                    {!disabled &&
-                        <Select 
-                            id="region"
-                            icon="map-pin-2"
-                            name="jurisdiccion_region"
-                            rounded="rounded-full"
-                            addClass="mt-4 md:mt-1.5" disabled
-                            placeholder="Región"
-                        />
-                    }
-                    <InputField icon="map-pin-2" disabled={disabled} id="region_temp" value={formData.jurisdiccion_region || ''} type="text" hidden={ocultarValoresSelect} />
-                </div>
-                <div class="md:mr-2">
-                    {!disabled &&
-                        <Select
-                            id="sector"
-                            icon="map-pin"
-                            name="jurisdiccion_sector"
-                            rounded="rounded-full"
-                            addClass="mt-4 md:mt-1.5" disabled
-                            placeholder="Sector / Unidad"
-                        />
-                    }
-                    <InputField icon="map-pin" disabled={disabled} id="sector_temp" value={formData.jurisdiccion_sector || ''} type="text" hidden={ocultarValoresSelect} />
-                </div>
-               
-            </div>
-        </div>
-        <hr class="my-6 md:hidden sm:block">
-        <div class="px-2">
+        
+       
+        <div class="px-2 md:border-r">
             <h2 class="font-semibold text-custom-secundary text-xl mb-5">Datos de Usuario</h2>
-            <div class="grid md:grid-cols-2 md:gap-5">
+            <div class="grid md:grid-cols-2 gap-5">
                 <div class="relative z-0 w-full group">
                     <InputField disabled={disabled} isrequired={true} id="username" name="username" value={formData.username || ''} type="text" icon="user" placeholder="Nombre de Usuario" />
                 </div>
@@ -230,6 +205,7 @@ if(locals.rol_id == 1){
                             value={formData.rol_id || ''}
                             placeholder="Roles"
                             disabled={disabled}
+                            addClassSelect='rol_id'
                         />
                     </div>
                 }
@@ -274,7 +250,77 @@ if(locals.rol_id == 1){
                 </div>
             </div>
         </div>
-        
+        {(locals.rol_id == 1 || locals.rol_id == 2) &&
+            <div class="px-2 pl-4 jurisdiccion_card" hidden={isSeniat}>
+                <h2 class="font-semibold text-custom-secundary text-xl mb-5">Jurisdicción</h2>
+                <div class="grid md:grid-cols-1 md:gap-3">
+                    <div class="md:mr-2">
+                        {!disabled &&
+                            <Select 
+                                id="estado"
+                                icon="map"
+                                name="jurisdiccion_estado"
+                                rounded="rounded-full"
+                                addClass="mt-4 md:mt-1.5"
+                                placeholder="Estado"
+                            />
+                        }
+                        <InputField icon="map" disabled={disabled} id="estado_temp" value={formData.jurisdiccion_estado || ''} type="text" hidden={ocultarValoresSelect} />
+                    </div>
+                    <div class="md:mr-2">
+                        {!disabled &&
+                            <Select 
+                                id="region"
+                                icon="map-pin-2"
+                                name="jurisdiccion_region"
+                                rounded="rounded-full"
+                                addClass="mt-4 md:mt-1.5" disabled
+                                placeholder="Región"
+                            />
+                        }
+                        <InputField icon="map-pin-2" disabled={disabled} id="region_temp" value={formData.jurisdiccion_region || ''} type="text" hidden={ocultarValoresSelect} />
+                    </div>
+                    <div class="md:mr-2">
+                        {!disabled &&
+                            <Select
+                                id="sector"
+                                icon="map-pin"
+                                name="jurisdiccion_sector"
+                                rounded="rounded-full"
+                                addClass="mt-4 md:mt-1.5" disabled
+                                placeholder="Sector / Unidad"
+                            />
+                        }
+                        <InputField icon="map-pin" disabled={disabled} id="sector_temp" value={formData.jurisdiccion_sector || ''} type="text" hidden={ocultarValoresSelect} />
+                    </div>
+                
+                </div>
+            </div>
+        }
+
+        {(locals.rol_id == 1) &&
+            <div class="px-2 pl-4 cliente_card" hidden={isCliente}>
+                <h2 class="font-semibold text-custom-secundary text-xl mb-5">Configuración de Cliente</h2>
+                <div class="grid md:grid-cols-1 gap-5">
+                    <div class="relative z-0 w-full group">
+                        <Select
+                            id="cliente_id"
+                            icon="mood-search"
+                            name="cliente_id"
+                            rounded="rounded-full"
+                            addClass=""
+                            options={data_clientes}
+                            disabled={disabled}
+                            addClassSelect='cliente_config'
+                            value={formData.cliente_id || ''}
+                            placeholder="Selecciona el cliente al que está asociado el usuario"
+                        />
+                    </div> 
+                    
+                </div>
+                
+            </div>
+        }
     </div>
     {!disabled && 
         <div class="flex justify-center mt-5">
@@ -374,6 +420,30 @@ if(locals.rol_id == 1){
             };
             reader.readAsDataURL(event.target.files[0]);
         });
+
+
+        // Primero, obtén los elementos del DOM
+        var select:any = document.querySelector('.rol_id');
+        var card:any = document.querySelector('.jurisdiccion_card');
+        var clienteCard:any = document.querySelector('.cliente_card');
+
+        // Luego, agrega un evento de cambio al select
+        select.addEventListener('change', function() {
+        // Si el valor del select es 2, añade el atributo hidden a la tarjeta
+            if (select.value == '2') {
+                card.removeAttribute('hidden');
+            } else {
+                card.setAttribute('hidden', '');
+            }
+
+            if (select.value == '3') {
+                clienteCard.removeAttribute('hidden');
+            } else {
+                clienteCard.setAttribute('hidden', '');
+            }
+        });
+
+
     }
 
     // Inicializar en la primera carga

@@ -27,9 +27,9 @@ const {id, name, rounded = '', addClass = '', icon = '', addWith = "w-full", mul
     }
     
     <select id={id} name={name} class=`${addWith} py-2.5 text-sm text-gray-600 bg-custom-quaternary text-custom-select border-none focus:outline-none focus:ring-0 ${rounded} ${addClassSelect}` multiple={multiple} disabled={disabled}>
-        {placeholder && <option value="" disabled>{placeholder}</option>}
+        {placeholder && <option value="" disabled selected>{placeholder}</option>}
         {options.map(option => 
-            <option value={option.value} selected={option.value === value}>{option.label}</option>
+            <option value={option.value} selected={option.value == value}>{option.label}</option>
         )}
     </select>
 </div>

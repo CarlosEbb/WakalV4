@@ -1,7 +1,7 @@
 ---
 import CardContentPage from "../../../../components/CardContentPage.astro";
 import Layout from "../../../../layouts/Layout.astro";
-import DataForm from "../../../../components/DataForm/Usuarios.astro";
+import DataForm from "../../../../components/DataForm/Clientes.astro";
 
 import { apiController } from '../../../../scripts/request.js';
 import ToastNotification from "../../../../components/ToastNotification.astro";
@@ -13,9 +13,7 @@ let errors = {all: [] };
 let successMessage = {all: []};
 let data = {};
 
-const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/usuarios/'+Astro.params.id,'GET',null, locals.token);
-
-const user = responseData.data;
+const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/clientes/'+Astro.params.id,'GET',null, locals.token);
 data = responseData.data;
 if(responseData.data.errors || responseData.code !== 200){
     errors.all = responseData.data.errors ? responseData.data.errors : [];

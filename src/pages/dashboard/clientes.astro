@@ -1,0 +1,121 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+import { Icon } from "astro-icon/components";
+
+import DynamicTable from "../../components/DynamicTable.astro";
+import { apiController } from '../../scripts/request.js';
+import { Image } from 'astro:assets';
+import {convertDateTime} from "../../scripts/utils.js";
+import CardContentPage from "../../components/CardContentPage.astro";
+import ButtonAction from "../../components/ButtonAction.astro";
+import ToastNotification from "../../components/ToastNotification.astro";
+
+const locals:any = Astro.locals;
+
+let errors = {all: [] };
+let successMessage = {all: []};
+
+
+const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/clientes','GET',null,locals.token);
+
+const clientes = Array.isArray(responseData.data) ? responseData.data : [];
+
+if(responseData.data.errors || responseData.code !== 200){
+    errors.all = responseData.data.errors ? responseData.data.errors : [];
+}//else{
+//    successMessage.all = [responseData.message];
+//}
+
+---
+<Layout title="Dashboard" bodyClass="bg-gray-100">
+    
+    <CardContentPage>
+            <div class="flex items-center">
+                <div class="w-48"></div>
+                <h2 class="font-semibold text-custom-secundary text-xl text-center flex-grow">Panel de Clientes</h2>
+                
+                <ButtonAction icon="plus" text="Agregar Usuario" redirect="/dashboard/clientes/create"/>
+            </div>
+                
+                
+            <DynamicTable 
+                columnas={[
+                    "Nº",
+                    "Razón Social",
+                    "RIF",
+                    "Fecha de Registro",
+                    "Acciones",
+                ]}>
+                {clientes.map((cliente, index) => (
+                    
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <td class="w-4 p-4">
+                        {index+1}
+                        </td>
+                        <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                            <div transition:name=`imagen-perfil-${cliente.id}`>
+                                {cliente.logo ? (
+                                    <a href=`/dashboard/clientes/show/${cliente.id}` data-tippy-content="Perfil">
+                                        <Image src={import.meta.env.PUBLIC_BASE_URL+cliente.logo} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
+                                    </a>
+                                ) : (
+                                    <a href=`/dashboard/clientes/show/${cliente.id}` data-tippy-content="Perfil" id={cliente.id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center">
+                                        <div class="menu-trigger h-11 w-11 ml-auto rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white select-none text-lg font-semibold">
+                                            {cliente.nombre_cliente.charAt(0)}
+                                        </div>
+                                    </a>
+                                )}
+                            </div>
+                            <div class="ps-3">
+                                <div class="text-base font-semibold">{cliente.nombre_cliente}</div>
+                            </div>  
+                        </th>
+                        <td>
+                        {cliente.rif}
+                        </td>
+                        <!-- 
+                        <td class="px-6 py-4">
+                            
+                            <div class="flex items-center">
+                                {cliente.isConnected == true &&
+                                    <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2" data-tippy-content="Activo"></div> <span>Conectado</spanspan>
+                                }
+                                {cliente.isConnected == false &&
+                                    <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2" data-tippy-content="Deshabilitado"></div><span>Desconectado</span>
+                                }
+                                
+                            </div>
+                            
+                        </td>
+                        -->
+                        <td class="px-6 py-4">
+                            
+                            <div class="flex items-center">
+                                {cliente.enabled == 1 &&
+                                    <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2" data-tippy-content="Activo"></div>
+                                }
+                                {cliente.enabled == 0 &&
+                                    <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2" data-tippy-content="Deshabilitado"></div>
+                                }
+                                {convertDateTime(cliente.created_at,'DD/MM/YYYY')}
+                            </div>
+                            
+                        </td>
+                        
+                        <td class="px-6 py-4 justify-center items-center">
+                            <div class="flex">
+                                <!-- Agrega el atributo data-tippy-content con el texto del tooltip -->
+                                <a href=`/dashboard/clientes/update/${cliente.id}` class="text-blue-600 dark:text-blue-500 hover:underline" data-tippy-content="Editar"><Icon name="edit" size="25px" /></a>
+                                <!-- Agrega el atributo data-tippy-content con el texto del tooltip -->
+                                <a href=`/dashboard/clientes/show/${cliente.id}` class="text-blue-600 dark:text-blue-500 hover:underline ml-1" data-tippy-content="Ver Perfil"><Icon name="eye" size="25px" /></a>
+                            </div>
+                        </td>
+
+                    </tr>
+                ))}
+            </DynamicTable>
+    </CardContentPage>
+    {errors.all.length > 0 && <ToastNotification slot="toast" type={'error'} textArray={errors.all}/>}
+    {successMessage.all.length > 0 && <ToastNotification slot="toast" type={'success'} textArray={successMessage.all}/>}
+</Layout>

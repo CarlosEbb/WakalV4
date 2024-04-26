@@ -1,0 +1,123 @@
+---
+import { Icon } from 'astro-icon/components';
+import InputField from '../InputField.astro';
+import Select from '../Select.astro';
+import Checkbox from '../Checkbox.astro';
+import ButtonAction from '../ButtonAction.astro';
+import { apiController } from '../../scripts/request.js';
+import { Image } from 'astro:assets';
+
+interface Props {
+    id?: string;
+    method: "POST" | "PUT" | "GET";
+    formData?: any;
+    locals?: any;
+    disabled?: boolean;
+    name?: string;
+}
+
+const { id = '', method, formData = {}, locals, disabled = false, name} = Astro.props;
+
+let textBotton = "Guardar";
+let textMethod = method;
+let isRequired = method == "POST";
+
+let mostrarImgPerfil =  false;
+
+let transactionName = formData.id ? 'imagen-perfil-' + formData.id : undefined;
+
+if(method == "POST"){
+    textBotton = "Guardar";
+    textMethod = "POST";
+}
+if(method == "PUT"){
+    textBotton = "Actualizar"
+    textMethod = "POST";
+
+}
+if(method == "GET"){
+    textBotton = "Actualizar"
+    textMethod = "POST";
+    mostrarImgPerfil =  true;
+}
+
+---
+
+<div class="absolute right-1/2 -top-12 translate-x-1/2">
+    <label for="logo" data-tippy-content="Perfil" class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center cursor-pointer">
+    
+        <div transition:name={transactionName} id="imageContainer" class="menu-trigger h-24 w-24 ml-auto rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white select-none text-4xl font-semibold">
+            {mostrarImgPerfil ? (
+                
+                formData && (
+                    formData.logo ? (
+                        <Image src={import.meta.env.PUBLIC_BASE_URL + formData.logo} alt="Descripción de la imagen" width={100} height={100} class="rounded-full select-none"/>  
+                    ) : (
+                        <div class="menu-trigger h-24 w-24 ml-auto rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white select-none text-4xl font-semibold">
+                            {(formData.nombre_cliente.charAt(0)).toUpperCase()}
+                        </div>
+                    )
+                )
+            ) : (
+                <Icon id="icon-camera" name="camera-plus"  class="w-10 h-10" />
+            )}
+        </div>
+    </label>
+</div>
+<br><br>
+
+
+<form class="mx-full text-center mr-2" method={textMethod} name={name} enctype="multipart/form-data">
+    <InputField id="logo" name="logo" type="file" hidden/>
+    <h2 class="font-semibold text-custom-secundary text-xl mb-5">Datos Personales</h2>
+    <div class="grid md:grid-cols-1">
+        <div class="px-2">
+            <div class="grid md:grid-cols-3 md:gap-6">
+                <div class="relative z-0 w-full m-2 group">
+                    <InputField disabled={disabled} isrequired={true} id="nombre_cliente" name="nombre_cliente" value={formData.nombre_cliente || ''} type="text" icon="user-circle" placeholder="Razón Social" addClassInput=""/>
+                </div>
+                <div class="relative z-0 w-full m-2 group">
+                    <InputField disabled={disabled} isrequired={true} id="rif" name="rif" value={formData.rif || ''} type="text" icon="id" placeholder="RIF" addClassInput=""/>
+                </div>
+                <div class="relative z-0 w-full m-2 group">
+                    <InputField disabled={disabled} isrequired={true} id="connections" name="connections" value={formData.connections || ''} type="text" icon="database" placeholder="String de Conexión ODBC" />
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    {!disabled && 
+        <div class="flex justify-center mt-5">
+            <ButtonAction icon="device-floppy" text={textBotton}/>
+        </div>
+    }
+    
+    
+</form>
+
+<script>
+
+    function init() {
+        document.getElementById('logo').addEventListener('change', function(event:any) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var output = document.getElementById('imageContainer');
+                output.style.backgroundImage = 'url(' + reader.result + ')';
+                output.style.backgroundSize = 'cover'; // Ajusta la imagen al tamaño del círculo
+                output.style.backgroundPosition = 'center'; // Centra la imagen
+                document.getElementById('icon-camera').style.visibility = 'hidden'; // Oculta el icono
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        });
+
+    }
+
+    // Inicializar en la primera carga
+    init();
+
+    // Reinicializar después de cambiar de página
+    document.addEventListener("astro:after-swap", init);
+    
+      
+    
+  </script>

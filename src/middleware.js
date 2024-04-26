@@ -23,6 +23,9 @@ export function onRequest ({ locals, request, url, cookies}, next) {
                     // Agrega el token a locals
                     locals.token = session.token;
                     locals.rol_id = session.rol_id;
+                    locals.cliente_id = session.cliente_id;
+                    locals.logo = session.logo;
+
                     return next();
                 }
             });

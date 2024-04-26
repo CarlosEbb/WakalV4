@@ -1,16 +1,27 @@
 ---
 import { Image } from 'astro:assets';
 import { Icon } from 'astro-icon/components'
+import logoWakal from '../images/login/logoWakal.webp';
 
 interface Props {
-    cliente?: String;
+    locals?: any;
 }
 
-import logoCliente from '../images/clientes/soluciones_laser/logo.webp';
-import logoWakal from '../images/login/logoWakal.webp';
 const ispage = Astro.url.pathname;
 
-const { cliente = null, } = Astro.props;
+const { locals = null} = Astro.props;
+
+let cliente_logo = locals.logo;
+
+if(locals.rol_id == 1){
+  cliente_logo = "/uploads/logo_seniat.png";
+}
+if(locals.rol_id == 2){
+  cliente_logo = "/uploads/logo_seniat.png";
+}
+if(locals.rol_id == 4){
+  cliente_logo = "/uploads/logo_seniat.png";
+}
 
 ---
 
@@ -21,10 +32,17 @@ const { cliente = null, } = Astro.props;
         <div class="overflow-y-auto overflow-x-hidden flex flex-col justify-between flex-grow h-full">
          <ul class="flex flex-col py-4 space-y-1">
             <li class="mt-6 mb-8">
-              <div class="relative flex flex-row items-center h-11 focus:outline-none text-white-600 hover:text-white-800 border-l-4 border-transparent pr-6">
-                <div class="flex items-center justify-center p-5">
-                    <Image src={logoCliente} alt="Imagen" loading="eager" class="w-full h-22 object-cover  select-none" />
-                </div>
+              <div class="relative flex flex-row items-center h-11 focus:outline-none text-custom-secundary hover:text-white-800 border-l-4 border-transparent pr-6">
+                {cliente_logo == null &&
+                  <div class="flex items-center justify-center p-5 ml-16">
+                      <Icon name="photo-cancel"  class="w-16 h-16" />
+                  </div>
+                }
+                {!(cliente_logo == null) &&
+                  <div class="flex items-center justify-center p-5">
+                      <Image src={import.meta.env.PUBLIC_BASE_URL+cliente_logo} width="500" height="600" alt="Imagen" loading="eager" class="w-full h-22 object-cover  select-none" />
+                  </div>
+                }
               </div>
             </li>
             <li>
@@ -41,6 +59,14 @@ const { cliente = null, } = Astro.props;
                   <Icon name="user"  class="w-5 h-5" />
                 </span>
                 <span class="ml-2 text-sm tracking-wide truncate">Usuarios</span>
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard/clientes" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage.includes('/dashboard/clientes') ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+                <span class="inline-flex justify-center items-center ml-4">
+                  <Icon name="user"  class="w-5 h-5" />
+                </span>
+                <span class="ml-2 text-sm tracking-wide truncate">Clientes</span>
               </a>
             </li>
             <li>

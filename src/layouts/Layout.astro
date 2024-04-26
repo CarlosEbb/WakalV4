@@ -11,6 +11,7 @@ interface Props {
 	bodyClass?: string;
 	isSearchBar?: boolean;
 }
+const locals:any = Astro.locals;
 
 const { title, subTitle = 'Seleccione su consulta', bodyClass = '', isSearchBar = true} = Astro.props;
 ---
@@ -21,7 +22,7 @@ const { title, subTitle = 'Seleccione su consulta', bodyClass = '', isSearchBar 
 	<body class={bodyClass}>
 		<div class="flex">
 			<div>
-				<Sidebar cliente="soluciones_laser" />
+				<Sidebar locals={locals} />
 			</div>
 			<div class="flex-grow">
 				<div  class="h-full bg-custom-quaternary transition-all duration-300">
