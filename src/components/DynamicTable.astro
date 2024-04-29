@@ -8,11 +8,11 @@ const {columnas, content = []} = Astro.props;
 
 ---
 
-<table class="w-full text-sm text-left rtl:text-right text-gray-500 miTabla">
+<table class="w-full text-sm text-center rtl:text-right text-gray-500 miTabla">
     <thead class="text-xs text-gray-700 uppercase border-b-2 border-gray-200">
         <tr>
             {columnas.map((columna, index) => (
-                <th scope="col" class="px-6 py-3" data-columna={columna}>
+                <th scope="col" class="py-3" data-columna={columna}>
                     {columna}
                     <!-- 
                     <button class="toggle-visibilidad">
@@ -27,7 +27,7 @@ const {columnas, content = []} = Astro.props;
         {content.map((fila, i) => (
             <tr>
                 {fila.map((celda, j) => (
-                    <td class="px-6 py-3" data-columna={columnas[j]}>
+                    <td class="py-3" data-columna={columnas[j]}>
                         {celda}
                     </td>
                 ))}

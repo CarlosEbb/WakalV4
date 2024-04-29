@@ -55,7 +55,7 @@ if(responseData.data.errors || responseData.code !== 200){
                         <td class="w-4 p-4">
                         {index+1}
                         </td>
-                        <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                        <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white text-left">
                             <div transition:name=`imagen-perfil-${user.id}`>
                                 {user.img_profile ? (
                                     <a href=`/dashboard/usuarios/show/${user.id}` data-tippy-content="Perfil">

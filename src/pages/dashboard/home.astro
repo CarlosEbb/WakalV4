@@ -21,30 +21,34 @@ import { Image } from "astro:assets";
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pl-6 pr-6 -mt-16">
       <!-- Card 1 -->
       <CardInfoDashboard
-        value="15K"
-        text="Totales Generales"
+        addClassValue="card_1"
+        value="0"
+        text="Cant. Total de Doc Emitidos."
         icon="chart-area-line"
         color="bg-gradient-to-r from-custom-senary to-custom-tertiary"
       />
 
       <CardInfoDashboard
-        value="102.5K"
-        text="Facturas"
+        addClassValue="card_2"
+        value="0"
+        text="Cant. Nº Control Mes Anterior."
         icon="chart-bar"
         color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
       />
 
       <CardInfoDashboard
-        value="4.5K"
-        text="Notas de Débito"
+        addClassValue="card_3"
+        value="0"
+        text="Cant. Nº Control Mes Actual."
         icon="timeline"
         color="bg-gradient-to-r from-custom-denary to-custom-undenary"
       />
 
       <CardInfoDashboard
-        value="256.5K"
-        text="Notas de Crédito"
-        icon="book"
+        addClassValue="card_4"
+        value="0"
+        text="Correos Enviados."
+        icon="mail-forward"
         color="bg-gradient-to-r from-custom-denary to-custom-undenary"
       />
     </div>
@@ -64,6 +68,31 @@ import { Image } from "astro:assets";
         </div>
       </div>
     </div>
-
-
 </Layout>
+
+<script>
+  import { apiController } from '../../scripts/request.js';
+
+  function incrementoNumerico(valorInicial, valorFinal, duracion,clase) {
+    var tiempoTranscurrido = 0;
+    var incremento = valorFinal / (duracion / 100);
+    var elemento = document.querySelector(clase);
+
+    var intervalo = setInterval(function() {
+        tiempoTranscurrido += 100;
+        valorInicial += incremento;
+        elemento.textContent = Math.floor(valorInicial).toLocaleString('de-DE');
+
+        if (tiempoTranscurrido >= duracion) {
+            clearInterval(intervalo);
+            elemento.textContent = valorFinal.toLocaleString('de-DE');
+        }
+    }, 100);
+}
+
+incrementoNumerico(10000,1127000, 2000, '.card_1'); // 5000 milisegundos = 5 segundos
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sX2lkIjoxLCJpYXQiOjE3MTQ0MTg4NTQsImV4cCI6MTcxNDUwNTI1NH0.OlHaNl1Ls1vcE-HIzmhN_Y65hBTue_jPkFd5509i8nY";
+const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/consultasCliente/1/getTotalEmitidos','GET',null,token);
+localStorage.setItem('total_card_1', responseData.data.total);
+
+</script>
