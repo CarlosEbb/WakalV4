@@ -8,13 +8,10 @@ import ChartLineArea from "../../components/ChartLineArea.astro";
 
 import CardInfoDashboard from "../../components/CardInfoDashboard.astro";
 
-const cliente_id = Astro.url.searchParams.get('c');
 const locals:any = Astro.locals;
 
 if(locals.rol_id != 1 && locals.rol_id != 2){
-  if(cliente_id != locals.cliente_id){
     return Astro.redirect("/");
-  }
 }
 
 ---
@@ -24,7 +21,7 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pl-6 pr-6 -mt-16">
       <!-- Card 1 -->
       <CardInfoDashboard
-        addClassValue={"card_1_"+cliente_id}
+        addClassValue={"card_1_"}
         value="0"
         text="Cant. Total de Doc Emitidos."
         icon="chart-area-line"
@@ -32,7 +29,7 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
       />
 
       <CardInfoDashboard
-        addClassValue={"card_2_"+cliente_id}
+        addClassValue={"card_2_"}
         value="0"
         text="Cant. Nº Control Mes Anterior."
         icon="chart-bar"
@@ -40,7 +37,7 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
       />
 
       <CardInfoDashboard
-        addClassValue={"card_3_"+cliente_id}
+        addClassValue={"card_3_"}
         value="0"
         text="Cant. Nº Control Mes Actual."
         icon="timeline"
@@ -48,7 +45,7 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
       />
 
       <CardInfoDashboard
-        addClassValue={"card_4_"+cliente_id}
+        addClassValue={"card_4_"}
         value="0"
         text="Correos Enviados."
         icon="mail-forward"
@@ -59,93 +56,20 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
     <div class="grid md:grid-cols-2 gap-4 p-6 mt-2">
       <div>
         <div class="bg-white p-4 mb-4 rounded-xl m-1">
-          <ChartLine />
+         
         </div>
         <div class="bg-white p-4 rounded-xl m-1 mt-5">
-          <ChartLineArea />
+         
         </div>
       </div>
       <div class="m-1">
         <div class="bg-white p-4 h-full rounded-xl">
-          <ChartAngleCircle />
+          
         </div>
       </div>
     </div>
 </Layout>
 
 <script>
-  import {incrementoNumerico, actualizarDatos, obtenerCookie, getQueryParam} from "../../scripts/utils.js";  
-
-  function init() {
-      let cliente_id = getQueryParam('c');
-      var cookies = obtenerCookie('others');
-      var objeto = JSON.parse(cookies);
-
-      let fechaActual = new Date(); // Obtiene la fecha actual
-      let mesActual = fechaActual.getMonth() + 1; // Obtiene el mes actual
-      let yearActual = fechaActual.getFullYear(); // Obtiene el year actual
-
-      fechaActual.setMonth(fechaActual.getMonth() - 1); // Resta 1 al mes actual
-      let mesAnterior = fechaActual.getMonth() + 1; // Obtiene el mes anterior
-      let yearAnterior = fechaActual.getFullYear(); // Obtiene el year del mes anterior
-
-      if(cliente_id != "undefined"){
-          var clase_card_1 = `card_1_${cliente_id}`;
-          var storageName_card_1 = `total_${clase_card_1}`;
-          var url_card_1 = `/consultasCliente/${cliente_id}/getTotalEmitidos`;
-          const cache_total_card_1:string = localStorage.getItem(storageName_card_1);
-
-          if (cache_total_card_1) {
-            incrementoNumerico(0, parseInt(cache_total_card_1), clase_card_1);
-          }else{
-            localStorage.setItem(storageName_card_1, "0");
-            actualizarDatos(objeto.token, url_card_1, clase_card_1);
-          }
-          // Llama a la función cada 10s
-          setInterval(function() {
-            actualizarDatos(objeto.token, url_card_1, clase_card_1);
-          }, 10000);
-          
-          //card 2
-          var clase_card_2 = `card_2_${cliente_id}`;
-          var storageName_card_2 = `total_${clase_card_2}`;
-          var url_card_2 = `/consultasCliente/${cliente_id}/getTotalMes/${yearAnterior}/${mesAnterior}`;
-          const cache_total_card_2:string = localStorage.getItem(storageName_card_2);
-
-          if (cache_total_card_2) {
-            incrementoNumerico(0, parseInt(cache_total_card_2), clase_card_2);
-          }else{
-            localStorage.setItem(storageName_card_2, "0");
-            actualizarDatos(objeto.token, url_card_2, clase_card_2);
-          }
-          // Llama a la función cada 10s
-          setInterval(function() {
-            actualizarDatos(objeto.token, url_card_2, clase_card_2);
-          }, 10000);
-
-          //card 3
-          var clase_card_3 = `card_3_${cliente_id}`;
-          var storageName_card_3 = `total_${clase_card_3}`;
-          var url_card_3 = `/consultasCliente/${cliente_id}/getTotalMes/${yearActual}/${mesActual}`;
-          const cache_total_card_3:string = localStorage.getItem(storageName_card_3);
-
-          if (cache_total_card_3) {
-            incrementoNumerico(0, parseInt(cache_total_card_3), clase_card_3);
-          }else{
-            localStorage.setItem(storageName_card_3, "0");
-            actualizarDatos(objeto.token, url_card_3, clase_card_3);
-          }
-          // Llama a la función cada 10s
-          setInterval(function() {
-            actualizarDatos(objeto.token, url_card_3, clase_card_3);
-          }, 10000);
-      }
-  }
-
-  // Inicializar en la primera carga
-  init();
-
-  // Reinicializar después de cambiar de página
-  document.addEventListener("astro:after-swap", init);
 
 </script>
