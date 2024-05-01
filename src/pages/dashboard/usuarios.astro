@@ -101,10 +101,8 @@ if(responseData.data.errors || responseData.code !== 200){
                         </td>
                         <td class="px-6 py-4 justify-center items-center">
                             <div class="flex">
-                                <!-- Agrega el atributo data-tippy-content con el texto del tooltip -->
-                                <a href=`/dashboard/usuarios/update/${user.id}` class="text-blue-600 dark:text-blue-500 hover:underline" data-tippy-content="Editar"><Icon name="edit" size="25px" /></a>
-                                <!-- Agrega el atributo data-tippy-content con el texto del tooltip -->
-                                <a href=`/dashboard/usuarios/show/${user.id}` class="text-blue-600 dark:text-blue-500 hover:underline ml-1" data-tippy-content="Ver Perfil"><Icon name="eye" size="25px" /></a>
+                                <a href={'/dashboard/usuarios/update/'+user.id} class="text-blue-600 dark:text-blue-500 hover:underline" data-tippy-content="Editar"><Icon name="edit" size={25} /></a>
+                                <a href={'/dashboard/usuarios/show/'+user.id} class="text-blue-600 dark:text-blue-500 hover:underline ml-1" data-tippy-content="Ver Perfil"><Icon name="eye" size={25} /></a>
                             </div>
                         </td>
 
