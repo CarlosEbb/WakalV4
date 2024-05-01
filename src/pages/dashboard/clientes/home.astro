@@ -93,7 +93,7 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
           var clase_card_1 = `card_1_${cliente_id}`;
           var storageName_card_1 = `total_${clase_card_1}`;
           var url_card_1 = `/consultasCliente/${cliente_id}/getTotalEmitidos`;
-          const cache_total_card_1:string = localStorage.getItem(storageName_card_1);
+          const cache_total_card_1 = localStorage.getItem(storageName_card_1);
 
           if (cache_total_card_1) {
             incrementoNumerico(0, parseInt(cache_total_card_1), clase_card_1);
@@ -110,7 +110,7 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
           var clase_card_2 = `card_2_${cliente_id}`;
           var storageName_card_2 = `total_${clase_card_2}`;
           var url_card_2 = `/consultasCliente/${cliente_id}/getTotalMes/${yearAnterior}/${mesAnterior}`;
-          const cache_total_card_2:string = localStorage.getItem(storageName_card_2);
+          const cache_total_card_2 = localStorage.getItem(storageName_card_2);
 
           if (cache_total_card_2) {
             incrementoNumerico(0, parseInt(cache_total_card_2), clase_card_2);
@@ -127,7 +127,7 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
           var clase_card_3 = `card_3_${cliente_id}`;
           var storageName_card_3 = `total_${clase_card_3}`;
           var url_card_3 = `/consultasCliente/${cliente_id}/getTotalMes/${yearActual}/${mesActual}`;
-          const cache_total_card_3:string = localStorage.getItem(storageName_card_3);
+          const cache_total_card_3 = localStorage.getItem(storageName_card_3);
 
           if (cache_total_card_3) {
             incrementoNumerico(0, parseInt(cache_total_card_3), clase_card_3);
