@@ -1,19 +1,22 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 
-import { Icon } from "astro-icon/components";
-
-import Checkbox from "../../components/Checkbox.astro";
-import Sidebar from "../../components/Sidebar.astro";
-
 import ChartLine from "../../components/ChartLine.astro";
 import ChartAngleCircle from "../../components/ChartAngleCircle.astro";
 import ChartLineArea from "../../components/ChartLineArea.astro";
-import Dropdown from "../../components/Dropdown.astro";
+
 
 import CardInfoDashboard from "../../components/CardInfoDashboard.astro";
 
-import { Image } from "astro:assets";
+const cliente_id = Astro.url.searchParams.get('c');
+const locals:any = Astro.locals;
+
+if(locals.rol_id != 1 && locals.rol_id != 2){
+  if(cliente_id != locals.cliente_id){
+    return Astro.redirect("/");
+  }
+}
+
 ---
 
 <Layout title="Dashboard" bodyClass="bg-gray-100">
@@ -21,7 +24,7 @@ import { Image } from "astro:assets";
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pl-6 pr-6 -mt-16">
       <!-- Card 1 -->
       <CardInfoDashboard
-        addClassValue="card_1"
+        addClassValue={"card_1_"+cliente_id}
         value="0"
         text="Cant. Total de Doc Emitidos."
         icon="chart-area-line"
@@ -29,7 +32,7 @@ import { Image } from "astro:assets";
       />
 
       <CardInfoDashboard
-        addClassValue="card_2"
+        addClassValue={"card_2_"+cliente_id}
         value="0"
         text="Cant. Nº Control Mes Anterior."
         icon="chart-bar"
@@ -37,7 +40,7 @@ import { Image } from "astro:assets";
       />
 
       <CardInfoDashboard
-        addClassValue="card_3"
+        addClassValue={"card_3_"+cliente_id}
         value="0"
         text="Cant. Nº Control Mes Actual."
         icon="timeline"
@@ -45,7 +48,7 @@ import { Image } from "astro:assets";
       />
 
       <CardInfoDashboard
-        addClassValue="card_4"
+        addClassValue={"card_4_"+cliente_id}
         value="0"
         text="Correos Enviados."
         icon="mail-forward"
@@ -71,28 +74,78 @@ import { Image } from "astro:assets";
 </Layout>
 
 <script>
-  import { apiController } from '../../scripts/request.js';
+  import {incrementoNumerico, actualizarDatos, obtenerCookie, getQueryParam} from "../../scripts/utils.js";  
 
-  function incrementoNumerico(valorInicial, valorFinal, duracion,clase) {
-    var tiempoTranscurrido = 0;
-    var incremento = valorFinal / (duracion / 100);
-    var elemento = document.querySelector(clase);
+  function init() {
+      let cliente_id = getQueryParam('c');
+      var cookies = obtenerCookie('others');
+      var objeto = JSON.parse(cookies);
 
-    var intervalo = setInterval(function() {
-        tiempoTranscurrido += 100;
-        valorInicial += incremento;
-        elemento.textContent = Math.floor(valorInicial).toLocaleString('de-DE');
+      let fechaActual = new Date(); // Obtiene la fecha actual
+      let mesActual = fechaActual.getMonth() + 1; // Obtiene el mes actual
+      let yearActual = fechaActual.getFullYear(); // Obtiene el year actual
 
-        if (tiempoTranscurrido >= duracion) {
-            clearInterval(intervalo);
-            elemento.textContent = valorFinal.toLocaleString('de-DE');
-        }
-    }, 100);
-}
+      fechaActual.setMonth(fechaActual.getMonth() - 1); // Resta 1 al mes actual
+      let mesAnterior = fechaActual.getMonth() + 1; // Obtiene el mes anterior
+      let yearAnterior = fechaActual.getFullYear(); // Obtiene el year del mes anterior
 
-incrementoNumerico(10000,1127000, 2000, '.card_1'); // 5000 milisegundos = 5 segundos
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sX2lkIjoxLCJpYXQiOjE3MTQ0MTg4NTQsImV4cCI6MTcxNDUwNTI1NH0.OlHaNl1Ls1vcE-HIzmhN_Y65hBTue_jPkFd5509i8nY";
-const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/consultasCliente/1/getTotalEmitidos','GET',null,token);
-localStorage.setItem('total_card_1', responseData.data.total);
+      if(cliente_id != "undefined"){
+          var clase_card_1 = `card_1_${cliente_id}`;
+          var storageName_card_1 = `total_${clase_card_1}`;
+          var url_card_1 = `/consultasCliente/${cliente_id}/getTotalEmitidos`;
+          const cache_total_card_1:string = localStorage.getItem(storageName_card_1);
+
+          if (cache_total_card_1) {
+            incrementoNumerico(0, parseInt(cache_total_card_1), clase_card_1);
+          }else{
+            localStorage.setItem(storageName_card_1, "0");
+            actualizarDatos(objeto.token, url_card_1, clase_card_1);
+          }
+          // Llama a la función cada 10s
+          setInterval(function() {
+            actualizarDatos(objeto.token, url_card_1, clase_card_1);
+          }, 10000);
+          
+          //card 2
+          var clase_card_2 = `card_2_${cliente_id}`;
+          var storageName_card_2 = `total_${clase_card_2}`;
+          var url_card_2 = `/consultasCliente/${cliente_id}/getTotalMes/${yearAnterior}/${mesAnterior}`;
+          const cache_total_card_2:string = localStorage.getItem(storageName_card_2);
+
+          if (cache_total_card_2) {
+            incrementoNumerico(0, parseInt(cache_total_card_2), clase_card_2);
+          }else{
+            localStorage.setItem(storageName_card_2, "0");
+            actualizarDatos(objeto.token, url_card_2, clase_card_2);
+          }
+          // Llama a la función cada 10s
+          setInterval(function() {
+            actualizarDatos(objeto.token, url_card_2, clase_card_2);
+          }, 10000);
+
+          //card 3
+          var clase_card_3 = `card_3_${cliente_id}`;
+          var storageName_card_3 = `total_${clase_card_3}`;
+          var url_card_3 = `/consultasCliente/${cliente_id}/getTotalMes/${yearActual}/${mesActual}`;
+          const cache_total_card_3:string = localStorage.getItem(storageName_card_3);
+
+          if (cache_total_card_3) {
+            incrementoNumerico(0, parseInt(cache_total_card_3), clase_card_3);
+          }else{
+            localStorage.setItem(storageName_card_3, "0");
+            actualizarDatos(objeto.token, url_card_3, clase_card_3);
+          }
+          // Llama a la función cada 10s
+          setInterval(function() {
+            actualizarDatos(objeto.token, url_card_3, clase_card_3);
+          }, 10000);
+      }
+  }
+
+  // Inicializar en la primera carga
+  init();
+
+  // Reinicializar después de cambiar de página
+  document.addEventListener("astro:after-swap", init);
 
 </script>

@@ -12,7 +12,6 @@ import ButtonAction from "../../components/ButtonAction.astro";
 import ToastNotification from "../../components/ToastNotification.astro";
 
 const locals:any = Astro.locals;
-
 let errors = {all: [] };
 let successMessage = {all: []};
 
@@ -33,9 +32,13 @@ if(responseData.data.errors || responseData.code !== 200){
     <CardContentPage>
             <div class="flex items-center">
                 <div class="w-48"></div>
-                <h2 class="font-semibold text-custom-secundary text-xl text-center flex-grow">Panel de Clientes</h2>
+                <h2 class="font-semibold text-custom-secundary text-xl text-center flex-grow">Panel de {locals.rol_id == 2 ? 'Contribuyentes' : 'Clientes'}</h2>
                 
-                <ButtonAction icon="plus" text="Agregar Usuario" redirect="/dashboard/clientes/create"/>
+                <div class="w-48">
+                    {locals.rol_id == 1 &&
+                        <ButtonAction icon="plus" text="Agregar Cliente" redirect="/dashboard/clientes/create"/>
+                    }
+                </div>
             </div>
                 
                 
@@ -56,11 +59,11 @@ if(responseData.data.errors || responseData.code !== 200){
                         <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                             <div transition:name=`imagen-perfil-${cliente.id}`>
                                 {cliente.logo ? (
-                                    <a href=`/dashboard/clientes/show/${cliente.id}` data-tippy-content="Perfil">
+                                    <a href={locals.rol_id == 1 ? `/dashboard/clientes/show/${cliente.id}` : ''} data-tippy-content={locals.rol_id == 1 ? 'Perfil' : 'Logo'}>
                                         <Image src={import.meta.env.PUBLIC_BASE_URL+cliente.logo} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
                                     </a>
                                 ) : (
-                                    <a href=`/dashboard/clientes/show/${cliente.id}` data-tippy-content="Perfil" id={cliente.id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center">
+                                    <a href={locals.rol_id == 1 ? `/dashboard/clientes/show/${cliente.id}` : ''} data-tippy-content={locals.rol_id == 1 ? 'Perfil' : 'Logo'} id={cliente.id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center">
                                         <div class="menu-trigger h-11 w-11 ml-auto rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white select-none text-lg font-semibold">
                                             {cliente.nombre_cliente.charAt(0)}
                                         </div>
@@ -72,12 +75,12 @@ if(responseData.data.errors || responseData.code !== 200){
                             </div>  
                         </th>
                         <td>
-                        {cliente.rif}
+                            {cliente.rif}
                         </td>
                         <!-- 
                         <td class="px-6 py-4">
                             
-                            <div class="flex items-center">
+                            <div class="flex items-center justify-center">
                                 {cliente.isConnected == true &&
                                     <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2" data-tippy-content="Activo"></div> <span>Conectado</spanspan>
                                 }
@@ -91,7 +94,7 @@ if(responseData.data.errors || responseData.code !== 200){
                         -->
                         <td class="px-6 py-4">
                             
-                            <div class="flex items-center">
+                            <div class="flex items-center justify-center">
                                 {cliente.enabled == 1 &&
                                     <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2" data-tippy-content="Activo"></div>
                                 }
@@ -104,11 +107,12 @@ if(responseData.data.errors || responseData.code !== 200){
                         </td>
                         
                         <td class="px-6 py-4 justify-center items-center">
-                            <div class="flex">
-                                <!-- Agrega el atributo data-tippy-content con el texto del tooltip -->
-                                <a href=`/dashboard/clientes/update/${cliente.id}` class="text-blue-600 dark:text-blue-500 hover:underline" data-tippy-content="Editar"><Icon name="edit" size="25px" /></a>
-                                <!-- Agrega el atributo data-tippy-content con el texto del tooltip -->
-                                <a href=`/dashboard/clientes/show/${cliente.id}` class="text-blue-600 dark:text-blue-500 hover:underline ml-1" data-tippy-content="Ver Perfil"><Icon name="eye" size="25px" /></a>
+                            <div class="flex justify-center">
+                                {locals.rol_id == 1 &&
+                                    <a href={'/dashboard/clientes/update/'+cliente.id} class="text-blue-600 dark:text-blue-500 hover:underline" data-tippy-content="Editar"><Icon name="edit" size={25} /></a>
+                                    <a href={'/dashboard/clientes/show/'+cliente.id} class="text-blue-600 dark:text-blue-500 hover:underline ml-1" data-tippy-content="Ver Perfil"><Icon name="eye" size={25} /></a>
+                                }
+                                <a href={'/dashboard/home?c='+cliente.id} class="text-blue-600 dark:text-blue-500 hover:underline ml-1" data-tippy-content="Ir"><Icon name="arrow-right" size={25} /></a>
                             </div>
                         </td>
 

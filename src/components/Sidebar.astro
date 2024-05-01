@@ -46,13 +46,23 @@ if(locals.rol_id == 4){
               </div>
             </li>
             <li>
-              <a href="/dashboard/home" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage.includes('/dashboard/home') ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+              <a href={"/dashboard/home?c="+locals.cliente_id} class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage.includes('/dashboard/home') ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
                   <span class="inline-flex justify-center items-center ml-4">
                       <Icon name="chart-pie-filled"  class="w-5 h-5" />
                   </span>
                   <span class="ml-2 text-sm tracking-wide truncate">Inicio</span>
               </a>
             </li>
+            {(locals.rol_id == 1 || locals.rol_id == 2) &&
+            <li>
+              <a href="/dashboard/clientes" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage.includes('/dashboard/clientes') ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+                <span class="inline-flex justify-center items-center ml-4">
+                  <Icon name="users"  class="w-5 h-5" />
+                </span>
+                <span class="ml-2 text-sm tracking-wide truncate">{locals.rol_id == 2 ? 'Contribuyentes' : 'Clientes'}</span>
+              </a>
+            </li>
+            }
             <li>
               <a href="/dashboard/usuarios" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage.includes('/dashboard/usuarios') ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
                 <span class="inline-flex justify-center items-center ml-4">
@@ -61,23 +71,6 @@ if(locals.rol_id == 4){
                 <span class="ml-2 text-sm tracking-wide truncate">Usuarios</span>
               </a>
             </li>
-            <li>
-              <a href="/dashboard/clientes" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage.includes('/dashboard/clientes') ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
-                <span class="inline-flex justify-center items-center ml-4">
-                  <Icon name="user"  class="w-5 h-5" />
-                </span>
-                <span class="ml-2 text-sm tracking-wide truncate">Clientes</span>
-              </a>
-            </li>
-            <li>
-              <a class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage === '/consultaAvanzada' ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
-                <span class="inline-flex justify-center items-center ml-4">
-                  <Icon name="search"  class="w-5 h-5" />
-                </span>
-                <span class="ml-2 text-sm tracking-wide truncate">Consulta Avanzada</span>
-              </a>
-            </li>
-
             <li>
               <a class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage.includes('/dashboard/reportes') ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
                 <span class="inline-flex justify-center items-center ml-4">
@@ -88,7 +81,7 @@ if(locals.rol_id == 4){
             </li>
 
            
-
+            {(locals.rol_id == 1 || locals.rol_id == 2) &&
             <li>
               <a href="/dashboard/historial" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage.includes('/dashboard/historial') ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
                 <span class="inline-flex justify-center items-center ml-4">
@@ -97,6 +90,7 @@ if(locals.rol_id == 4){
                 <span class="ml-2 text-sm tracking-wide truncate">Historial</span>
               </a>
             </li>
+            }
             <li>
               <a href="/" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage === '/' ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
                 <span class="inline-flex justify-center items-center ml-4">

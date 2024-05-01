@@ -42,6 +42,16 @@ if (Astro.request.method === "POST") {
         expires: date,
         httpOnly: true
       });
+
+      Astro.cookies.set('others', 
+      {
+        token: responseData.data.token,
+        id: responseData.data.id,
+      }
+      , {
+        expires: date,
+        //httpOnly: true
+      });
       
       if(responseData.data.rol_id == 1){
         return Astro.redirect("/dashboard/clientes");
@@ -50,7 +60,7 @@ if (Astro.request.method === "POST") {
         return Astro.redirect("/auth/selectedAction");
       }
       if(responseData.data.rol_id == 3){
-        return Astro.redirect("/dashboard/home");
+        return Astro.redirect("/dashboard/home?c="+responseData.data.cliente_id);
       }
       if(responseData.data.rol_id == 4){
         return Astro.redirect("/dashboard/home");

@@ -9,7 +9,7 @@ interface Props {
 const {id, text} = Astro.props;
 ---
 
-<div class="relative inline-block text-left menu-trigger">
+<div class="relative inline-block text-left menu-trigger mx-3">
     <button id={id} data-dropdown-toggle={"dropdown_"+id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center" type="button">
       <div class="menu-trigger h-11 w-11 ml-auto rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white select-none text-lg font-semibold">
         {text}
@@ -21,16 +21,10 @@ const {id, text} = Astro.props;
     <div id={"dropdown_"+id} class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute">
         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby={id}>
           <li>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Configuración</a>
           </li>
           <li>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
-          </li>
-          <li>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
-          </li>
-          <li>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign out</a>
+            <a href="/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Salir</a>
           </li>
         </ul>
     </div>
