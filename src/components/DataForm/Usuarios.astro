@@ -33,6 +33,7 @@ if(locals.rol_id == 1){
 
 let ocultarValoresSelect =  true;
 let mostrarImgPerfil =  false;
+let disabledInputIdCliente =  false;
 
 let transactionName = formData.id ? 'imagen-perfil-' + formData.id : undefined;
 
@@ -43,7 +44,7 @@ if(method == "POST"){
 if(method == "PUT"){
     textBotton = "Actualizar"
     textMethod = "POST";
-
+    disabledInputIdCliente = true;
 }
 if(method == "GET"){
     textBotton = "Actualizar"
@@ -314,6 +315,7 @@ if(locals.rol_id == 1){
                             addClassSelect='cliente_config'
                             value={formData.cliente_id || ''}
                             placeholder="Selecciona el cliente al que está asociado el usuario"
+                            disabled={disabledInputIdCliente}
                         />
                     </div> 
                     

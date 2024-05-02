@@ -68,3 +68,26 @@ export function getQueryParam(paramName) {
     // Si el parámetro no existe, get devuelve null
     return paramValue;
 }
+
+export function convertirMesInglesAEspanol(cadena) {
+  const mesesIngles = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const mesesEspanol = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+  let nuevaCadena = cadena;
+
+  for(let i = 0; i < mesesIngles.length; i++) {
+      // Crea una expresión regular para buscar el mes en inglés en la cadena
+      let regex = new RegExp('\\b' + mesesIngles[i] + '\\b', 'g');
+      // Reemplaza todas las ocurrencias del mes en inglés por el mes en español
+      nuevaCadena = nuevaCadena.replace(regex, mesesEspanol[i]);
+  }
+
+  return nuevaCadena;
+}
+
+export function obtenerNombreDelMes(numeroDelMes) {
+  const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+  // Restamos 1 al número del mes porque los arrays en JavaScript empiezan en 0
+  return meses[numeroDelMes - 1];
+}
