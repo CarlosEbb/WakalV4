@@ -3,7 +3,6 @@ import Layout from "../../../layouts/Layout.astro";
 
 import ChartLine from "../../../components/ChartLine.astro";
 import ChartAngleCircle from "../../../components/ChartAngleCircle.astro";
-import ChartLineArea from "../../../components/ChartLineArea.astro";
 
 
 import CardInfoDashboard from "../../../components/CardInfoDashboard.astro";
@@ -59,10 +58,10 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
     <div class="grid md:grid-cols-2 gap-4 p-6 mt-2">
       <div>
         <div class="bg-white p-4 mb-4 rounded-xl m-1">
-          <ChartLine />
+          <div class="chart_1"></div>
         </div>
         <div class="bg-white p-4 rounded-xl m-1 mt-5">
-          <ChartLineArea />
+          <div class="chart_2"></div>
         </div>
       </div>
       <div class="m-1">
@@ -166,4 +165,44 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
   // Reinicializar después de cambiar de página
   document.addEventListener("astro:after-swap", init);
 
+</script>
+
+<script>
+  import {obtenerCookie, getQueryParam, obtenerNombreDelMes} from "../../../scripts/utils.js";
+  import {preparechart, customFunctionApi_chart_1} from "../../../scripts/toolChart.js";
+  import { apiController } from '../../../scripts/request.js';
+ 
+  async function init() {
+    let cliente_id = getQueryParam('c');
+    var cookies = obtenerCookie('others');
+    var objeto = JSON.parse(cookies);
+
+    let fechaActual = new Date(); // obtiene la fecha y hora actual
+    let year = fechaActual.getFullYear(); // obtiene el año actual
+    let month = fechaActual.getMonth() + 1; // obtiene el mes actual (0-11, por lo que añadimos 1)
+
+    async function customFunctionApi_chart_2(clase_chart_2, token, current_year, current_month){
+        let json = {};
+        for(let month = 1; month <= current_month; month++){
+            const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultasCliente/${cliente_id}/getTotalMes/${current_year}/${month}`,'GET',null,token);
+            // Almacenar la información en el objeto json
+            json[obtenerNombreDelMes(month)] = responseData.data.total;
+        }
+        return json;
+    }
+
+
+
+    //el 0 adelante de consumo api ayuda para que no salga la fecha completa y salga abreviado ejemplo: 04~05
+    //type: bar | area
+    preparechart( cliente_id, 'chart_1', 'bar' , "#f29140", "#e77a82", "Cant. Nº Control Semanal ("+ obtenerNombreDelMes(month)+")", () => customFunctionApi_chart_1(objeto.token,`/consultasCliente/${cliente_id}/getTotalEmitidosSemanal/${year}/0${month}`));
+  
+    preparechart( cliente_id, 'chart_2', 'area', "#765ba6", "#765ba6", "Cant. Nº Control Anual ("+ year +")", () => customFunctionApi_chart_2('chart_2',objeto.token,year, month));
+  }
+
+  // Inicializar en la primera carga
+  init();
+
+  // Reinicializar después de cambiar de página
+  document.addEventListener("astro:after-swap", init);
 </script>

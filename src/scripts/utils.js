@@ -40,7 +40,6 @@ export function incrementoNumerico(vinicial, vFinal, clase) {
 export async function actualizarDatos(token, url, clase) {
     let totalCard1Cache = localStorage.getItem('total_'+clase);
     const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,url,'GET',null,token);
-    console.log(responseData);
     if (responseData.data && responseData.data.total) {
       incrementoNumerico(totalCard1Cache, parseInt(responseData.data.total), clase);
       localStorage.setItem('total_'+clase, responseData.data.total);
