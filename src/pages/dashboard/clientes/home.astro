@@ -1,7 +1,6 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
 
-import ChartLine from "../../../components/ChartLine.astro";
 import ChartAngleCircle from "../../../components/ChartAngleCircle.astro";
 
 
@@ -66,10 +65,13 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
       </div>
       <div class="m-1">
         <div class="bg-white p-4 h-full rounded-xl">
-          <ChartAngleCircle />
+          <div class="chart_3"></div>
+            <div class="leyenda_chart_3 justify-center text-center items-center"></div>
+            <div class="proyeccion_chart_3 justify-center text-center items-center pt-10"></div>
         </div>
       </div>
     </div>
+    
 </Layout>
 
 <script>
@@ -169,9 +171,11 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
 
 <script>
   import {obtenerCookie, getQueryParam, obtenerNombreDelMes} from "../../../scripts/utils.js";
-  import {preparechart, customFunctionApi_chart_1} from "../../../scripts/toolChart.js";
+  import {preparechart, customFunctionApi_chart_1, procesarDatosLeyenda} from "../../../scripts/toolChart.js";
   import { apiController } from '../../../scripts/request.js';
  
+
+
   async function init() {
     let cliente_id = getQueryParam('c');
     var cookies = obtenerCookie('others');
@@ -180,24 +184,34 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
     let fechaActual = new Date(); // obtiene la fecha y hora actual
     let year = fechaActual.getFullYear(); // obtiene el año actual
     let month = fechaActual.getMonth() + 1; // obtiene el mes actual (0-11, por lo que añadimos 1)
+    let proximoMes = new Date(year, month, 1).getMonth() + 1;
 
-    async function customFunctionApi_chart_2(clase_chart_2, token, current_year, current_month){
+    async function customFunctionApi_chart_2(clase_chart_2, token, current_year, current_month, leyenda = false){
         let json = {};
         for(let month = 1; month <= current_month; month++){
             const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultasCliente/${cliente_id}/getTotalMes/${current_year}/${month}`,'GET',null,token);
             // Almacenar la información en el objeto json
             json[obtenerNombreDelMes(month)] = responseData.data.total;
         }
+
+        if(leyenda){
+          procesarDatosLeyenda(Object.values(json), Object.keys(json));
+        }
         return json;
     }
 
-
-
     //el 0 adelante de consumo api ayuda para que no salga la fecha completa y salga abreviado ejemplo: 04~05
     //type: bar | area
-    preparechart( cliente_id, 'chart_1', 'bar' , "#f29140", "#e77a82", "Cant. Nº Control Semanal ("+ obtenerNombreDelMes(month)+")", () => customFunctionApi_chart_1(objeto.token,`/consultasCliente/${cliente_id}/getTotalEmitidosSemanal/${year}/0${month}`));
+    preparechart( cliente_id, 'chart_1', 'bar' , ["#f29140"], ["#e77a82"], "Cant. Nº Control Semanal ("+ obtenerNombreDelMes(month)+")", () => customFunctionApi_chart_1(objeto.token,`/consultasCliente/${cliente_id}/getTotalEmitidosSemanal/${year}/0${month}`));
   
-    preparechart( cliente_id, 'chart_2', 'area', "#765ba6", "#765ba6", "Cant. Nº Control Anual ("+ year +")", () => customFunctionApi_chart_2('chart_2',objeto.token,year, month));
+    preparechart( cliente_id, 'chart_2', 'area', ["#765ba6"], ["#765ba6"], "Cant. Nº Control Anual ("+ year +")", () => customFunctionApi_chart_2('chart_2',objeto.token,year, month));
+
+    preparechart( cliente_id, 'chart_3', 'radialBar', ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6","#ea5f5a"], ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6","#ea5f5a"], "Proyección Nº Control: Mes Entrante ("+ obtenerNombreDelMes(proximoMes) +")", () => customFunctionApi_chart_2('chart_2',objeto.token,year, month, true));
+  
+    let totales = JSON.parse(localStorage.getItem(`total_chart_3_${cliente_id}`));
+    let meses = JSON.parse(localStorage.getItem(`category_chart_3_${cliente_id}`));
+
+    procesarDatosLeyenda(totales, meses);
   }
 
   // Inicializar en la primera carga

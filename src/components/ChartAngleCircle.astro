@@ -52,51 +52,8 @@ const { position = "right" } = Astro.props;
     
     colors: ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6","#ea5f5a"],
     labels: ["FA", "ND", "NC", "GD", "otros"],
-    legend: {
-      show: true,
-      floating: true,
-      position: 'right',
-      offsetX: 280,
-      offsetY: 200
-    },
-    responsive: [
-      {
-        breakpoint: 2000,
-        options: {
-          legend: {
-            offsetX: 160,
-          },
-        },
-      },
-      {
-        breakpoint: 1500,
-        options: {
-          legend: {
-            offsetX: 60,
-          },
-        },
-      },
-      {
-        breakpoint: 1100,
-        options: {
-          legend: {
-            offsetX: -40,
-          },
-        },
-      },
-      {
-        breakpoint: 768,
-        options: {
-          legend: {
-            offsetX: 100,
-          },
-        },
-      },
-
       
       
-      
-    ],
   };
   
   function init() {

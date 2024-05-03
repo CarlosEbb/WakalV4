@@ -90,3 +90,7 @@ export function obtenerNombreDelMes(numeroDelMes) {
   // Restamos 1 al número del mes porque los arrays en JavaScript empiezan en 0
   return meses[numeroDelMes - 1];
 }
+
+export function formatearNumero(valor) {
+  return Math.floor(valor).toLocaleString('de-DE')
+}
