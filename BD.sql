@@ -50,7 +50,7 @@ INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(1
 
 --otros clientes temporal, cambiar el cliente_id por el que corresponda
 
-INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Número de Control',3);
+INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Número de Documento',3);
 INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(@@identity,1);
 
 
@@ -86,3 +86,6 @@ CREATE TABLE "dba"."parametros" (
 
 
 
+---tabla cirion
+
+(     SELECT  control, CONVERT(VARCHAR(255), nro_documento) AS nro_documento, CR15_tipoCom, CR03_numIden,CONVERT(VARCHAR(10), CR14_fechaCom, 23) AS fechaEmision, CR04_nomComprador , hora_carga , PI02_imporComprobante,     PI34_baseImpLocal, PI05_imporIva, iv.poriva,  MOTIVOANULACION, FECHAANULACION, HORAANULACION      FROM cabecera,pie,iv WHERE pie.nom_archivo = cabecera.nom_archivo and iv.nom_archivo = cabecera.nom_archivo     UNION ALL     SELECT  cabecera_AUT.control, CONVERT(VARCHAR(255), nro_documento) AS nro_documento, CR15_tipoCom, CR05_rifCirion AS CR03_numIden, CR03_fechaEmision AS fechaEmision, CR04_nomProveedor AS CR04_nomComprador, hora_proceso AS hora_carga, PI04_totalPagarBs AS PI02_imporComprobante,     PI02_baseImponbleBs AS PI34_baseImpLocal,PI03_IVABs as PI05_imporIva, null as poriva,  MOTIVOANULACION, FECHAANULACION, HORAANULACION      FROM cabecera_AUT,PI_AUT WHERE PI_AUT.nom_archivo = cabecera_AUT.nom_archivo      UNION ALL     SELECT cabecera_GD.control, CONVERT(VARCHAR(255), nro_documento) AS nro_documento, CR15_tipoCom, CR10_rifEntrega AS CR03_numIden, CR02_fechaEmision AS fechaEmision, CR06_nombreEntrega AS CR04_nomComprador, hora_proceso AS hora_carga,     NULL AS PI02_imporComprobante, NULL AS PI34_baseImpLocal,null as  PI05_imporIva, null as poriva,  MOTIVOANULACION, FECHAANULACION, HORAANULACION     FROM cabecera_GD,PI_GD WHERE PI_GD.nom_archivo = cabecera_GD.nom_archivo ) AS encabezado
