@@ -178,7 +178,7 @@ export   function agregarDivsDesdeJsonLeyenda(clase,datos) {
   // Agrega la clase 'grid-cols-[n]'
   var agregarNro = datos.length > 5 ? "5" : datos.length;
   contenedor.classList.add('grid-cols-2');
-  contenedor.classList.add('md:grid-cols-' + agregarNro);
+  contenedor.classList.add(`md:grid-cols-5`);
   
 
   // Recorre los datos

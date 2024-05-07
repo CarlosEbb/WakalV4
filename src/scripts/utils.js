@@ -94,3 +94,20 @@ export function obtenerNombreDelMes(numeroDelMes) {
 export function formatearNumero(valor) {
   return Math.floor(valor).toLocaleString('de-DE')
 }
+
+export function formatearNumeroControl(num) {
+  let str = num.toString();
+  while (str.length < 10) {
+      str = '0' + str;
+  }
+  return str.slice(0, 2) + '-' + str.slice(2);
+}
+
+export function setInputValueByName(name, value) {
+  var inputElement = document.querySelector('input[name="' + name + '"]');
+  if (inputElement) {
+      inputElement.value = value;
+  } else {
+      console.log('No se encontró ningún input con el nombre "' + name + '".');
+  }
+}

@@ -1,0 +1,113 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+
+import { Icon } from "astro-icon/components";
+import CardContentPage from "../../../components/CardContentPage.astro";
+import { apiController } from '../../../scripts/request.js';
+import { formatearNumeroControl } from '../../../scripts/utils.js';
+import DynamicTable from "../../../components/DynamicTable.astro";
+
+const params = Astro.url.searchParams;
+
+const tipoBusqueda = params.get('tipoBusqueda');
+let responseData;
+let dataTable = [];
+
+const locals:any = Astro.locals;
+
+let errors = {all: [] };
+let successMessage = {all: []};
+
+const cliente_id = Astro.url.searchParams.get('c');
+responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultasCliente/${cliente_id}/getDataBusqueda${Astro.url.search}`,'GET',null,locals.token);
+console.log(responseData);
+dataTable = Array.isArray(responseData.data) ? responseData.data : [];
+
+if(responseData.data.errors || responseData.code !== 200){
+    errors.all = responseData.data.errors ? responseData.data.errors : [];
+}
+
+
+---
+
+<Layout title="Dashboard" bodyClass="bg-gray-100">
+    <CardContentPage>
+        <div class="flex justify-between items-center p-6">
+            <div></div>
+            <h1 class="text-2xl ml-8">Resultado de consulta</h1>
+            <div class="flex space-x-4">
+                <!-- Aquí van tus iconos -->
+                <i class="icono1"><a href=""><Icon name="file-type-xml" class="text-2xl" /></a></i>
+                <i class="icono2"><a href=""><Icon name="file-type-pdf" class="text-2xl" /></a></i>
+                <i class="icono3"><a href=""><Icon name="file-type-csv" class="text-2xl" /></a></i>
+            </div>
+        </div>
+    
+        <div class="relative overflow-x-auto">
+            <DynamicTable 
+            addClassTable="tableBusqueda"
+            isScroll={true}
+            columnas={[
+                "Nro de Control",
+                //"Nro.Documentos",
+                "Fecha de Asig",
+                "Fecha de Emisión",
+                //"Hora de Asig",
+                "Tipo de Documento",
+                "Serie",
+            ]}
+            >
+            {dataTable.map((data, index) => (
+                
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <td hidden>{data.numero_control}</td>
+                    <td class="p-4">{formatearNumeroControl(data.numero_control)}</td>
+                    <td>{data.fecha_emision}</td>
+                    <td>{data.fecha_asignacion}</td>
+                </tr>
+            ))}
+        </DynamicTable>
+        </div>
+
+    </CardContentPage>
+
+
+</Layout>
+
+<script>
+    import {getQueryParam} from "../../../scripts/utils.js";
+    
+
+    async function init() {
+       
+
+        // Selecciona todas las filas en la tabla
+        let numero_control = getQueryParam('numero_control');
+
+        if(numero_control){
+            var filas = document.querySelectorAll('.tableBusqueda tr');
+
+            // Selecciona el div que contiene la tabla
+            var div = document.querySelector('.div_tableBusqueda');
+
+            // Itera sobre las filas
+            for (var i = 0; i < filas.length; i++) {
+                // Si la fila contiene el número de control
+                if (filas[i].textContent.includes(Number(numero_control.replace(/-/g, '').replace(/^0+/, '')))) {
+                    // Pinta la fila de azul
+                    filas[i].style.backgroundColor = '#4e4f9d';
+                    filas[i].classList.add('text-white');
+                    // Enfoca la fila en el div
+                    div.scrollTop = filas[i].offsetTop - div.offsetTop - div.clientHeight / 2 + filas[i].clientHeight / 2;
+                }
+            }
+        }
+    }
+
+  // Inicializar en la primera carga
+  init();
+
+  // Reinicializar después de cambiar de página
+  document.addEventListener("astro:after-swap", init);
+
+</script>

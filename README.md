@@ -8,3 +8,4 @@ jsonwebtoken
 npm i tippy.js
 npx astro add node
 npm i moment    
+npm install flowbite-datepicker --save

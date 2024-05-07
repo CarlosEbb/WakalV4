@@ -1,41 +1,73 @@
 ---
 interface Props {
+    id?: string;
+    addClassTable?: string;
     columnas: Array<String>;
     content?: Array<Array<any>>;
+    isScroll?: boolean;
 }
 
-const {columnas, content = []} = Astro.props;
+const {id, addClassTable, columnas, content = [], isScroll = false} = Astro.props;
 
+let addClassScroll = "";
+if(isScroll){
+    addClassScroll = "max-h-[400px] overflow-y-auto";
+}
 ---
 
-<table class="w-full text-sm text-center rtl:text-right text-gray-500 miTabla">
-    <thead class="text-xs text-gray-700 uppercase border-b-2 border-gray-200">
-        <tr>
-            {columnas.map((columna, index) => (
-                <th scope="col" class="py-3" data-columna={columna}>
-                    {columna}
-                    <!-- 
-                    <button class="toggle-visibilidad">
-                        Ocultar/Mostrar
-                    </button>
-                    -->
-                </th>
-            ))}
-        </tr>
-    </thead>
-    <tbody>
-        {content.map((fila, i) => (
+<style>
+    .miTabla thead th {
+        @apply sticky top-0 bg-white z-10;
+    }
+
+    /* Estilo personalizado para la barra de desplazamiento */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--tw-bg-opacity);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--tw-bg-opacity);
+        border-radius: var(--tw-rounded-md);
+    }
+</style>
+
+
+<div class={"div_"+addClassTable+" "+addClassScroll}>
+
+    <table id={id} class=`${addClassTable} w-full text-sm text-center rtl:text-right text-gray-500 miTabla`>
+        <thead class="text-xs text-gray-700 uppercase border-b-2 border-gray-200">
             <tr>
-                {fila.map((celda, j) => (
-                    <td class="py-3" data-columna={columnas[j]}>
-                        {celda}
-                    </td>
+                {columnas.map((columna, index) => (
+                    <th scope="col" class="py-3" data-columna={columna}>
+                        {columna}
+                        <!-- 
+                        <button class="toggle-visibilidad">
+                            Ocultar/Mostrar
+                        </button>
+                        -->
+                    </th>
                 ))}
             </tr>
-        ))}
-        <slot/>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {content.map((fila, i) => (
+                <tr>
+                    {fila.map((celda, j) => (
+                        <td class="py-3" data-columna={columnas[j]}>
+                            {celda}
+                        </td>
+                    ))}
+                </tr>
+            ))}
+            <slot/>
+        </tbody>
+    </table>
+</div>
+
 <!-- 
     <button class="mostrarTodo" style="display: none;">
         Mostrar Columnas Ocultas

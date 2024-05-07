@@ -1,46 +1,141 @@
 ---
 import Select from "../components/Select.astro";
 import ButtonAction from "./ButtonAction.astro";
+import { apiController } from '../scripts/request.js';
 
 interface Props {
     subTitle?: string;
     isSearchBar?: boolean;
 }
 
+const cliente_id = Astro.url.searchParams.get('c');
+
 const {subTitle = '', isSearchBar = true} = Astro.props;
+
+const locals:any = Astro.locals;
+
+let errors = {all: [] };
+let successMessage = {all: []};
+
+
 ---
-<div class="bg-gradient-to-r from-custom-Tredenary to-custom-Quattuordenary p-6 pb-24">
-    <h2 class="text-3xl font-semibold mb-4 text-center text-white">{subTitle}</h2>
-    <div class="flex flex-col md:flex-row items-center justify-center">
-        {isSearchBar &&
-        
-            <div class="flex gap-2">
-                <Select id="fecha_ini" name="" rounded="rounded-full" addClass="p-0.5" addWith="w-auto">
-                    <option value="">Opción 1</option>
-                    <option value="">Opción 2</option>
-                    <option value="">Opción 3</option>
-                </Select>
+<div class="bg-gradient-to-r from-custom-Tredenary to-custom-Quattuordenary p-6 pb-24 no-imprimir">
+  <form method="GET" action={"/dashboard/clientes/dashboardSearch"}>
+      <input type="text" name="c" value={cliente_id} hidden>
+      {cliente_id &&
+        <div class="flex items-center justify-center">
+          <h2 class="text-3xl font-semibold mb-4 text-center text-white mr-4">{subTitle}</h2>
+          <div>
+            <Select
+                  id="cod_area"
+                  name="tipoBusqueda"
+                  rounded="rounded-full"
+                  addClass=""
+                  addClassSelect="tipoBusqueda"
+                  placeholder="Seleccionar"
+                  iconSize={35}
+              />
+          </div>
+        </div>
+        <div class="contentConsultas flex flex-col md:flex-row items-center justify-center hidden">
+          <div class="flex contentConsultasInput">
 
-                <Select name="" rounded="rounded-full" addClass="p-0.5" addWith="w-auto">
-                    <option value="">Opción 1</option>
-                    <option value="">Opción 2</option>
-                    <option value="">Opción 3</option>
-                </Select>
-
-                <Select name="" rounded="rounded-full" addClass="p-0.5" addWith="w-auto">
-                    <option value="">Opción 1</option>
-                    <option value="">Opción 2</option>
-                    <option value="">Opción 3</option>
-                </Select>
-
-                <Select name="" rounded="rounded-full" addClass="p-0.5" addWith="w-auto">
-                    <option value="">Opción 1</option>
-                    <option value="">Opción 2</option>
-                    <option value="">Opción 3</option>
-                </Select>
-            </div>
-
-            <ButtonAction text="Buscar" redirect="dashboardSearch" addClass="ml-2 py-3 px-8 mt-4 sm:mt-0"/>
-        }
-    </div>
+          </div>
+            {isSearchBar &&
+                <ButtonAction text="Buscar" addClass="ml-2 py-3 px-8 mt-4 sm:mt-0"/>
+            }
+        </div>
+      }
+      {!cliente_id &&
+        <div class="mt-14"></div>
+      }
+  </form>
 </div>
+
+
+<script>
+  import {obtenerCookie, getQueryParam, setInputValueByName} from "../scripts/utils.js";
+  import { apiController } from '../scripts/request.js';
+
+
+  async function init() {
+    let cliente_id = getQueryParam('c');
+    var cookies = obtenerCookie('others');
+    var objeto = JSON.parse(cookies);
+    var storageName_tipoBusqueda = `data_tipoBusqueda_${cliente_id}`;
+    let storage_tipoBusqueda = JSON.parse(localStorage.getItem(storageName_tipoBusqueda));
+    var data;
+    let numero_control = getQueryParam('numero_control');
+    
+    // Manejar el evento change del select .tipoBusqueda
+    function handleSelectChange(selectedOption) {
+        var contentHtml:any = document.querySelector('.contentConsultas');
+        var contentInputHtml:any = document.querySelector('.contentConsultasInput');
+
+        if (selectedOption === '') {
+            contentHtml.classList.add('hidden');
+        } else {
+            contentHtml.classList.remove('hidden');
+        }
+        var parametros = data.find(item => item.id == selectedOption).parametros;
+        var content = '';
+
+        parametros.forEach(param => {
+            if (param.tipo_input === 'text') {
+                content += '<input data-tippy-content="hola" class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="' + param.name + '" placeholder="' + param.placeholder + '" />';
+            } else if (param.tipo_input === 'selected') {
+                content += '<select data-tippy-content="hola" class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option value="">' + param.placeholder + '</option></select>';
+            } else if (param.tipo_input === 'date') {
+                content += '<input class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="' + param.name + '" placeholder="' + param.placeholder + '" />';
+            }
+        });
+
+        contentInputHtml.innerHTML = content;
+    }
+
+
+    if(storage_tipoBusqueda){
+      data = storage_tipoBusqueda;
+    }else{
+      const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultas/cliente/${cliente_id}`,'GET',null,objeto.token);
+      if(responseData.data.errors || responseData.code !== 200){
+        console.log("Conexión perdida a la BD, intente mas tarde");
+      }else{
+        data = responseData.data;
+        localStorage.setItem(storageName_tipoBusqueda, JSON.stringify(data));
+      }
+    }
+    
+    var selectTipoBusqueda:any = document.querySelector('.tipoBusqueda');
+       // Llenar el select .tipoBusqueda con las opciones disponibles
+   
+    data.forEach(item => {
+        var option = document.createElement('option');
+        option.value = item.id;
+        option.text = item.nombre;
+        selectTipoBusqueda.appendChild(option);
+    });
+
+    let tipoBusqueda = getQueryParam('tipoBusqueda');
+
+    let selectElement = document.querySelector('.tipoBusqueda');
+    for(let i=0; i<selectElement.options.length; i++){
+        if(selectElement.options[i].value == tipoBusqueda){
+            selectElement.options[i].selected = true;
+            handleSelectChange(tipoBusqueda);
+            setInputValueByName('numero_control', numero_control);
+            break;
+        }
+    }
+
+    selectTipoBusqueda.addEventListener('change', function() {
+        handleSelectChange(this.value);
+    });
+  }
+
+  // Inicializar en la primera carga
+  init();
+
+  // Reinicializar después de cambiar de página
+  document.addEventListener("astro:after-swap", init);
+</script>
