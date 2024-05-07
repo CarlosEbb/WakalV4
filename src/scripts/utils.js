@@ -18,22 +18,23 @@ export function incrementoNumerico(vinicial, vFinal, clase) {
     var duracion = 2000; // Duración total en milisegundos
     var incremento = (valorFinal - valorInicial) / (duracion / 10); // Calculamos el incremento para cada intervalo de 10ms
     var elemento = document.querySelector("."+clase);
-
-    if (valorInicial == valorFinal) {
-      elemento.textContent = valorFinal.toLocaleString('de-DE');
-    } else {
-      var intervalo = setInterval(function() {
-        valorInicial += incremento;
-        if (valorInicial > valorFinal) {
-          valorInicial = valorFinal;
-        }
-        elemento.textContent = Math.floor(valorInicial).toLocaleString('de-DE');
-    
-        if (valorInicial >= valorFinal) {
-          clearInterval(intervalo);
-          elemento.textContent = valorFinal.toLocaleString('de-DE');
-        }
-      }, 10); // Actualiza cada 10 milisegundos
+    if(elemento){
+      if (valorInicial == valorFinal) {
+        elemento.textContent = valorFinal.toLocaleString('de-DE');
+      } else {
+        var intervalo = setInterval(function() {
+          valorInicial += incremento;
+          if (valorInicial > valorFinal) {
+            valorInicial = valorFinal;
+          }
+          elemento.textContent = Math.floor(valorInicial).toLocaleString('de-DE');
+      
+          if (valorInicial >= valorFinal) {
+            clearInterval(intervalo);
+            elemento.textContent = valorFinal.toLocaleString('de-DE');
+          }
+        }, 10); // Actualiza cada 10 milisegundos
+      }
     }
   }
 
@@ -96,7 +97,7 @@ export function formatearNumero(valor) {
 }
 
 export function formatearNumeroControl(num) {
-  let str = num.toString();
+  let str = num.toString().replace('-', '');;
   while (str.length < 10) {
       str = '0' + str;
   }

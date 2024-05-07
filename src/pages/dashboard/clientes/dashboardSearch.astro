@@ -48,8 +48,10 @@ if(responseData.data.errors || responseData.code !== 200){
             addClassTable="tableBusqueda"
             isScroll={true}
             columnas={[
+                "Actividad",
                 "Nro de Control",
                 //"Nro.Documentos",
+                "Nro de Documento",
                 "Fecha de Asig",
                 "Fecha de Emisión",
                 //"Hora de Asig",
@@ -61,9 +63,13 @@ if(responseData.data.errors || responseData.code !== 200){
                 
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td hidden>{data.numero_control}</td>
+                    <td></td>
                     <td class="p-4">{formatearNumeroControl(data.numero_control)}</td>
+                    <td>{data.numero_documento}</td>
                     <td>{data.fecha_emision}</td>
                     <td>{data.fecha_asignacion}</td>
+                    <td></td>
+                    <td></td>
                 </tr>
             ))}
         </DynamicTable>
@@ -77,14 +83,9 @@ if(responseData.data.errors || responseData.code !== 200){
 <script>
     import {getQueryParam} from "../../../scripts/utils.js";
     
-
-    async function init() {
-       
-
+    function buscarYResaltar(valor) {
         // Selecciona todas las filas en la tabla
-        let numero_control = getQueryParam('numero_control');
-
-        if(numero_control){
+        
             var filas = document.querySelectorAll('.tableBusqueda tr');
 
             // Selecciona el div que contiene la tabla
@@ -93,13 +94,35 @@ if(responseData.data.errors || responseData.code !== 200){
             // Itera sobre las filas
             for (var i = 0; i < filas.length; i++) {
                 // Si la fila contiene el número de control
-                if (filas[i].textContent.includes(Number(numero_control.replace(/-/g, '').replace(/^0+/, '')))) {
+                if (filas[i].textContent.includes(valor)) {
                     // Pinta la fila de azul
                     filas[i].style.backgroundColor = '#4e4f9d';
                     filas[i].classList.add('text-white');
                     // Enfoca la fila en el div
                     div.scrollTop = filas[i].offsetTop - div.offsetTop - div.clientHeight / 2 + filas[i].clientHeight / 2;
                 }
+            }
+        
+    }
+
+
+    async function init() {
+       
+        
+        // Selecciona todas las filas en la tabla
+        let numero_control = getQueryParam('numero_control');
+        let numero_documento = getQueryParam('numero_documento');
+
+        if(numero_control){
+            buscarYResaltar(Number(numero_control.replace(/-/g, '').replace(/^0+/, '')));
+        }
+
+        if(numero_documento){
+            let hasLetters = /[a-zA-Z]/.test(numero_documento);
+            if(hasLetters){//si contiene letras
+                buscarYResaltar(numero_documento);
+            }else{
+                buscarYResaltar(Number(numero_documento.replace(/-/g, '').replace(/^0+/, '')));
             }
         }
     }

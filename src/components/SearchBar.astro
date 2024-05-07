@@ -66,6 +66,7 @@ let successMessage = {all: []};
     let storage_tipoBusqueda = JSON.parse(localStorage.getItem(storageName_tipoBusqueda));
     var data;
     let numero_control = getQueryParam('numero_control');
+    let numero_documento = getQueryParam('numero_documento');
     
     // Manejar el evento change del select .tipoBusqueda
     function handleSelectChange(selectedOption) {
@@ -93,44 +94,49 @@ let successMessage = {all: []};
         contentInputHtml.innerHTML = content;
     }
 
-
-    if(storage_tipoBusqueda){
-      data = storage_tipoBusqueda;
-    }else{
-      const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultas/cliente/${cliente_id}`,'GET',null,objeto.token);
-      if(responseData.data.errors || responseData.code !== 200){
-        console.log("Conexión perdida a la BD, intente mas tarde");
+    if(cliente_id){
+      if(storage_tipoBusqueda){
+        data = storage_tipoBusqueda;
       }else{
-        data = responseData.data;
-        localStorage.setItem(storageName_tipoBusqueda, JSON.stringify(data));
+        
+        const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultas/cliente/${cliente_id}`,'GET',null,objeto.token);
+        if(responseData.data.errors || responseData.code !== 200){
+          console.log("Conexión perdida a la BD, intente mas tarde");
+        }else{
+          data = responseData.data;
+          localStorage.setItem(storageName_tipoBusqueda, JSON.stringify(data));
+        }
+        
       }
+      
+      var selectTipoBusqueda:any = document.querySelector('.tipoBusqueda');
+        // Llenar el select .tipoBusqueda con las opciones disponibles
+    
+      data.forEach(item => {
+          var option = document.createElement('option');
+          option.value = item.id;
+          option.text = item.nombre;
+          selectTipoBusqueda.appendChild(option);
+      });
+
+      let tipoBusqueda = getQueryParam('tipoBusqueda');
+
+      let selectElement = document.querySelector('.tipoBusqueda');
+      for(let i=0; i<selectElement.options.length; i++){
+          if(selectElement.options[i].value == tipoBusqueda){
+              selectElement.options[i].selected = true;
+              handleSelectChange(tipoBusqueda);
+              setInputValueByName('numero_control', numero_control);
+              setInputValueByName('numero_documento', numero_documento);
+              break;
+          }
+      }
+      selectTipoBusqueda.addEventListener('change', function() {
+          handleSelectChange(this.value);
+      });
     }
     
-    var selectTipoBusqueda:any = document.querySelector('.tipoBusqueda');
-       // Llenar el select .tipoBusqueda con las opciones disponibles
-   
-    data.forEach(item => {
-        var option = document.createElement('option');
-        option.value = item.id;
-        option.text = item.nombre;
-        selectTipoBusqueda.appendChild(option);
-    });
 
-    let tipoBusqueda = getQueryParam('tipoBusqueda');
-
-    let selectElement = document.querySelector('.tipoBusqueda');
-    for(let i=0; i<selectElement.options.length; i++){
-        if(selectElement.options[i].value == tipoBusqueda){
-            selectElement.options[i].selected = true;
-            handleSelectChange(tipoBusqueda);
-            setInputValueByName('numero_control', numero_control);
-            break;
-        }
-    }
-
-    selectTipoBusqueda.addEventListener('change', function() {
-        handleSelectChange(this.value);
-    });
   }
 
   // Inicializar en la primera carga
