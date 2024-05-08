@@ -63,7 +63,9 @@ if(responseData.data.errors || responseData.code !== 200){
                 
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td hidden>{data.numero_control}</td>
-                    <td></td>
+                    <td>
+                        <a href={data.url_documento}>PDF</a>
+                    </td>
                     <td class="p-4">{formatearNumeroControl(data.numero_control)}</td>
                     <td>{data.numero_documento}</td>
                     <td>{data.fecha_emision}</td>
