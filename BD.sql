@@ -109,3 +109,28 @@ INSERT INTO "dba"."clientes" ("id","rif","nombre_cliente","connections","logo","
 INSERT INTO "dba"."clientes" ("id","rif","nombre_cliente","connections","logo","created_at","updated_at","enabled","name_bd_table","name_bd_column_numero_control","name_bd_column_fecha_emision","name_bd_column_fecha_emision_format","name_bd_column_fecha_asignacion","name_bd_column_fecha_asignacion_format","name_bd_column_numero_documento","name_bd_column_numero_documento_format","name_bd_table_coletilla","url_prod","url_qa","is_prod","name_bd_column_tipo_documento","name_bd_column_tipo_documento_format") VALUES(14,'J-00220608-0','TRANSFERENCIAS Y ENCOMIENDAS ANGULO LOPEZ, C.A.','PROD_tealca032','/uploads/logo_clientes/2904169cca9f0e6536032a77213efcea.jpg','2024-03-27 16:20:28.124','2024-03-27 16:20:28.124',1,'encabezado','num_control','fecha_proceso','YYYY-MM-DD','fecha_proceso','YYYY-MM-DD','num_documento',NULL,NULL,'https://getdocdigital-tealca.solucioneslaser.com/Tealca/recursos/documento/ver/{{encrypt}}',NULL,1,'document_type','invoice;credit_note');
 INSERT INTO "dba"."clientes" ("id","rif","nombre_cliente","connections","logo","created_at","updated_at","enabled","name_bd_table","name_bd_column_numero_control","name_bd_column_fecha_emision","name_bd_column_fecha_emision_format","name_bd_column_fecha_asignacion","name_bd_column_fecha_asignacion_format","name_bd_column_numero_documento","name_bd_column_numero_documento_format","name_bd_table_coletilla","url_prod","url_qa","is_prod","name_bd_column_tipo_documento","name_bd_column_tipo_documento_format") VALUES(15,'J-30818251-6','CORPORACION FIBEX TELECOM, C.A.','PROD_fibex','/uploads/logo_clientes/27b8c957dd138fa1ca2fbdf46bcc8530.jpg','2024-03-27 16:21:55.066','2024-03-27 16:21:55.066',1,'encabezado','nrocontrol','convert(date,fechaemision,103)','DD/MM/YYYY','convert(date,fechacontrol,103)','DD/MM/YYYY','nrodocumento',NULL,NULL,'https://wsdocdigital-fibex.solucioneslaser.com/fibex-war/recursos/documento/ver/{{encrypt}}',NULL,1,'tipodocumento','FA;NC');
 INSERT INTO "dba"."clientes" ("id","rif","nombre_cliente","connections","logo","created_at","updated_at","enabled","name_bd_table","name_bd_column_numero_control","name_bd_column_fecha_emision","name_bd_column_fecha_emision_format","name_bd_column_fecha_asignacion","name_bd_column_fecha_asignacion_format","name_bd_column_numero_documento","name_bd_column_numero_documento_format","name_bd_table_coletilla","url_prod","url_qa","is_prod","name_bd_column_tipo_documento","name_bd_column_tipo_documento_format") VALUES(16,'J-30819225-2','RUTAS AEREAS DE VENEZUELA RAV, S.A. (RAVSA)','PROD_venezolana-service','/uploads/logo_clientes/55081230568391f44c7e1cbdecd521c1.jpg','2024-03-27 13:05:58.695','2024-03-27 13:05:58.695',1,'encabezado','nroControl','FechaEmision','YYYY-MM-DD','fechaEmision','YYYY-MM-DD','nroDocumento','000000028015',NULL,'https://wsdocdigital-lavzlana.solucioneslaser.com/Venezolana-war/recursos/doc/generar/{{encrypt}}',NULL,1,'tipoDoc','FA;NC')
+
+
+
+
+
+{"placeholder":["Factura","Nota de Debito","Nota de Crédito"],"values":[["FA"],["ND"],["NC"]]}
+
+//dronena
+{"placeholder":["Factura","Nota de Debito","Nota de Crédito","Nota de Entrega"],"values":[["FA"],["ND"],["NC"],["NE"]]}
+
+
+//TT
+{"placeholder": ["Factura","Nota de Debito","Nota de Crédito"],"values": [["F1","F2"], ["ND"], ["NC"]]}
+
+//tealca
+{"placeholder":["Factura","Nota de Debito","Nota de Crédito"],"values":[["invoice"],["debit_note"],["credit_note"]]}
+
+//banesco seguros y tracker y cirion
+{"placeholder":["Factura","Nota de Debito","Nota de Crédito"],"values":[["1"],["2"],["3"]]}
+
+//simpletv y sodexo
+{"placeholder":["Factura","Nota de Debito","Nota de Crédito"],"values":[["1"],["3"],["2"]]}
+
+//drolanca
+{"placeholder":["Factura","Nota de Debito","Nota de Crédito"],"values":[["FME","FPS","FPU","FAC","FFL"],["NDF"],["NCF", "NCL"]]}

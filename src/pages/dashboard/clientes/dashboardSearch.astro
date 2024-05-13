@@ -64,7 +64,7 @@ if(responseData.data.errors || responseData.code !== 200){
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td hidden>{data.numero_control}</td>
                     <td>
-                        <a href={data.url_documento}>PDF</a>
+                        
                     </td>
                     <td class="p-4">{formatearNumeroControl(data.numero_control)}</td>
                     <td>{data.numero_documento}</td>
@@ -88,10 +88,10 @@ if(responseData.data.errors || responseData.code !== 200){
     function buscarYResaltar(valor) {
         // Selecciona todas las filas en la tabla
         
-            var filas = document.querySelectorAll('.tableBusqueda tr');
+            var filas:any = document.querySelectorAll('.tableBusqueda tr');
 
             // Selecciona el div que contiene la tabla
-            var div = document.querySelector('.div_tableBusqueda');
+            var div:any = document.querySelector('.div_tableBusqueda');
 
             // Itera sobre las filas
             for (var i = 0; i < filas.length; i++) {

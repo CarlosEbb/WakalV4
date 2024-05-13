@@ -50,7 +50,7 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
         value="0"
         text="Correos Enviados."
         icon="mail-forward"
-        color="bg-gradient-to-r from-custom-denary to-custom-undenary"
+        color="bg-gradient-to-r from-green-300 to-green-600"
       />
     </div>
 
@@ -90,7 +90,7 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
       let mesAnterior = fechaActual.getMonth() + 1; // Obtiene el mes anterior
       let yearAnterior = fechaActual.getFullYear(); // Obtiene el year del mes anterior
 
-      if(cliente_id != "undefined"){
+      if(cliente_id != "undefined" && cliente_id != null){
           var clase_card_1 = `card_1_${cliente_id}`;
           var storageName_card_1 = `total_${clase_card_1}`;
           var url_card_1 = `/consultasCliente/${cliente_id}/getTotalEmitidos`;

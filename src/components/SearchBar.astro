@@ -83,11 +83,32 @@ let successMessage = {all: []};
 
         parametros.forEach(param => {
             if (param.tipo_input === 'text') {
-                content += '<input data-tippy-content="hola" class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="' + param.name + '" placeholder="' + param.placeholder + '" />';
+                content += '<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="' + param.name + '" placeholder="' + param.placeholder + '" />';
+                if(param.name == "numero_control" || param.name == "numero_documento"){
+                  content += `<div class="relative flex items-center"><input id="${param.name}_check" name="especifico_check" type="checkbox" value="1" checked=""} class="appearance-none w-6 h-6 rounded-full border-2 border-gray-400 checked:bg-custom-primary checked:border-transparent focus:outline-none transition-all duration-300 mr-2"/><label for="${param.name}_check" class="text-sm cursor-pointer select-none text-white">Específico</label></div>`;
+                }
             } else if (param.tipo_input === 'selected') {
-                content += '<select data-tippy-content="hola" class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option value="">' + param.placeholder + '</option></select>';
+              var selectOptions = param.column_reference_cliente_value;
+              if(selectOptions != null){
+                var selectHtml = '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option selected disabled value="">' + param.placeholder + '</option>';
+                console.log("aquii",param.name);
+                
+                for (var i = 0; i < selectOptions.values.length; i++) {
+                    selectHtml += '<option value="' + selectOptions.values[i][0] + '">' + selectOptions.placeholder[i] + '</option>';
+                }
+
+                selectHtml += '</select>';
+  
+                content += selectHtml;
+              }else{
+                if(param.name == "tipo_fecha"){
+                  content += '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option value="">' + param.placeholder + '</option><option value="emision">Emisión</option><option value="asignacion">Asignación</option></select>';
+                }else{
+                  content += '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option value="">' + param.placeholder + '</option></select>';
+                }
+              }
             } else if (param.tipo_input === 'date') {
-                content += '<input class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="' + param.name + '" placeholder="' + param.placeholder + '" />';
+                content += '<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="' + param.name + '" placeholder="' + param.placeholder + '" />';
             }
         });
 
@@ -121,7 +142,7 @@ let successMessage = {all: []};
 
       let tipoBusqueda = getQueryParam('tipoBusqueda');
 
-      let selectElement = document.querySelector('.tipoBusqueda');
+      let selectElement:any = document.querySelector('.tipoBusqueda');
       for(let i=0; i<selectElement.options.length; i++){
           if(selectElement.options[i].value == tipoBusqueda){
               selectElement.options[i].selected = true;

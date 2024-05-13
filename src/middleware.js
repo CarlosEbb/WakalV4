@@ -8,17 +8,35 @@ export function onRequest ({ locals, request, url, cookies}, next) {
     let path = url.pathname;
 
     if (path.includes('/dashboard') || isPrivate.includes(path)) {
+        
         let session = cookies.get('session');
         if (!session) {
-           // Si no hay sesión, redirige al usuario a la raíz
-           return new Response(null, {status: 302, headers: {'Location': '/'}});
+            const modifiedResponse = new Response(nextResponse.body, {
+                ...nextResponse.headers,
+                headers: {
+                ...nextResponse.headers.headers,
+                Location: '/',
+                },
+            });
+
+            return modifiedResponse;
         }
         session = JSON.parse(session.value);
        
         try {
             jwt.verify(session.token, 'secretKey', (err, decodedToken) => {
                 if (err) {
-                    return new Response(null, {status: 302, headers: {'Location': '/'}});
+
+                    const modifiedResponse = new Response(nextResponse.body, {
+                        ...nextResponse.headers,
+                        headers: {
+                        ...nextResponse.headers.headers,
+                        Location: '/',
+                        },
+                    });
+
+                    return modifiedResponse;
+                  
                 } else {
                     // Agrega el token a locals
                     locals.token = session.token;
@@ -30,11 +48,19 @@ export function onRequest ({ locals, request, url, cookies}, next) {
                 }
             });
         } catch (err) {
-            // Si el token es inválido, redirige al usuario a la raíz
-            return new Response(null, {status: 302, headers: {'Location': '/'}});
+            const modifiedResponse = new Response(nextResponse.body, {
+                ...nextResponse.headers,
+                headers: {
+                ...nextResponse.headers.headers,
+                Location: '/',
+                },
+            });
+
+            return modifiedResponse;
         }
     } else {
         return next();
        
     }
+
 }
