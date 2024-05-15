@@ -69,6 +69,22 @@ export function getQueryParam(paramName) {
     return paramValue;
 }
 
+export function getAllQueryParams() {
+  // Crea una nueva instancia de URLSearchParams con los parámetros de la URL actual
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // Crea un objeto para almacenar todos los parámetros
+  const params = {};
+
+  // Itera sobre cada par clave-valor en urlParams
+  for (const [key, value] of urlParams.entries()) {
+      params[key] = value;
+  }
+
+  // Devuelve el objeto con todos los parámetros
+  return params;
+}
+
 export function convertirMesInglesAEspanol(cadena) {
   const mesesIngles = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const mesesEspanol = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -92,6 +108,16 @@ export function obtenerNombreDelMes(numeroDelMes) {
   return meses[numeroDelMes - 1];
 }
 
+export function obtenerNumeroMes(fecha) {
+  // Crear un objeto Moment a partir de la fecha
+  let fechaMoment = moment(fecha, 'YYYY-MM-DD');
+
+  // Obtener el mes en formato numérico con dos dígitos (de 01 a 12)
+  let mesNumerico = fechaMoment.format('MM');
+
+  return mesNumerico;
+}
+
 export function formatearNumero(valor) {
   return Math.floor(valor).toLocaleString('de-DE')
 }
@@ -104,11 +130,18 @@ export function formatearNumeroControl(num) {
   return str.slice(0, 2) + '-' + str.slice(2);
 }
 
-export function setInputValueByName(name, value) {
+export function setElementValueByName(name, value) {
   var inputElement = document.querySelector('input[name="' + name + '"]');
+  var selectElement = document.querySelector('select[name="' + name + '"]');
+
   if (inputElement) {
       inputElement.value = value;
+  } else if (selectElement) {
+      selectElement.value = value;
+      // Opcionalmente, puedes disparar el evento 'change' si necesitas que otros scripts respondan al cambio de valor.
+      var event = new Event('change');
+      selectElement.dispatchEvent(event);
   } else {
-      console.log('No se encontró ningún input con el nombre "' + name + '".');
+      console.log('No se encontró ningún input o select con el nombre "' + name + '".');
   }
 }

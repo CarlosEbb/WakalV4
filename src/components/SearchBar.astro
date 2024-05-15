@@ -54,7 +54,7 @@ let successMessage = {all: []};
 
 
 <script>
-  import {obtenerCookie, getQueryParam, setInputValueByName} from "../scripts/utils.js";
+  import {obtenerCookie, getQueryParam, getAllQueryParams, setElementValueByName} from "../scripts/utils.js";
   import { apiController } from '../scripts/request.js';
 
 
@@ -65,9 +65,9 @@ let successMessage = {all: []};
     var storageName_tipoBusqueda = `data_tipoBusqueda_${cliente_id}`;
     let storage_tipoBusqueda = JSON.parse(localStorage.getItem(storageName_tipoBusqueda));
     var data;
-    let numero_control = getQueryParam('numero_control');
-    let numero_documento = getQueryParam('numero_documento');
-    
+
+    let dataParams = getAllQueryParams();
+
     // Manejar el evento change del select .tipoBusqueda
     function handleSelectChange(selectedOption) {
         var contentHtml:any = document.querySelector('.contentConsultas');
@@ -91,18 +91,17 @@ let successMessage = {all: []};
               var selectOptions = param.column_reference_cliente_value;
               if(selectOptions != null){
                 var selectHtml = '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option selected disabled value="">' + param.placeholder + '</option>';
-                console.log("aquii",param.name);
-                
+          
                 for (var i = 0; i < selectOptions.values.length; i++) {
-                    selectHtml += '<option value="' + selectOptions.values[i][0] + '">' + selectOptions.placeholder[i] + '</option>';
+                    selectHtml += '<option value="' + selectOptions.values[i].join(";") + '">' + selectOptions.placeholder[i] + '</option>';
                 }
-
+                selectHtml += '<option value="all">Todos</option>';
                 selectHtml += '</select>';
   
                 content += selectHtml;
               }else{
                 if(param.name == "tipo_fecha"){
-                  content += '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option value="">' + param.placeholder + '</option><option value="emision">Emisión</option><option value="asignacion">Asignación</option></select>';
+                  content += '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option selected disabled value="">' + param.placeholder + '</option><option value="emision">Emisión</option><option value="asignacion">Asignación</option></select>';
                 }else{
                   content += '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option value="">' + param.placeholder + '</option></select>';
                 }
@@ -147,8 +146,9 @@ let successMessage = {all: []};
           if(selectElement.options[i].value == tipoBusqueda){
               selectElement.options[i].selected = true;
               handleSelectChange(tipoBusqueda);
-              setInputValueByName('numero_control', numero_control);
-              setInputValueByName('numero_documento', numero_documento);
+              for (const [key, value] of Object.entries(dataParams)) {
+                  setElementValueByName(key, value);
+              }
               break;
           }
       }

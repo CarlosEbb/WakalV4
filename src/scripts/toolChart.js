@@ -171,46 +171,48 @@ export function calculatePercentages(totales) {
 export   function agregarDivsDesdeJsonLeyenda(clase,datos) {
   // Obtén el div contenedor
   var contenedor = document.querySelector(clase);
-  contenedor.innerHTML = '';
-  // Agrega la clase 'grid'
-  contenedor.classList.add('grid');
-
-  // Agrega la clase 'grid-cols-[n]'
-  var agregarNro = datos.length > 5 ? "5" : datos.length;
-  contenedor.classList.add('grid-cols-2');
-  contenedor.classList.add(`md:grid-cols-5`);
+  if (contenedor !== null) {
+    contenedor.innerHTML = '';
+    // Agrega la clase 'grid'
+    contenedor.classList.add('grid');
   
-
-  // Recorre los datos
-  for (var i = 0; i < datos.length; i++) {
-    // Crea un nuevo div
-    var nuevoDiv = document.createElement('div');
-    nuevoDiv.className = "flex flex-col justify-center items-center text-center mt-3";
-
-    // Crea el div del círculo
-    var divCirculo = document.createElement('div');
-    divCirculo.className = "h-2.5 w-2.5 rounded-full " + datos[i].color_circulo;
-    divCirculo.style.backgroundColor = datos[i].color_circulo;
-    divCirculo.setAttribute('data-tippy-content', datos[i].anio);
-
-
-    // Crea los spans
-    var spanPorcentaje = document.createElement('span');
-    spanPorcentaje.textContent = datos[i].porcentaje;
-    var spanValor = document.createElement('span');
-    spanValor.textContent = datos[i].valor;
-    var spanAnio = document.createElement('span');
-    spanAnio.textContent = datos[i].anio;
-
-    // Añade los elementos al nuevo div
-    nuevoDiv.appendChild(divCirculo);
-    nuevoDiv.appendChild(spanPorcentaje);
-    nuevoDiv.appendChild(spanValor);
-    nuevoDiv.appendChild(spanAnio);
-
-    // Añade el nuevo div al contenedor
-
-    contenedor.appendChild(nuevoDiv);
+    // Agrega la clase 'grid-cols-[n]'
+    var agregarNro = datos.length > 5 ? "5" : datos.length;
+    contenedor.classList.add('grid-cols-2');
+    contenedor.classList.add(`md:grid-cols-5`);
+    
+  
+    // Recorre los datos
+    for (var i = 0; i < datos.length; i++) {
+      // Crea un nuevo div
+      var nuevoDiv = document.createElement('div');
+      nuevoDiv.className = "flex flex-col justify-center items-center text-center mt-3";
+  
+      // Crea el div del círculo
+      var divCirculo = document.createElement('div');
+      divCirculo.className = "h-2.5 w-2.5 rounded-full " + datos[i].color_circulo;
+      divCirculo.style.backgroundColor = datos[i].color_circulo;
+      divCirculo.setAttribute('data-tippy-content', datos[i].anio);
+  
+  
+      // Crea los spans
+      var spanPorcentaje = document.createElement('span');
+      spanPorcentaje.textContent = datos[i].porcentaje;
+      var spanValor = document.createElement('span');
+      spanValor.textContent = datos[i].valor;
+      var spanAnio = document.createElement('span');
+      spanAnio.textContent = datos[i].anio;
+  
+      // Añade los elementos al nuevo div
+      nuevoDiv.appendChild(divCirculo);
+      nuevoDiv.appendChild(spanPorcentaje);
+      nuevoDiv.appendChild(spanValor);
+      nuevoDiv.appendChild(spanAnio);
+  
+      // Añade el nuevo div al contenedor
+  
+      contenedor.appendChild(nuevoDiv);
+    }
   }
 }
 
@@ -242,52 +244,56 @@ export function proyectarVentas(meses, ventas) {
 }
 
 export function crearContenidoProyeccion(mes, valor) {
-  // Crea el texto de la proyección
-  var textoProyeccion = document.createTextNode("Proyección de ");
+  let elemento = document.querySelector('.proyeccion_chart_3');
+  if (elemento) {
+    // Crea el texto de la proyección
+    var textoProyeccion = document.createTextNode("Proyección de ");
 
-  // Crea el span del mes
-  var spanMes = document.createElement('span');
-  spanMes.className = "proyeccion_mes";
-  spanMes.textContent = mes;
+    // Crea el span del mes
+    var spanMes = document.createElement('span');
+    spanMes.className = "proyeccion_mes";
+    spanMes.textContent = mes;
 
-  // Crea el texto "Estimada:"
-  var textoEstimada = document.createTextNode(" Estimada:");
+    // Crea el texto "Estimada:"
+    var textoEstimada = document.createTextNode(" Estimada:");
 
-  // Crea el div del valor
-  var divValor = document.createElement('div');
-  divValor.className = "proyeccion_valor text-4xl";
-  divValor.textContent = valor;
+    // Crea el div del valor
+    var divValor = document.createElement('div');
+    divValor.className = "proyeccion_valor text-4xl";
+    divValor.textContent = valor;
 
-  // Crea un fragmento de documento para contener los elementos
-  var fragmento = document.createDocumentFragment();
-  fragmento.appendChild(textoProyeccion);
-  fragmento.appendChild(spanMes);
-  fragmento.appendChild(textoEstimada);
-  fragmento.appendChild(divValor);
+    // Crea un fragmento de documento para contener los elementos
+    var fragmento = document.createDocumentFragment();
+    fragmento.appendChild(textoProyeccion);
+    fragmento.appendChild(spanMes);
+    fragmento.appendChild(textoEstimada);
+    fragmento.appendChild(divValor);
 
-  // Retorna el fragmento de documento
-  document.querySelector('.proyeccion_chart_3').innerHTML = '';
-  document.querySelector('.proyeccion_chart_3').appendChild(fragmento);
+    // Retorna el fragmento de documento
+    elemento.innerHTML = '';
+    elemento.appendChild(fragmento);
+  }
 }
 
 export function procesarDatosLeyenda(totales, meses) {
   let porcentajes;
   let colors;
   let datos = [];
+  if (Array.isArray(totales)){
+    porcentajes = calculatePercentages(totales); // Asegúrate de que esta función devuelve un array del mismo tamaño que 'totales'
+    colors = ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6","#ea5f5a", "#e77a82", "#f29140"];
   
-  porcentajes = calculatePercentages(totales); // Asegúrate de que esta función devuelve un array del mismo tamaño que 'totales'
-  colors = ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6","#ea5f5a", "#e77a82", "#f29140"];
-
-  for (let i = 0; i < totales.length; i++) {
-      datos.push({
-          "color_circulo": colors[i],
-          "porcentaje": isNaN(porcentajes[i]) ? '0%' : porcentajes[i] + "%",
-          "valor": isNaN(totales[i]) ? '0' : formatearNumero(totales[i].toString()),
-          "anio": meses[i]
-      });
+    for (let i = 0; i < totales.length; i++) {
+        datos.push({
+            "color_circulo": colors[i],
+            "porcentaje": isNaN(porcentajes[i]) ? '0%' : porcentajes[i] + "%",
+            "valor": isNaN(totales[i]) ? '0' : formatearNumero(totales[i].toString()),
+            "anio": meses[i]
+        });
+    }
+    
+    agregarDivsDesdeJsonLeyenda('.leyenda_chart_3', datos);
+    let proximoMes = new Date().getMonth() + 2; // obtiene el próximo mes (1-12)
+    crearContenidoProyeccion(obtenerNombreDelMes(proximoMes), formatearNumero(proyectarVentas(meses, totales)));
   }
-  console.log(datos);
-  agregarDivsDesdeJsonLeyenda('.leyenda_chart_3', datos);
-  let proximoMes = new Date().getMonth() + 2; // obtiene el próximo mes (1-12)
-  crearContenidoProyeccion(obtenerNombreDelMes(proximoMes), formatearNumero(proyectarVentas(meses, totales)));
 }

@@ -4,7 +4,7 @@ import Layout from "../../../layouts/Layout.astro";
 import { Icon } from "astro-icon/components";
 import CardContentPage from "../../../components/CardContentPage.astro";
 import { apiController } from '../../../scripts/request.js';
-import { formatearNumeroControl } from '../../../scripts/utils.js';
+import { formatearNumeroControl, obtenerNumeroMes } from '../../../scripts/utils.js';
 import DynamicTable from "../../../components/DynamicTable.astro";
 
 const params = Astro.url.searchParams;
@@ -56,6 +56,8 @@ if(responseData.data.errors || responseData.code !== 200){
                 "Fecha de Emisión",
                 //"Hora de Asig",
                 "Tipo de Documento",
+                "RIF/CI",
+                "Razón Social",
                 "Serie",
             ]}
             >
@@ -64,13 +66,15 @@ if(responseData.data.errors || responseData.code !== 200){
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td hidden>{data.numero_control}</td>
                     <td>
-                        
+                        <a target="_blank" href=`${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${data.numero_control}/${data.tipo_documento}/${data.numero_documento}/${obtenerNumeroMes(data.fecha_emision)}/${data.encrypt}?encrypt_others=${data.encrypt_others}&token=${locals.token}`>Ver PDF</a>
                     </td>
                     <td class="p-4">{formatearNumeroControl(data.numero_control)}</td>
                     <td>{data.numero_documento}</td>
                     <td>{data.fecha_emision}</td>
                     <td>{data.fecha_asignacion}</td>
-                    <td></td>
+                    <td>{data.tipo_documento}</td>
+                    <td>{data.rif}</td>
+                    <td>{data.razon_social}</td>
                     <td></td>
                 </tr>
             ))}

@@ -50,8 +50,28 @@ INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(1
 
 --otros clientes temporal, cambiar el cliente_id por el que corresponda
 
-INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Número de Documento',3);
+INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Número de Control',17);
 INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(@@identity,1);
+
+INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Número de Documento',17);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(@@identity,2);
+
+INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Fecha Emisión/Asignación',17);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(@@identity,1);
+
+INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Tipo de Documento',17);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(74,3);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(74,11);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(74,4);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(74,5);
+
+INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Fecha Emisión/Asignación',1);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(75,11);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(75,4);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(75,5);
+
+
+
 
 
 --- cliente_id en la tabla relacionada
