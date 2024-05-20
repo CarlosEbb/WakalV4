@@ -8,7 +8,8 @@ import node from "@astrojs/node";
 export default defineConfig({
   output: 'server',
   server: {
-    port: 4321, // Cambia esto al puerto que prefieras
+    port: 8002, // Cambia esto al puerto que prefieras
+    host: '172.16.10.26'
   },
   integrations: [tailwind(), icon()],
   adapter: node({
