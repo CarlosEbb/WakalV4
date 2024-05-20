@@ -47,22 +47,35 @@ if(responseData.data.errors || responseData.code !== 200){
             <DynamicTable 
             addClassTable="tableBusqueda"
             isScroll={true}
+            sizeText="text-xs"
             columnas={[
                 "Actividad",
-                "Nro de Control",
-                //"Nro.Documentos",
-                "Nro de Documento",
-                "Fecha de Asig",
-                "Fecha de Emisión",
-                //"Hora de Asig",
+                "Nº de Control",
+                "Nº de Documento",
                 "Tipo de Documento",
-                "RIF/CI",
-                "Razón Social",
+                "Código de Operación",
                 "Serie",
+                "Fecha de Emisión",
+                "Hora Emisión",
+                "Fecha de Asig",
+
+                
+                "RIF/CI",
+                
+                "Total Neto a Pagar",
+                "Monto IGTF",
+                "Total Pagar",
+                "Base Imponible IVA",
+                "Monto IVA",
+                "Monto Exento",
+                "Monto No Sujeto",
+                //"Razón Social",
+                "Status",
+                "Motivo Anulación",
+                "Fecha y Hora Anulación",
             ]}
             >
             {dataTable.map((data, index) => (
-                
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td hidden>{data.numero_control}</td>
                     <td>
@@ -70,12 +83,27 @@ if(responseData.data.errors || responseData.code !== 200){
                     </td>
                     <td class="p-4">{formatearNumeroControl(data.numero_control)}</td>
                     <td>{data.numero_documento}</td>
-                    <td>{data.fecha_emision}</td>
-                    <td>{data.fecha_asignacion}</td>
                     <td>{data.tipo_documento}</td>
+                    <td>{data.codigo_operacion}</td>
+                    <td>{data.serie}</td>
+                    <td>{data.fecha_emision}</td>
+                    <td>{data.hora_emision}</td>
+                    <td>{data.fecha_asignacion}</td>
                     <td>{data.rif}</td>
-                    <td>{data.razon_social}</td>
-                    <td></td>
+
+                    <td>{data.neto_pagar}</td>
+                    <td>{data.igtf}</td>
+                    <td>{data.total_pagar}</td>
+                    <td>{data.base_imponible}</td>
+                    <td>{data.monto_iva}</td>
+                    <td>{data.monto_exento}</td>
+                    <td>{data.monto_no_sujeto}</td>
+                    {/* <td><p class="truncate text-xs w-52">{data.razon_social}</p> </td> */}
+                    <td>{data.status !== '' ? (data.status == 0 || data.status == "false" ? "Activa" : data.status == 1 || data.status == "true" ? "Anulada" : data.status) : ''}</td>
+                    <td>{data.motivo_anulacion}</td>
+                    <td>{data.fecha_anulacion} {data.hora_anulacion}</td>
+                    
+                    
                 </tr>
             ))}
         </DynamicTable>
