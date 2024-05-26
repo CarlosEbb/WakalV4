@@ -40,9 +40,47 @@ const { title, subTitle = 'Seleccione su consulta', bodyClass = '', isSearchBar 
 			import tippy from 'tippy.js';
 			import 'tippy.js/dist/tippy.css'; // optional for styling
 
+			import {obtenerCookie, getQueryParam} from "../scripts/utils.js";
+			import { createTour } from '../scripts/tour.js';
+
+			var cookies = obtenerCookie('others');
+			var objeto = JSON.parse(cookies);
+
+			let stepsJson = [
+			{
+				ruta: "/dashboard/clientes/home",
+				tour: [{
+				title: "Mi primer paso",
+				text: "Este es el primer paso de nuestro tour!",
+				element: ".card_chart_1"
+				},
+				{
+				title: "Mi segundo paso",
+				text: "Este es el segundo paso de nuestro tour!",
+				element: ".card_chart_2"
+				}]
+			},
+			{
+				ruta: "/dashboard/clientes",
+				tour: [
+				{
+					title: "Mi primer paso",
+					text: "Este es el primer paso de nuestro tour!",
+					element: ".card_table"
+				}
+				]
+			}
+			
+			];
+			
+			
+
 			function init() {
 				tippy('[data-tippy-content]');
 				initFlowbite();
+				if(objeto.is_tour == "1"){
+					createTour(stepsJson);
+				}
 			}
 
 			// Inicializar en la primera carga

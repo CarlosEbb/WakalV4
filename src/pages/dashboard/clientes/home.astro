@@ -56,15 +56,15 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
 
     <div class="grid md:grid-cols-2 gap-4 p-6 mt-2">
       <div>
-        <div class="bg-white p-4 mb-4 rounded-xl m-1">
+        <div class="card_chart_1 bg-white p-4 mb-4 rounded-xl m-1">
           <div class="chart_1"></div>
         </div>
-        <div class="bg-white p-4 rounded-xl m-1 mt-5">
+        <div class="card_chart_2 bg-white p-4 rounded-xl m-1 mt-5">
           <div class="chart_2"></div>
         </div>
       </div>
       <div class="m-1">
-        <div class="bg-white p-4 h-full rounded-xl">
+        <div class="card_chart_3 bg-white p-4 h-full rounded-xl">
           <div class="chart_3"></div>
             <div class="leyenda_chart_3 justify-center text-center items-center"></div>
             <div class="proyeccion_chart_3 justify-center text-center items-center pt-10"></div>
@@ -173,12 +173,15 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
   import {obtenerCookie, getQueryParam, obtenerNombreDelMes} from "../../../scripts/utils.js";
   import {preparechart, customFunctionApi_chart_1, procesarDatosLeyenda} from "../../../scripts/toolChart.js";
   import { apiController } from '../../../scripts/request.js';
- 
-  async function init() {
-    let cliente_id = getQueryParam('c');
-    var cookies = obtenerCookie('others');
-    var objeto = JSON.parse(cookies);
 
+  
+  let cliente_id = getQueryParam('c');
+  var cookies = obtenerCookie('others');
+  var objeto = JSON.parse(cookies);
+
+  async function init() {
+   
+    
     let fechaActual = new Date(); // obtiene la fecha y hora actual
     let year = fechaActual.getFullYear(); // obtiene el año actual
     let month = fechaActual.getMonth() + 1; // obtiene el mes actual (0-11, por lo que añadimos 1)
@@ -210,10 +213,12 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
     let meses = JSON.parse(localStorage.getItem(`category_chart_3_${cliente_id}`));
 
     procesarDatosLeyenda(totales, meses);
+
   }
 
   // Inicializar en la primera carga
   init();
+
 
   // Reinicializar después de cambiar de página
   document.addEventListener("astro:after-swap", init);

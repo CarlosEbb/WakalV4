@@ -28,98 +28,99 @@ if(responseData.data.errors || responseData.code !== 200){
 
 ---
 <Layout title="Dashboard" bodyClass="bg-gray-100">
-    
-    <CardContentPage>
-            <div class="flex items-center">
-                <div class="w-48"></div>
-                <h2 class="font-semibold text-custom-secundary text-xl text-center flex-grow">Panel de {locals.rol_id == 2 ? 'Contribuyentes' : 'Clientes'}</h2>
-                
-                <div class="w-48">
-                    {locals.rol_id == 1 &&
-                        <ButtonAction icon="plus" text="Agregar Cliente" redirect="/dashboard/clientes/create"/>
-                    }
-                </div>
-            </div>
-                
-                
-            <DynamicTable 
-                columnas={[
-                    "Nº",
-                    "Razón Social",
-                    "RIF",
-                    "Fecha de Registro",
-                    "Acciones",
-                ]}>
-                {clientes.map((cliente, index) => (
+    <div class="card_table">
+        <CardContentPage>
+                <div class="flex items-center">
+                    <div class="w-48"></div>
+                    <h2 class="font-semibold text-custom-secundary text-xl text-center flex-grow">Panel de {locals.rol_id == 2 ? 'Contribuyentes' : 'Clientes'}</h2>
                     
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="w-4 p-4">
-                        {index+1}
-                        </td>
-                        <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                            <div transition:name=`imagen-perfil-${cliente.id}`>
-                                {cliente.logo ? (
-                                    <a href={locals.rol_id == 1 ? `/dashboard/clientes/show/${cliente.id}` : ''} data-tippy-content={locals.rol_id == 1 ? 'Perfil' : 'Logo'}>
-                                        <Image src={import.meta.env.PUBLIC_BASE_URL+cliente.logo} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
-                                    </a>
-                                ) : (
-                                    <a href={locals.rol_id == 1 ? `/dashboard/clientes/show/${cliente.id}` : ''} data-tippy-content={locals.rol_id == 1 ? 'Perfil' : 'Logo'} id={cliente.id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center">
-                                        <div class="menu-trigger h-11 w-11 ml-auto rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white select-none text-lg font-semibold">
-                                            {cliente.nombre_cliente.charAt(0)}
-                                        </div>
-                                    </a>
-                                )}
-                            </div>
-                            <div class="ps-3">
-                                <div class="text-base font-semibold">{cliente.nombre_cliente}</div>
-                            </div>  
-                        </th>
-                        <td>
-                            {cliente.rif}
-                        </td>
-                        <!-- 
-                        <td class="px-6 py-4">
-                            
-                            <div class="flex items-center justify-center">
-                                {cliente.isConnected == true &&
-                                    <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2" data-tippy-content="Activo"></div> <span>Conectado</spanspan>
-                                }
-                                {cliente.isConnected == false &&
-                                    <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2" data-tippy-content="Deshabilitado"></div><span>Desconectado</span>
-                                }
-                                
-                            </div>
-                            
-                        </td>
-                        -->
-                        <td class="px-6 py-4">
-                            
-                            <div class="flex items-center justify-center">
-                                {cliente.enabled == 1 &&
-                                    <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2" data-tippy-content="Activo"></div>
-                                }
-                                {cliente.enabled == 0 &&
-                                    <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2" data-tippy-content="Deshabilitado"></div>
-                                }
-                                {convertDateTime(cliente.created_at,'DD/MM/YYYY')}
-                            </div>
-                            
-                        </td>
+                    <div class="w-48">
+                        {locals.rol_id == 1 &&
+                            <ButtonAction icon="plus" text="Agregar Cliente" redirect="/dashboard/clientes/create"/>
+                        }
+                    </div>
+                </div>
+                    
+                    
+                <DynamicTable 
+                    columnas={[
+                        "Nº",
+                        "Razón Social",
+                        "RIF",
+                        "Fecha de Registro",
+                        "Acciones",
+                    ]}>
+                    {clientes.map((cliente, index) => (
                         
-                        <td class="px-6 py-4 justify-center items-center">
-                            <div class="flex justify-center">
-                                {locals.rol_id == 1 &&
-                                    <a href={'/dashboard/clientes/update/'+cliente.id} class="text-blue-600 dark:text-blue-500 hover:underline" data-tippy-content="Editar"><Icon name="edit" size={25} /></a>
-                                    <a href={'/dashboard/clientes/show/'+cliente.id} class="text-blue-600 dark:text-blue-500 hover:underline ml-1" data-tippy-content="Ver Perfil"><Icon name="eye" size={25} /></a>
-                                }
-                                <a href={'/dashboard/clientes/home?c='+cliente.id} class="text-blue-600 dark:text-blue-500 hover:underline ml-1" data-tippy-content="Ir"><Icon name="arrow-right" size={25} /></a>
-                            </div>
-                        </td>
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <td class="w-4 p-4">
+                            {index+1}
+                            </td>
+                            <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                                <div transition:name=`imagen-perfil-${cliente.id}`>
+                                    {cliente.logo ? (
+                                        <a href={locals.rol_id == 1 ? `/dashboard/clientes/show/${cliente.id}` : ''} data-tippy-content={locals.rol_id == 1 ? 'Perfil' : 'Logo'}>
+                                            <Image src={import.meta.env.PUBLIC_BASE_URL+cliente.logo} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
+                                        </a>
+                                    ) : (
+                                        <a href={locals.rol_id == 1 ? `/dashboard/clientes/show/${cliente.id}` : ''} data-tippy-content={locals.rol_id == 1 ? 'Perfil' : 'Logo'} id={cliente.id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center">
+                                            <div class="menu-trigger h-11 w-11 ml-auto rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white select-none text-lg font-semibold">
+                                                {cliente.nombre_cliente.charAt(0)}
+                                            </div>
+                                        </a>
+                                    )}
+                                </div>
+                                <div class="ps-3">
+                                    <div class="text-base font-semibold">{cliente.nombre_cliente}</div>
+                                </div>  
+                            </th>
+                            <td>
+                                {cliente.rif}
+                            </td>
+                            <!-- 
+                            <td class="px-6 py-4">
+                                
+                                <div class="flex items-center justify-center">
+                                    {cliente.isConnected == true &&
+                                        <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2" data-tippy-content="Activo"></div> <span>Conectado</spanspan>
+                                    }
+                                    {cliente.isConnected == false &&
+                                        <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2" data-tippy-content="Deshabilitado"></div><span>Desconectado</span>
+                                    }
+                                    
+                                </div>
+                                
+                            </td>
+                            -->
+                            <td class="px-6 py-4">
+                                
+                                <div class="flex items-center justify-center">
+                                    {cliente.enabled == 1 &&
+                                        <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2" data-tippy-content="Activo"></div>
+                                    }
+                                    {cliente.enabled == 0 &&
+                                        <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2" data-tippy-content="Deshabilitado"></div>
+                                    }
+                                    {convertDateTime(cliente.created_at,'DD/MM/YYYY')}
+                                </div>
+                                
+                            </td>
+                            
+                            <td class="px-6 py-4 justify-center items-center">
+                                <div class="flex justify-center">
+                                    {locals.rol_id == 1 &&
+                                        <a href={'/dashboard/clientes/update/'+cliente.id} class="text-blue-600 dark:text-blue-500 hover:underline" data-tippy-content="Editar"><Icon name="edit" size={25} /></a>
+                                        <a href={'/dashboard/clientes/show/'+cliente.id} class="text-blue-600 dark:text-blue-500 hover:underline ml-1" data-tippy-content="Ver Perfil"><Icon name="eye" size={25} /></a>
+                                    }
+                                    <a href={'/dashboard/clientes/home?c='+cliente.id} class="text-blue-600 dark:text-blue-500 hover:underline ml-1" data-tippy-content="Ir"><Icon name="arrow-right" size={25} /></a>
+                                </div>
+                            </td>
 
-                    </tr>
-                ))}
-            </DynamicTable>
-    </CardContentPage>
+                        </tr>
+                    ))}
+                </DynamicTable>
+        </CardContentPage>
+    </div>
     {errors.all.length > 0 && <ToastNotification slot="toast" type={'error'} textArray={errors.all}/>}
     {successMessage.all.length > 0 && <ToastNotification slot="toast" type={'success'} textArray={successMessage.all}/>}
 </Layout>

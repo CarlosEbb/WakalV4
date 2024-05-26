@@ -37,7 +37,8 @@ export async function onRequest({ locals, request, url, cookies }, next) {
             locals.rol_id = session.rol_id;
             locals.cliente_id = session.cliente_id;
             locals.logo = session.logo;
-
+            locals.is_tour = session.is_tour;
+            
             return next();
         } catch (err) {
             return new Response(null, {

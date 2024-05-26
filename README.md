@@ -9,3 +9,9 @@ npm i tippy.js
 npx astro add node
 npm i moment    
 npm install flowbite-datepicker --save
+npm install guidechimp
+npm install xmlbuilder2
+
+
+opcionales
+npm install shepherd.js --save

@@ -50,37 +50,35 @@ INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(1
 
 --otros clientes temporal, cambiar el cliente_id por el que corresponda
 
-INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Número de Control',17);
+INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Número de Control',18);
 INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(@@identity,1);
 
-INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Número de Documento',17);
+INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Número de Documento',18);
 INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(@@identity,2);
 
-INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Fecha Emisión/Asignación',17);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(@@identity,1);
 
-INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Tipo de Documento',17);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(74,3);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(74,11);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(74,4);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(74,5);
+INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Tipo de Documento',18);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(145,3);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(145,11);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(145,4);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(145,5);
 
-INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Fecha Emisión/Asignación',1);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(75,11);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(75,4);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(75,5);
+INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Fecha Emisión/Asignación',18);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(146,11);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(146,4);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(146,5);
 
-INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Número de RIF/CI',17);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(125,6);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(125,11);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(125,4);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(125,5);
+INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Número de RIF/CI',18);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(147,6);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(147,11);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(147,4);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(147,5);
 
-INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Razón Social',17);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(142,8);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(142,11);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(142,4);
-INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(142,5);
+INSERT INTO "dba"."consultas" ("nombre","cliente_id") VALUES('Razón Social',18);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(148,8);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(148,11);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(148,4);
+INSERT INTO "dba"."consultas_parametros" ("consulta_id","parametro_id") VALUES(148,5);
 
 
 
