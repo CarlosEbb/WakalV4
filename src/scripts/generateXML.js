@@ -6,28 +6,44 @@ export function generateXML(dataTable) {
     
     dataTable.forEach((data, index) => {
       doc.ele(`CLIENTE${index + 1}`)
-        .ele('RIFPrestador').txt('J-003274445').up()
-        .ele('TipoDocumento').txt(data.tipo_documento).up()
-        .ele('NumeroDocumento').txt(data.numero_documento).up()
-        .ele('FechaDocumento').txt(data.fecha_emision).up()
-        .ele('HoraEmision').txt(data.hora_emision).up()
-        .ele('RIFCliente').txt(data.rif).up()
-        .ele('CodigoOperacion').txt(data.codigo_operacion).up()
-        .ele('Precio').txt(data.neto_pagar).up()
-        .ele('MontoBaseImponibleIVA').txt(data.base_imponible).up()
-        .ele('MontoIVA').txt(data.monto_iva).up()
-        .ele('totalExento').txt(data.monto_exento).up()
-        .ele('totalAPagar').txt(data.total_pagar).up()
-        .ele('MontoIGTF').txt(data.igtf).up()
+        .ele('RIFPrestador').txt(data.RIFPrestador).up()
+        .ele('TipoDocumento').txt(data.TipoDocumento).up()
+        .ele('NumeroDocumento').txt(data.NumeroDocumento).up()
+        .ele('FechaDocumento').txt(data.FechaDocumento).up()
+        .ele('HoraEmision').txt(data.HoraEmision).up()
+        .ele('RIFCliente').txt(data.RIFCliente).up()
+        .ele('CodigoOperacion').txt(data.CodigoOperacion).up()
+        .ele('Precio').txt(data.Precio).up()
+        .ele('MontoBaseImponibleIVA').txt(data.MontoBaseImponibleIVA).up()
+        .ele('MontoIVA').txt(data.MontoIVA).up()
+        .ele('totalExento').txt(data.totalExento).up()
+        .ele('totalAPagar').txt(data.totalAPagar).up()
+        .ele('MontoIGTF').txt(data.MontoIGTF).up()
         .up();
     });
     
     return doc.end({ prettyPrint: true });
 }
 
+export function collectRowData(row) {
+  return {
+      RIFPrestador: row.querySelector('.rif_prestador').innerText,
+      TipoDocumento: row.querySelector('.tipo_documento').innerText,
+      NumeroDocumento: row.querySelector('.numero_documento').innerText,
+      FechaDocumento: row.querySelector('.fecha_emision').innerText,
+      HoraEmision: row.querySelector('.hora_emision').innerText,
+      RIFCliente: row.querySelector('.rif').innerText, // Asegúrate de usar la clase correcta si hay otra para RIFCliente
+      CodigoOperacion: row.querySelector('.codigo_operacion').innerText,
+      Precio: row.querySelector('.neto_pagar').innerText, // Asegúrate de que esta clase sea correcta
+      MontoBaseImponibleIVA: row.querySelector('.base_imponible').innerText,
+      MontoIVA: row.querySelector('.monto_iva').innerText,
+      totalExento: row.querySelector('.monto_exento').innerText,
+      totalAPagar: row.querySelector('.total_pagar').innerText,
+      MontoIGTF: row.querySelector('.igtf').innerText
+  };
+}
+
 export function downloadXML(xml, filename) {
-    console.log(1111);
-    console.log(xml);
     const blob = new Blob([xml], { type: 'application/xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

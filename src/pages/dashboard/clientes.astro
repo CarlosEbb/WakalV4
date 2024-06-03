@@ -109,6 +109,7 @@ if(responseData.data.errors || responseData.code !== 200){
                             <td class="px-6 py-4 justify-center items-center">
                                 <div class="flex justify-center">
                                     {locals.rol_id == 1 &&
+                                        <a href={'/dashboard/clientes/config/'+cliente.id} class="text-blue-600 dark:text-blue-500 hover:underline" data-tippy-content="Tipos de Búsqueda"><Icon name="list-search" size={25} /></a>
                                         <a href={'/dashboard/clientes/update/'+cliente.id} class="text-blue-600 dark:text-blue-500 hover:underline" data-tippy-content="Editar"><Icon name="edit" size={25} /></a>
                                         <a href={'/dashboard/clientes/show/'+cliente.id} class="text-blue-600 dark:text-blue-500 hover:underline ml-1" data-tippy-content="Ver Perfil"><Icon name="eye" size={25} /></a>
                                     }

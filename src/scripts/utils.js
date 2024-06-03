@@ -38,12 +38,17 @@ export function incrementoNumerico(vinicial, vFinal, clase) {
     }
   }
 
-export async function actualizarDatos(token, url, clase) {
+export async function actualizarDatos(token, url, clase, valor = 0) {
     let totalCard1Cache = localStorage.getItem('total_'+clase);
-    const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,url,'GET',null,token);
-    if (responseData.data && responseData.data.total) {
-      incrementoNumerico(totalCard1Cache, parseInt(responseData.data.total), clase);
-      localStorage.setItem('total_'+clase, responseData.data.total);
+    if(url != null){
+      const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,url,'GET',null,token);
+      if (responseData.data && responseData.data.total) {
+        incrementoNumerico(totalCard1Cache, parseInt(responseData.data.total), clase);
+        localStorage.setItem('total_'+clase, responseData.data.total);
+      }
+    }else{
+        incrementoNumerico(totalCard1Cache, parseInt(valor), clase);
+        localStorage.setItem('total_'+clase, valor);
     }
   }
 
@@ -135,7 +140,11 @@ export function setElementValueByName(name, value) {
   var selectElement = document.querySelector('select[name="' + name + '"]');
 
   if (inputElement) {
+    if (inputElement.type === 'checkbox'){
+      inputElement.checked = true;
+    }else{
       inputElement.value = value;
+    }
   } else if (selectElement) {
       selectElement.value = value;
       // Opcionalmente, puedes disparar el evento 'change' si necesitas que otros scripts respondan al cambio de valor.
@@ -144,4 +153,59 @@ export function setElementValueByName(name, value) {
   } else {
       console.log('No se encontró ningún input o select con el nombre "' + name + '".');
   }
+}
+
+export function capitalizeFirstLetter(input) {
+  // Obtener el valor actual del input
+  let value = input.value;
+
+  // Verificar si el valor no está vacío
+  if (value.length > 0) {
+      // Capitalizar la primera letra y combinarla con el resto del texto
+      input.value = value.charAt(0).toUpperCase() + value.slice(1);
+  }
+}
+
+export function formatNumber(input) {
+  // Verificar si el input es null o undefined
+  if (input == null) {
+      return "0,00";
+  }
+
+  // Convertir el input a string (en caso de que no lo sea) y eliminar puntos, comas y ceros a la izquierda
+  let cleanedNumber = String(input).replace(/[\.,]/g, ''); // Elimina puntos y comas
+  cleanedNumber = cleanedNumber.replace(/^0+/, ''); // Elimina ceros a la izquierda
+
+  // Manejar el caso donde el número es vacío después de eliminar ceros a la izquierda
+  if (cleanedNumber === '') {
+      cleanedNumber = '0';
+  }
+
+  // Agregar la coma para los centavos
+  if (cleanedNumber.length <= 2) {
+      cleanedNumber = cleanedNumber.padStart(3, '0'); // Asegurar que haya al menos 3 dígitos para la coma
+  }
+  let numberWithComma = cleanedNumber.slice(0, -2) + ',' + cleanedNumber.slice(-2);
+
+  // Agregar los puntos para los miles
+  let parts = numberWithComma.split(',');
+  let integerPart = parts[0];
+  let decimalPart = parts[1];
+  let formattedIntegerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Agrega puntos a los miles
+
+  return formattedIntegerPart + ',' + decimalPart;
+}
+
+export function findPlaceholder(data, valueToFind) {
+  const { placeholder, values } = data;
+  const stringValueToFind = String(valueToFind); // Convertir el valor a buscar a cadena
+
+  for (let i = 0; i < values.length; i++) {
+    // Convertir cada valor en el array a cadena y verificar si coincide
+    if (values[i].some(value => String(value) === stringValueToFind)) {
+      return placeholder[i];
+    }
+  }
+
+  return null; // Si no se encuentra el valor
 }

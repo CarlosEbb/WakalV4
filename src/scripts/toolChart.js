@@ -149,9 +149,11 @@ export async function preparechart(cliente_id, id_chart, type_chart, color_1, co
       }
 
       const responseData = await customFunction(); // Ejecuta la función personalizada
-      localStorage.setItem(storageName_chart_1, JSON.stringify(Object.values(responseData)));
-      localStorage.setItem(storageName_category_chart_1, JSON.stringify(Object.keys(responseData)));
-      updateChart(Object.values(responseData),Object.keys(responseData));
+      if(responseData != null){
+        localStorage.setItem(storageName_chart_1, JSON.stringify(Object.values(responseData)));
+        localStorage.setItem(storageName_category_chart_1, JSON.stringify(Object.keys(responseData)));
+        updateChart(Object.values(responseData),Object.keys(responseData));
+      }
     }
     return chart;
 }

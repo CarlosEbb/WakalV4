@@ -1,0 +1,134 @@
+---
+import CardContentPage from "../../../../components/CardContentPage.astro";
+import Layout from "../../../../layouts/Layout.astro";
+import DataForm from "../../../../components/DataForm/Clientes.astro";
+
+import { apiController } from '../../../../scripts/request.js';
+import ToastNotification from "../../../../components/ToastNotification.astro";
+import { Icon } from "astro-icon/components";
+import ButtonAction from "../../../../components/ButtonAction.astro";
+import InputField from "../../../../components/InputField.astro";
+
+const locals:any = Astro.locals;
+
+let errors = {all: [] };
+let successMessage = {all: []};
+
+const ispage = Astro.url.searchParams;
+let isConsulta:any = ispage.get('consulta');
+let data:any = {};
+let elimino = false;
+let consultas = [];
+
+if (Astro.request.method === "POST") {
+  try {
+   
+    const formData = await Astro.request.formData();
+
+    for (let [key, value] of formData.entries()) {
+          data[key] = value;
+    }
+
+    const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/consultas/'+data.consulta_id,'DELETE',data, locals.token);
+    console.log(responseData);
+    if(responseData.data.errors || responseData.code !== 200){
+       errors.all = responseData.data.errors ? responseData.data.errors : [];
+     }else{
+       successMessage.all = [responseData.message];
+     }
+     elimino = true;
+   
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+      errors.all = ["¡Ups! Parece que algo no salió como se esperaba. Por favor, intenta de nuevo."];
+    }
+  }
+}
+
+const responseDataConsultas = await apiController(import.meta.env.PUBLIC_BASE_URL,'/consultas/cliente/'+Astro.params.id,'GET',null, locals.token);
+
+if(responseDataConsultas.data.errors || responseDataConsultas.code !== 200){
+    errors.all = responseDataConsultas.data.errors ? responseDataConsultas.data.errors : [];
+}else{
+    consultas = responseDataConsultas.data;
+    successMessage.all = [responseDataConsultas.message];
+}
+
+
+if ((isConsulta === null && consultas.length > 0) || elimino) {
+    // Asignar el valor del primer ID a isConsulta
+    console.log(11111111,consultas);
+    if(consultas.length > 0){
+        isConsulta = consultas[0].id;
+    }else{
+        return Astro.redirect("/dashboard/clientes");
+    }
+}
+
+let consultaConId:any = [];
+
+if(isConsulta != null){
+    consultaConId = consultas.find(consulta => consulta.id == isConsulta);
+    if(consultaConId == undefined){
+        return Astro.redirect("/dashboard/clientes");
+    }
+}
+
+      
+---
+<Layout title="Dashboard" subTitle="Actualizar Cliente" bodyClass="bg-gray-100" isSearchBar={false}>
+    <CardContentPage>
+        <div class="grid grid-cols-12">
+            <div class="col-span-3 border-r-2">
+                <ul class="flex flex-col py-4 space-y-1">
+                    <li class="flex justify-center items-center mb-5">
+                        <ButtonAction redirect={`/dashboard/clientes/config/create/${Astro.params.id}`} icon="plus" text="Agregar Consulta"/>
+                    </li>
+                    {consultas.map((consulta, index) => (
+                    <li>
+                        <a href={"/dashboard/clientes/config/"+Astro.params.id+"?consulta="+consulta.id} class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${isConsulta == consulta.id ? 'bg-custom-secundary text-white' : 'text-custom-secundary'}  hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+                            <span class="inline-flex justify-center items-center ml-4">
+                                <Icon name="minus"  class="w-5 h-5" />
+                            </span>
+                            <span class="ml-2 text-sm tracking-wide truncate">{consulta.nombre}</span>
+                        </a>
+                    </li>
+                    ))}
+                </ul>
+            </div>
+            <div class="col-span-9">
+                {isConsulta != null && isConsulta == consultaConId.id && (
+                    <div class="flex flex-col">
+                        <h1 class="flex justify-center items-center font-semibold text-custom-secundary text-xl ">{consultaConId.nombre}</h1>
+                    </div>
+                    <div class="p-14">
+                        <h2>Parámetros de búsqueda:</h2>
+                        <ul>
+                            {consultaConId.parametros.map(parametro => (
+                                <li>
+                                    <div class="my-4">
+                                        <InputField disabled={true} id="nombre_cliente" value={parametro.placeholder} name="nombre_consulta" type="text" icon="user-circle" placeholder={parametro.placeholder} addClassInput=""/>
+                                        <InputField hidden={true} id="nombre_cliente" value={parametro.id} name="nombre_consulta" type="text" icon="user-circle" placeholder={parametro.placeholder} addClassInput=""/>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                        <div class="flex justify-end">
+                            <form method="POST">
+                                <InputField hidden={true} id="id_consulta" value={isConsulta} name="consulta_id" type="text" icon="user-circle" placeholder="Consulta ID"/>
+                                <ButtonAction icon="trash" text="Eliminar Consulta"/>
+                            </form>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+        
+        
+
+    </CardContentPage>
+    {errors.all.length > 0 && <ToastNotification slot="toast" type={'error'} textArray={errors.all}/>}
+    {successMessage.all.length > 0 && <ToastNotification slot="toast" type={'success'} textArray={successMessage.all}/>}
+</Layout>
+

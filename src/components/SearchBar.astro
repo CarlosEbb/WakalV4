@@ -85,7 +85,7 @@ let successMessage = {all: []};
             if (param.tipo_input === 'text') {
                 content += '<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="' + param.name + '" placeholder="' + param.placeholder + '" />';
                 if(param.name == "numero_control" || param.name == "numero_documento"){
-                  content += `<div class="relative flex items-center"><input id="${param.name}_check" name="especifico_check" type="checkbox" value="1" checked=""} class="appearance-none w-6 h-6 rounded-full border-2 border-gray-400 checked:bg-custom-primary checked:border-transparent focus:outline-none transition-all duration-300 mr-2"/><label for="${param.name}_check" class="text-sm cursor-pointer select-none text-white">Específico</label></div>`;
+                  content += `<div class="relative flex items-center"><input id="${param.name}_check" name="especifico_check" type="checkbox" value="1" class="appearance-none w-6 h-6 rounded-full border-2 border-gray-400 checked:bg-custom-primary checked:border-transparent focus:outline-none transition-all duration-300 mr-2"/><label for="${param.name}_check" class="text-sm cursor-pointer select-none text-white">Específico</label></div>`;
                 }
             } else if (param.tipo_input === 'selected') {
               var selectOptions = param.column_reference_cliente_value;
@@ -100,14 +100,18 @@ let successMessage = {all: []};
   
                 content += selectHtml;
               }else{
-                if(param.name == "tipo_fecha"){
-                  content += '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option selected disabled value="">' + param.placeholder + '</option><option value="emision">Emisión</option><option value="asignacion">Asignación</option></select>';
-                }else{
-                  content += '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option value="">' + param.placeholder + '</option></select>';
-                }
+                
+                content += '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option value="">' + param.placeholder + '</option></select>';
+                
               }
             } else if (param.tipo_input === 'date') {
+              if(param.name == "fecha"){
+                content += '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="tipo_fecha"><option selected disabled value="">Tipo de Fecha</option><option value="emision">Emisión</option><option value="asignacion">Asignación</option></select>';
+                content += '<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="' + param.name + "_inicio" + '" placeholder="Fecha Inicial" />';
+                content += '<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="' + param.name + "_final" + '" placeholder="Fecha Final" />';
+              }else{
                 content += '<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="' + param.name + '" placeholder="' + param.placeholder + '" />';
+              }
             }
         });
 
@@ -117,17 +121,17 @@ let successMessage = {all: []};
     if(cliente_id){
       if(storage_tipoBusqueda){
         data = storage_tipoBusqueda;
-      }else{
-        
-        const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultas/cliente/${cliente_id}`,'GET',null,objeto.token);
-        if(responseData.data.errors || responseData.code !== 200){
-          console.log("Conexión perdida a la BD, intente mas tarde");
-        }else{
-          data = responseData.data;
-          localStorage.setItem(storageName_tipoBusqueda, JSON.stringify(data));
-        }
-        
       }
+        
+      const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultas/cliente/${cliente_id}`,'GET',null,objeto.token);
+      if(responseData.data.errors || responseData.code !== 200){
+        console.log("Conexión perdida a la BD, intente mas tarde");
+      }else{
+        data = responseData.data;
+        localStorage.setItem(storageName_tipoBusqueda, JSON.stringify(data));
+      }
+        
+      
       
       var selectTipoBusqueda:any = document.querySelector('.tipoBusqueda');
         // Llenar el select .tipoBusqueda con las opciones disponibles

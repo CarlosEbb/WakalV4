@@ -75,9 +75,11 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
 </Layout>
 
 <script>
-  import {incrementoNumerico, actualizarDatos, obtenerCookie, getQueryParam} from "../../../scripts/utils.js";  
+  import {incrementoNumerico, actualizarDatos, obtenerCookie, getQueryParam, obtenerNombreDelMes} from "../../../scripts/utils.js";  
+  import {preparechart, customFunctionApi_chart_1, procesarDatosLeyenda} from "../../../scripts/toolChart.js";
+  import { apiController } from '../../../scripts/request.js';
 
-  function init() {
+  async function init() {
       let cliente_id = getQueryParam('c');
       var cookies = obtenerCookie('others');
       var objeto = JSON.parse(cookies);
@@ -85,79 +87,114 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
       let fechaActual = new Date(); // Obtiene la fecha actual
       let mesActual = fechaActual.getMonth() + 1; // Obtiene el mes actual
       let yearActual = fechaActual.getFullYear(); // Obtiene el year actual
+      let proximoMes = new Date(yearActual, mesActual, 1).getMonth() + 1;
 
       fechaActual.setMonth(fechaActual.getMonth() - 1); // Resta 1 al mes actual
       let mesAnterior = fechaActual.getMonth() + 1; // Obtiene el mes anterior
       let yearAnterior = fechaActual.getFullYear(); // Obtiene el year del mes anterior
 
       if(cliente_id != "undefined" && cliente_id != null){
-          var clase_card_1 = `card_1_${cliente_id}`;
-          var storageName_card_1 = `total_${clase_card_1}`;
-          var url_card_1 = `/consultasCliente/${cliente_id}/getTotalEmitidos`;
-          const cache_total_card_1 = localStorage.getItem(storageName_card_1);
 
-          if (cache_total_card_1) {
-            incrementoNumerico(0, parseInt(cache_total_card_1), clase_card_1);
-          }else{
-            localStorage.setItem(storageName_card_1, "0");
-            actualizarDatos(objeto.token, url_card_1, clase_card_1);
-          }
-          // Llama a la función cada 10s
-          //setInterval(function() {
-            actualizarDatos(objeto.token, url_card_1, clase_card_1);
-          //}, 10000);
-          
-          //card 2
+        //card 2
           var clase_card_2 = `card_2_${cliente_id}`;
           var storageName_card_2 = `total_${clase_card_2}`;
           var url_card_2 = `/consultasCliente/${cliente_id}/getTotalMes/${yearAnterior}/${mesAnterior}`;
           const cache_total_card_2 = localStorage.getItem(storageName_card_2);
-
-          if (cache_total_card_2) {
-            incrementoNumerico(0, parseInt(cache_total_card_2), clase_card_2);
-          }else{
-            localStorage.setItem(storageName_card_2, "0");
-            actualizarDatos(objeto.token, url_card_2, clase_card_2);
-          }
-          // Llama a la función cada 10s
-          //setInterval(function() {
-            actualizarDatos(objeto.token, url_card_2, clase_card_2);
-          //}, 10000);
-
-          //card 3
           var clase_card_3 = `card_3_${cliente_id}`;
           var storageName_card_3 = `total_${clase_card_3}`;
           var url_card_3 = `/consultasCliente/${cliente_id}/getTotalMes/${yearActual}/${mesActual}`;
           const cache_total_card_3 = localStorage.getItem(storageName_card_3);
 
+          if (cache_total_card_2) {
+            incrementoNumerico(0, parseInt(cache_total_card_2), clase_card_2);
+          }else{
+            localStorage.setItem(storageName_card_2, "0");
+          }
           if (cache_total_card_3) {
             incrementoNumerico(0, parseInt(cache_total_card_3), clase_card_3);
           }else{
             localStorage.setItem(storageName_card_3, "0");
-            actualizarDatos(objeto.token, url_card_3, clase_card_3);
           }
-          // Llama a la función cada 10s
-          //setInterval(function() {
-            actualizarDatos(objeto.token, url_card_3, clase_card_3);
-          //}, 10000);
-          
-          //card 4
+        
 
+          async function customFunctionApi_chart_2(clase_chart_2, token, current_year, current_month, leyenda = false){
+              let json = {};
+              for(let month = 1; month <= current_month; month++){
+                  const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultasCliente/${cliente_id}/getTotalMes/${current_year}/${month}`,'GET',null,token);
+                  // Almacenar la información en el objeto json
+                  json[obtenerNombreDelMes(month)] = responseData.data.total;
+              }
+
+              if(leyenda){
+                procesarDatosLeyenda(Object.values(json), Object.keys(json));
+              }
+              return json;
+          }
+
+          //renderizar graficas por cache
+          let chart_2 = await preparechart(cliente_id, 'chart_2', 'area', ["#765ba6"], ["#765ba6"], "Cant. Nº Control Anual (" + yearActual + ")", () => null,);
+          let chart_3 = await preparechart(cliente_id, 'chart_3', 'radialBar', ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6", "#ea5f5a"], ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6", "#ea5f5a"], "Proyección Nº Control: Mes Entrante (" + obtenerNombreDelMes(proximoMes) + ")", () => null);
+          // Ejecutar customFunctionApi_chart_2 sin detener la ejecución del resto del código
+          customFunctionApi_chart_2('chart_2', objeto.token, yearActual, mesActual, true)
+              .then(datos_mesuales => {
+                  preparechart(cliente_id, 'chart_2', 'area', ["#765ba6"], ["#765ba6"], "Cant. Nº Control Anual (" + yearActual + ")", () => datos_mesuales, chart_2);
+                  preparechart(cliente_id, 'chart_3', 'radialBar', ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6", "#ea5f5a"], ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6", "#ea5f5a"], "Proyección Nº Control: Mes Entrante (" + obtenerNombreDelMes(proximoMes) + ")", () => datos_mesuales, chart_3);
+                  
+                  actualizarDatos(objeto.token, null, clase_card_2, datos_mesuales[obtenerNombreDelMes(mesActual)] );
+                  actualizarDatos(objeto.token, null, clase_card_3, datos_mesuales[obtenerNombreDelMes(mesAnterior)]);
+              })
+              .catch(error => {
+                  console.error("Error en customFunctionApi_chart_2:", error);
+              });
+
+
+          let chart_1 = await preparechart(cliente_id, 'chart_1', 'bar', ["#f29140"], ["#e77a82"], "Cant. Nº Control Semanal (" + obtenerNombreDelMes(mesActual) + ")", () => null);
+          preparechart(cliente_id, 'chart_1', 'bar', ["#f29140"], ["#e77a82"], "Cant. Nº Control Semanal (" + obtenerNombreDelMes(mesActual) + ")", () => customFunctionApi_chart_1(objeto.token, `/consultasCliente/${cliente_id}/getTotalEmitidosSemanal/${yearActual}/0${mesActual}`), chart_1);
+
+          ///////////
+    
+          var clase_card_1 = `card_1_${cliente_id}`;
+          var storageName_card_1 = `total_${clase_card_1}`;
+          var url_card_1 = `/consultasCliente/${cliente_id}/getTotalEmitidos`;
+          const cache_total_card_1 = localStorage.getItem(storageName_card_1);
           var clase_card_4 = `card_4_${cliente_id}`;
           var storageName_card_4 = `total_${clase_card_4}`;
           var url_card_4 = `/consultasCliente/${cliente_id}/getTotalEmitidos`;
           const cache_total_card_4 = localStorage.getItem(storageName_card_4);
 
+
+          if (cache_total_card_1) {
+            incrementoNumerico(0, parseInt(cache_total_card_1), clase_card_1);
+          }else{
+            localStorage.setItem(storageName_card_1, "0");
+          }
           if (cache_total_card_4) {
             incrementoNumerico(0, parseInt(cache_total_card_4), clase_card_4);
           }else{
             localStorage.setItem(storageName_card_4, "0");
-            actualizarDatos(objeto.token, url_card_4, clase_card_4);
           }
+          
+          apiController(import.meta.env.PUBLIC_BASE_URL,url_card_1,'GET',null,objeto.token)
+          .then(responseData => {
+            if (responseData.data && responseData.data.total) {
+              actualizarDatos(objeto.token, null, clase_card_1, responseData.data.total);
+              actualizarDatos(objeto.token, null, clase_card_4, responseData.data.total);
+            }
+          })
+          .catch(error => {
+              console.error("apiController card_1 y card_4:", error);
+          });
+          
+          
+
+          
           // Llama a la función cada 10s
           //setInterval(function() {
-            actualizarDatos(objeto.token, url_card_4, clase_card_4);
+            //actualizarDatos(objeto.token, url_card_2, clase_card_2);
           //}, 10000);
+
+         
+
       }
   }
 
@@ -167,59 +204,4 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
   // Reinicializar después de cambiar de página
   document.addEventListener("astro:after-swap", init);
 
-</script>
-
-<script>
-  import {obtenerCookie, getQueryParam, obtenerNombreDelMes} from "../../../scripts/utils.js";
-  import {preparechart, customFunctionApi_chart_1, procesarDatosLeyenda} from "../../../scripts/toolChart.js";
-  import { apiController } from '../../../scripts/request.js';
-
-  
-  let cliente_id = getQueryParam('c');
-  var cookies = obtenerCookie('others');
-  var objeto = JSON.parse(cookies);
-
-  async function init() {
-   
-    
-    let fechaActual = new Date(); // obtiene la fecha y hora actual
-    let year = fechaActual.getFullYear(); // obtiene el año actual
-    let month = fechaActual.getMonth() + 1; // obtiene el mes actual (0-11, por lo que añadimos 1)
-    let proximoMes = new Date(year, month, 1).getMonth() + 1;
-
-    async function customFunctionApi_chart_2(clase_chart_2, token, current_year, current_month, leyenda = false){
-        let json = {};
-        for(let month = 1; month <= current_month; month++){
-            const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultasCliente/${cliente_id}/getTotalMes/${current_year}/${month}`,'GET',null,token);
-            // Almacenar la información en el objeto json
-            json[obtenerNombreDelMes(month)] = responseData.data.total;
-        }
-
-        if(leyenda){
-          procesarDatosLeyenda(Object.values(json), Object.keys(json));
-        }
-        return json;
-    }
-
-    //el 0 adelante de consumo api ayuda para que no salga la fecha completa y salga abreviado ejemplo: 04~05
-    //type: bar | area
-    preparechart( cliente_id, 'chart_1', 'bar' , ["#f29140"], ["#e77a82"], "Cant. Nº Control Semanal ("+ obtenerNombreDelMes(month)+")", () => customFunctionApi_chart_1(objeto.token,`/consultasCliente/${cliente_id}/getTotalEmitidosSemanal/${year}/0${month}`));
-  
-    preparechart( cliente_id, 'chart_2', 'area', ["#765ba6"], ["#765ba6"], "Cant. Nº Control Anual ("+ year +")", () => customFunctionApi_chart_2('chart_2',objeto.token,year, month));
-
-    preparechart( cliente_id, 'chart_3', 'radialBar', ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6","#ea5f5a"], ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6","#ea5f5a"], "Proyección Nº Control: Mes Entrante ("+ obtenerNombreDelMes(proximoMes) +")", () => customFunctionApi_chart_2('chart_2',objeto.token,year, month, true));
-  
-    let totales = JSON.parse(localStorage.getItem(`total_chart_3_${cliente_id}`));
-    let meses = JSON.parse(localStorage.getItem(`category_chart_3_${cliente_id}`));
-
-    procesarDatosLeyenda(totales, meses);
-
-  }
-
-  // Inicializar en la primera carga
-  init();
-
-
-  // Reinicializar después de cambiar de página
-  document.addEventListener("astro:after-swap", init);
 </script>

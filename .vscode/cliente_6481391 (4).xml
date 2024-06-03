@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLIENTES>
+  <CLIENTE1>
+    <RIFPrestador>J-30083118-3</RIFPrestador>
+    <TipoDocumento>1</TipoDocumento>
+    <NumeroDocumento>6481391</NumeroDocumento>
+    <FechaDocumento>02-05-2024</FechaDocumento>
+    <HoraEmision>02:15:01 pm</HoraEmision>
+    <RIFCliente>07-05-2024</RIFCliente>
+    <CodigoOperacion/>
+    <Precio>1.866,00</Precio>
+    <MontoBaseImponibleIVA>0,00</MontoBaseImponibleIVA>
+    <MontoIVA>0,00</MontoIVA>
+    <totalExento>0,00</totalExento>
+    <totalAPagar>1.866,00</totalAPagar>
+    <MontoIGTF>0,00</MontoIGTF>
+  </CLIENTE1>
+</CLIENTES>

@@ -4,14 +4,18 @@ import Layout from "../../../layouts/Layout.astro";
 import { Icon } from "astro-icon/components";
 import CardContentPage from "../../../components/CardContentPage.astro";
 import { apiController } from '../../../scripts/request.js';
-import { formatearNumeroControl, obtenerNumeroMes } from '../../../scripts/utils.js';
+import { convertDateTime } from '../../../scripts/utils.js';
+import { formatearNumeroControl, obtenerNumeroMes, formatNumber, findPlaceholder } from '../../../scripts/utils.js';
 import DynamicTable from "../../../components/DynamicTable.astro";
 
 const params = Astro.url.searchParams;
 
 const tipoBusqueda = params.get('tipoBusqueda');
 let responseData;
+let responseDataCliente;
 let dataTable = [];
+let dataCliente:any = {};
+let data_tipos_documentos = {};
 
 const locals:any = Astro.locals;
 
@@ -20,13 +24,19 @@ let successMessage = {all: []};
 
 const cliente_id = Astro.url.searchParams.get('c');
 responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultasCliente/${cliente_id}/getDataBusqueda${Astro.url.search}`,'GET',null,locals.token);
-console.log(responseData);
+//console.log(responseData);
 dataTable = Array.isArray(responseData.data) ? responseData.data : [];
 
 if(responseData.data.errors || responseData.code !== 200){
     errors.all = responseData.data.errors ? responseData.data.errors : [];
 }
 
+
+responseDataCliente = await apiController(import.meta.env.PUBLIC_BASE_URL,`/clientes/${cliente_id}`,'GET',null,locals.token);
+dataCliente = responseDataCliente.data;
+
+data_tipos_documentos = JSON.parse(dataCliente.name_bd_column_tipo_documento_format);
+console.log(data_tipos_documentos);
 
 ---
 
@@ -35,10 +45,10 @@ if(responseData.data.errors || responseData.code !== 200){
         <div class="flex justify-between items-center p-6">
             <div></div>
             <h1 class="text-2xl ml-8">Resultado de consulta</h1>
-            <button id="download-btn">Descargar XML</button>
+        
             <div class="flex space-x-4">
                 <!-- Aquí van tus iconos -->
-                <i class="icono1"><a href=""><Icon name="file-type-xml" class="text-2xl" /></a></i>
+                <i class="icono1 cursor-pointer"><a id="download-btn"><Icon name="file-type-xml" class="text-2xl" /></a></i>
                 <i class="icono2"><a href=""><Icon name="file-type-pdf" class="text-2xl" /></a></i>
                 <i class="icono3"><a href=""><Icon name="file-type-csv" class="text-2xl" /></a></i>
             </div>
@@ -78,32 +88,38 @@ if(responseData.data.errors || responseData.code !== 200){
             ]}
             >
             {dataTable.map((data, index) => (
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <tr id={"row-"+index} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td hidden>{data.numero_control}</td>
+                    <td hidden class="correo_cliente">{data.correo_cliente}</td>
+                    <td hidden class="telefono_cliente">{data.telefono_cliente}</td>
+                    <td hidden class="rif_prestador">{data.rif_prestador}</td>
                     <td>
-                        <a target="_blank" href=`${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${data.numero_control}/${data.tipo_documento}/${data.numero_documento}/${obtenerNumeroMes(data.fecha_emision)}/${data.encrypt}?encrypt_others=${data.encrypt_others}&token=${locals.token}`>Ver PDF</a>
+                        <b>
+                            <a target="_blank" href=`${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${data.numero_control}/${data.tipo_documento}/${data.numero_documento}/${obtenerNumeroMes(data.fecha_emision)}/${data.encrypt}?encrypt_others=${data.encrypt_others}&token=${locals.token}`>PDF</a> <br>
+                            <a href="#" class="ver-xml" data-index={index}>XML</a>
+                        </b>
                     </td>
-                    <td class="p-4">{formatearNumeroControl(data.numero_control)}</td>
-                    <td>{data.numero_documento}</td>
-                    <td>{data.tipo_documento}</td>
-                    <td>{data.codigo_operacion}</td>
-                    <td>{data.serie}</td>
-                    <td>{data.fecha_emision}</td>
-                    <td>{data.hora_emision}</td>
-                    <td>{data.fecha_asignacion}</td>
-                    <td>{data.rif}</td>
+                    <td class="p-4 numero_control">{formatearNumeroControl(data.numero_control)}</td>
+                    <td class="numero_documento">{data.numero_documento}</td>
+                    <td class="tipo_documento">{findPlaceholder(data_tipos_documentos,data.tipo_documento)}</td>
+                    <td class="codigo_operacion">{data.codigo_operacion}</td>
+                    <td class="serie">{data.serie}</td>
+                    <td class="fecha_emision">{convertDateTime(data.fecha_emision, "DD-MM-YYYY")}</td>
+                    <td class="hora_emision">{data.hora_emision}</td>
+                    <td class="fecha_asignacion">{convertDateTime(data.fecha_asignacion, "DD-MM-YYYY")}</td>
+                    <td class="rif">{data.rif}</td>
 
-                    <td>{data.neto_pagar}</td>
-                    <td>{data.igtf}</td>
-                    <td>{data.total_pagar}</td>
-                    <td>{data.base_imponible}</td>
-                    <td>{data.monto_iva}</td>
-                    <td>{data.monto_exento}</td>
-                    <td>{data.monto_no_sujeto}</td>
+                    <td class="neto_pagar">{formatNumber(data.neto_pagar)}</td>
+                    <td class="igtf">{formatNumber(data.igtf)}</td>
+                    <td class="total_pagar">{formatNumber(data.total_pagar)}</td>
+                    <td class="base_imponible">{formatNumber(data.base_imponible)}</td>
+                    <td class="monto_iva">{formatNumber(data.monto_iva)}</td>
+                    <td class="monto_exento">{formatNumber(data.monto_exento)}</td>
+                    <td class="monto_no_sujeto">{formatNumber(data.monto_no_sujeto)}</td>
                     {/* <td><p class="truncate text-xs w-52">{data.razon_social}</p> </td> */}
-                    <td>{data.status !== '' ? (data.status == 0 || data.status == "false" ? "Activa" : data.status == 1 || data.status == "true" ? "Anulada" : data.status) : ''}</td>
-                    <td>{data.motivo_anulacion}</td>
-                    <td>{data.fecha_anulacion} {data.hora_anulacion}</td>
+                    <td class="status">{data.status !== '' ? (data.status == 0 || data.status == "false" ? "Activa" : data.status == 1 || data.status == "true" ? "Anulada" : data.status) : 'Activa'}</td>
+                    <td class="motivo_anulacion">{data.motivo_anulacion ? data.motivo_anulacion : '-'}</td>
+                    <td class="fecha_anulacion"> {data.fecha_anulacion || data.hora_anulacion ? `${data.fecha_anulacion ?? ''} ${data.hora_anulacion ?? ''}`.trim() : '-'}</td>
                     
                     
                 </tr>
@@ -173,35 +189,32 @@ if(responseData.data.errors || responseData.code !== 200){
 
 
 <script>
-    import {generateXML, downloadXML} from "../../../scripts/generateXML";
+    import {generateXML, downloadXML, collectRowData} from "../../../scripts/generateXML";
 
     
     document.getElementById('download-btn').addEventListener('click', () => {
-            const table = document.getElementById('data-table');
-            const data = [];
-            console.log(111);
-            const rows = table.querySelectorAll('tbody tr');
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                const rowData = {};
-                rowData.RIFPrestador = cells[0].innerText;
-                rowData.TipoDocumento = cells[1].innerText;
-                rowData.NumeroDocumento = cells[2].innerText;
-                rowData.FechaDocumento = cells[3].innerText;
-                rowData.HoraEmision = cells[4].innerText;
-                rowData.RIFCliente = cells[5].innerText;
-                rowData.CodigoOperacion = cells[6].innerText;
-                rowData.Precio = cells[7].innerText;
-                rowData.MontoBaseImponibleIVA = cells[8].innerText;
-                rowData.MontoIVA = cells[9].innerText;
-                rowData.totalExento = cells[10].innerText;
-                rowData.totalAPagar = cells[11].innerText;
-                rowData.MontoIGTF = cells[12].innerText;
-                data.push(rowData);
-            });
-
-            const xml = generateXML(data);
-            console.log(xml);
-            downloadXML(xml, 'clientes.xml');
+        const table = document.getElementById('data-table');
+        const data = [];
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const rowData = collectRowData(row);
+            data.push(rowData);
         });
+        const xml = generateXML(data);
+        downloadXML(xml, 'XML.xml');
+    });
+
+    function generarXMLIndividual(row) {
+        const rowData = collectRowData(row);
+        const xml = generateXML([rowData]);
+        downloadXML(xml, `XML-DOC-${rowData.NumeroDocumento}.xml`);
+    }
+
+    document.addEventListener('click', (event:any) => {
+        if (event.target.matches('.ver-xml')) {
+            const index = event.target.getAttribute('data-index');
+            const row = document.getElementById(`row-${index}`);
+            generarXMLIndividual(row);
+        }
+    });
 </script>

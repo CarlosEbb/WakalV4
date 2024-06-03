@@ -1,0 +1,319 @@
+---
+import CardContentPage from "../../../../../components/CardContentPage.astro";
+import Layout from "../../../../../layouts/Layout.astro";
+import DataForm from "../../../../../components/DataForm/Clientes.astro";
+
+import { apiController } from '../../../../../scripts/request.js';
+import ToastNotification from "../../../../../components/ToastNotification.astro";
+import { Icon } from "astro-icon/components";
+import ButtonAction from "../../../../../components/ButtonAction.astro";
+import InputField from "../../../../../components/InputField.astro";
+import Select from "../../../../../components/Select.astro";
+
+const locals:any = Astro.locals;
+
+let errors = {all: [] };
+let successMessage = {all: []};
+let data = {};
+let consultas = [];
+let parametros = {};
+let dataConsultas = {};
+let dataActualizar:any = {};
+
+const ispage = Astro.url.searchParams;
+let isConsulta:any = ispage.get('consulta');
+
+if (Astro.request.method === "POST") {
+  try {
+   
+    const formData = await Astro.request.formData();
+
+    for (let [key, value] of formData.entries()) {
+          data[key] = value;
+    }
+
+     const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/consultas/cliente/'+Astro.params.id,'POST',data, locals.token);
+     console.log(responseData);
+    if(responseData.data.errors || responseData.code !== 200){
+      errors.all = responseData.data.errors ? responseData.data.errors : [];
+    }else{
+      successMessage.all = [responseData.message];
+    }
+
+   
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+      errors.all = ["¡Ups! Parece que algo no salió como se esperaba. Por favor, intenta de nuevo."];
+    }
+  }
+}
+
+const responseDataConsultas = await apiController(import.meta.env.PUBLIC_BASE_URL,'/consultas/cliente/'+Astro.params.id,'GET',null, locals.token);
+if(responseDataConsultas.data.errors || responseDataConsultas.code !== 200){
+    errors.all = responseDataConsultas.data.errors ? responseDataConsultas.data.errors : [];
+}else{
+    consultas = responseDataConsultas.data;
+    successMessage.all = [responseDataConsultas.message];
+}
+
+
+const responseDataParametros = await apiController(import.meta.env.PUBLIC_BASE_URL,'/consultas/clientes/parametros','GET',null, locals.token);
+parametros = responseDataParametros.data;
+
+const optionsSelectParametros = parametros.map(parametro => ({
+  value: parametro.id.toString(),
+  label: parametro.placeholder
+}));
+
+
+if (isConsulta === null && consultas.length > 0) {
+    // Asignar el valor del primer ID a isConsulta
+    isConsulta = consultas[0].id;
+}
+
+let consultaConId:any = [];
+
+if(isConsulta != null){
+    consultaConId = consultas.find(consulta => consulta.id == isConsulta);
+}
+
+
+
+
+      
+---
+<Layout title="Dashboard" subTitle="Actualizar Cliente" bodyClass="bg-gray-100" isSearchBar={false}>
+    <CardContentPage>
+        <div class="grid grid-cols-12">
+            <div class="col-span-3 border-r-2">
+                <ul class="flex flex-col py-4 space-y-1">
+                    <li class="flex justify-center items-center mb-5">
+                        <ButtonAction redirect={`/dashboard/clientes/config/${Astro.params.id}`} icon="search" text="Consultar"/>
+                    </li>
+                    {consultas.map((consulta, index) => (
+                    <li>
+                        <a class={`button_option relative flex flex-row items-center h-11 focus:outline-none border-l-4 border-transparent pr-6`}>
+                            <span class="inline-flex justify-center items-center ml-4">
+                                <Icon name="minus"  class="w-5 h-5" />
+                            </span>
+                            <span class="ml-2 text-sm tracking-wide truncate">{consulta.nombre}</span>
+                        </a>
+                    </li>
+                    ))}
+                    <li>
+                      <a class={`button_option relative flex flex-row items-center h-11 focus:outline-none bg-custom-secundary text-white hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+                            <span class="inline-flex justify-center items-center ml-4">
+                                <Icon name="minus"  class="w-5 h-5" />
+                            </span>
+                            <span class="ml-2 text-sm tracking-wide truncate" id="nueva-consulta">Nueva Consulta</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-span-9">
+              <div class="flex flex-col">
+                  <h1 class="flex justify-center items-center font-semibold text-custom-secundary text-xl ">Agregar Parámetro de Búsqueda</h1>
+              </div>
+              <div class="p-14">
+                <form method="POST" class="grid gap-y-3 px-16">
+                  <label for="nombre_consulta">Nombre de Consulta:</label>
+                  <InputField isrequired={true} id="nombre_consulta" name="nombre_consulta" type="text" icon="report-search" placeholder="Nombre Consulta" addClassInput=""/>
+                  <label for="opcion_select">Añadir Parametro Nuevo:</label>
+                  <div class="grid grid-cols-12 gap-2">
+                    <div class="col-span-10">
+                      <Select
+                          id="opcion_select"
+                          icon="list-search"
+                          name="opcion_select"
+                          rounded="rounded-full"
+                          addClass=""
+                          options={optionsSelectParametros}
+                      />
+                    </div>
+                    <div class="col-span-2">
+                      <ButtonAction id="agregar_input" redirect="#" icon="plus" text="Añadir"/>
+                    </div>
+                  </div>
+
+                  <div class="container mx-auto mt-4">
+                      <ul id="sortable-list" class="list-none p-0">
+                      </ul>
+                  </div>
+
+                  
+                  <div class="flex flex-col mt-8">
+                    <ButtonAction id="send_form" addClass="hidden" icon="search" text="Agregar consulta"/>
+                    <InputField id="cliente_id" isrequired={true} hidden={true} value={Astro.params.id} name="cliente_id" type="text" icon="user-circle" placeholder="Cliente ID"/>
+                    <InputField id="recolectar_data" isrequired={true} hidden={true} value={Astro.params.id} name="parametros" type="text" icon="user-circle" placeholder="Cliente ID"/>
+                  </div>
+                </form>
+              </div>
+            </div>
+        </div>
+        
+        
+
+    </CardContentPage>
+    {errors.all.length > 0 && <ToastNotification slot="toast" type={'error'} textArray={errors.all}/>}
+    {successMessage.all.length > 0 && <ToastNotification slot="toast" type={'success'} textArray={successMessage.all}/>}
+</Layout>
+
+<script>
+   
+    document.addEventListener('DOMContentLoaded', () => {
+        const agregarInputButton = document.getElementById('agregar_input');
+        const sortableList = document.getElementById('sortable-list');
+        const sendFormButton = document.getElementById('send_form');
+        const recolectarDataInput = document.getElementById('recolectar_data');
+        const opcionesAgregadas = new Set(); // Conjunto para registrar opciones agregadas
+
+     
+        // Función para actualizar el input "recolectar_data"
+        function actualizarRecolectarData() {
+            const valores = [];
+            sortableList.querySelectorAll('li input[type="hidden"]').forEach(input => {
+                valores.push(input.value);
+            });
+            recolectarDataInput.value = valores.join(';');
+        }
+
+        // Función para verificar la cantidad de elementos en la lista y mostrar/ocultar el botón
+        function toggleSendFormButton() {
+            if (sortableList.children.length > 0) {
+                sendFormButton.classList.remove('hidden');
+            } else {
+                sendFormButton.classList.add('hidden');
+            }
+        }
+
+        // Inicializar la visibilidad del botón al cargar la página
+        toggleSendFormButton();
+        
+        agregarInputButton.addEventListener('click', (event) => {
+            event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+            
+            // Obtener el valor seleccionado del select
+            const selectElement = document.getElementById('opcion_select');
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            const optionValue = selectedOption.value;
+            const optionText = selectedOption.textContent;
+            
+            // Verificar si la opción ya ha sido agregada
+            if (opcionesAgregadas.has(optionValue)) {
+                alert('Esta opción ya ha sido agregada.');
+                return; // Salir de la función si la opción ya ha sido agregada
+            }
+            
+            // Crear el elemento <li>
+            const li = document.createElement('li');
+            li.className = 'bg-gray-200 p-2 mb-4 border draggable cursor-pointer rounded-full';
+            li.draggable = true;
+
+            // Crear el div contenedor del texto y el botón eliminar
+            const divText = document.createElement('div');
+            divText.className = 'ml-4 flex justify-between items-center';
+
+            const spanText = document.createElement('span');
+            spanText.textContent = optionText;
+
+            const removeButton = document.createElement('button');
+            removeButton.className = 'remove-btn bg-red-500 text-white px-2.5 py-0.5 rounded-full';
+            removeButton.textContent = 'X';
+
+            // Crear el input invisible
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            //input.name = 'parametros[]';
+            input.value = optionValue;
+
+            // Agregar el span, el botón y el input invisible al div, y el div al <li>
+            divText.appendChild(spanText);
+            divText.appendChild(removeButton);
+            li.appendChild(divText);
+            li.appendChild(input);
+
+            // Agregar el elemento <li> a la lista ordenable
+            sortableList.appendChild(li);
+            
+            // Agregar la opción al conjunto de opciones agregadas
+            opcionesAgregadas.add(optionValue);
+            
+            // Añadir eventos de arrastrar y soltar al nuevo elemento <li>
+            li.addEventListener('dragstart', function(event) {
+                event.target.classList.add('dragging');
+            });
+            
+            li.addEventListener('dragend', function(event) {
+                event.target.classList.remove('dragging');
+                actualizarRecolectarData(); // Actualizar el input "recolectar_data" después de mover
+            });
+
+            // Añadir evento al botón eliminar
+            removeButton.addEventListener('click', function() {
+                opcionesAgregadas.delete(optionValue);
+                li.remove();
+                toggleSendFormButton();
+                actualizarRecolectarData(); // Actualizar el input "recolectar_data" después de eliminar
+            });
+
+            // Actualizar el input "recolectar_data" después de agregar
+            actualizarRecolectarData();
+
+            // Verificar la cantidad de elementos en la lista y mostrar/ocultar el botón
+            toggleSendFormButton();
+        });
+        
+        sortableList.addEventListener('dragover', function(event) {
+            event.preventDefault();
+            const draggingEl = document.querySelector('.dragging');
+            const afterElement = getDragAfterElement(sortableList, event.clientY);
+            if (afterElement == null) {
+                sortableList.appendChild(draggingEl);
+            } else {
+                sortableList.insertBefore(draggingEl, afterElement);
+            }
+        });
+
+        sortableList.addEventListener('dragend', actualizarRecolectarData); // Actualizar el input "recolectar_data" después de arrastrar y soltar
+
+        sortableList.addEventListener('DOMNodeRemoved', toggleSendFormButton);
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+    });
+
+
+</script>
+
+
+<script>
+  import {capitalizeFirstLetter} from "../../../../../scripts/utils.js";
+    
+  // Obtener los elementos de la página
+  const inputNombreConsulta:any = document.getElementById('nombre_consulta');
+  const spanNuevaConsulta = document.getElementById('nueva-consulta');
+
+  // Añadir un evento 'input' al campo de entrada
+  inputNombreConsulta.addEventListener('input', function() {
+      // Obtener el valor del campo de entrada
+      const valor = inputNombreConsulta.value;
+      capitalizeFirstLetter(this);
+      // Si el valor no está vacío, actualizar el contenido del span
+      if (valor !== '') {
+          spanNuevaConsulta.textContent = valor;
+      } else {
+          spanNuevaConsulta.textContent = 'Nueva Consulta'; // Mostrar "Nueva Consulta" si el valor está vacío
+      }
+  });
+</script>
