@@ -90,6 +90,11 @@ export function getAllQueryParams() {
   return params;
 }
 
+export function getQueryString(params) {
+  const queryParams = new URLSearchParams(params);
+  return queryParams.toString();
+}
+
 export function convertirMesInglesAEspanol(cadena) {
   const mesesIngles = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const mesesEspanol = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -197,15 +202,18 @@ export function formatNumber(input) {
 }
 
 export function findPlaceholder(data, valueToFind) {
-  const { placeholder, values } = data;
-  const stringValueToFind = String(valueToFind); // Convertir el valor a buscar a cadena
-
-  for (let i = 0; i < values.length; i++) {
-    // Convertir cada valor en el array a cadena y verificar si coincide
-    if (values[i].some(value => String(value) === stringValueToFind)) {
-      return placeholder[i];
+  if(data != null){
+    const { placeholder, values } = data;
+    const stringValueToFind = String(valueToFind); // Convertir el valor a buscar a cadena
+  
+    for (let i = 0; i < values.length; i++) {
+      // Convertir cada valor en el array a cadena y verificar si coincide
+      if (values[i].some(value => String(value) === stringValueToFind)) {
+        return placeholder[i];
+      }
     }
   }
 
-  return null; // Si no se encuentra el valor
+  return '-'; // Si no se encuentra el valor
 }
+

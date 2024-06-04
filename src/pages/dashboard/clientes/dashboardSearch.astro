@@ -88,7 +88,7 @@ console.log(data_tipos_documentos);
             ]}
             >
             {dataTable.map((data, index) => (
-                <tr id={"row-"+index} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <tr id={"row-"+data.numero_control} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td hidden>{data.numero_control}</td>
                     <td hidden class="correo_cliente">{data.correo_cliente}</td>
                     <td hidden class="telefono_cliente">{data.telefono_cliente}</td>
@@ -96,7 +96,7 @@ console.log(data_tipos_documentos);
                     <td>
                         <b>
                             <a target="_blank" href=`${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${data.numero_control}/${data.tipo_documento}/${data.numero_documento}/${obtenerNumeroMes(data.fecha_emision)}/${data.encrypt}?encrypt_others=${data.encrypt_others}&token=${locals.token}`>PDF</a> <br>
-                            <a href="#" class="ver-xml" data-index={index}>XML</a>
+                            <a href="#" class="ver-xml" data-index={data.numero_control}>XML</a>
                         </b>
                     </td>
                     <td class="p-4 numero_control">{formatearNumeroControl(data.numero_control)}</td>
@@ -120,8 +120,6 @@ console.log(data_tipos_documentos);
                     <td class="status">{data.status !== '' ? (data.status == 0 || data.status == "false" ? "Activa" : data.status == 1 || data.status == "true" ? "Anulada" : data.status) : 'Activa'}</td>
                     <td class="motivo_anulacion">{data.motivo_anulacion ? data.motivo_anulacion : '-'}</td>
                     <td class="fecha_anulacion"> {data.fecha_anulacion || data.hora_anulacion ? `${data.fecha_anulacion ?? ''} ${data.hora_anulacion ?? ''}`.trim() : '-'}</td>
-                    
-                    
                 </tr>
             ))}
         </DynamicTable>
@@ -217,4 +215,102 @@ console.log(data_tipos_documentos);
             generarXMLIndividual(row);
         }
     });
+</script>
+
+<script>
+import { obtenerCookie, getQueryParam, obtenerNombreDelMes, getAllQueryParams, getQueryString } from "../../../scripts/utils.js";
+import { apiController } from '../../../scripts/request.js';
+import { formatearNumeroControl, obtenerNumeroMes, formatNumber, findPlaceholder } from '../../../scripts/utils.js';
+import { convertDateTime } from '../../../scripts/utils.js';
+
+let cliente_id = getQueryParam('c');
+var cookies = obtenerCookie('others');
+var objeto = JSON.parse(cookies);
+var parametros = getQueryString(getAllQueryParams());
+
+document.addEventListener('DOMContentLoaded', function() {
+    const table = document.getElementById('data-table');
+    const divtable = document.querySelector('.div_tableBusqueda');
+    const tbody = table.querySelector('tbody');
+    let page = 1; // Página inicial
+    let limit =  10;
+    let offset = (page - 1) * limit + 1;
+    
+    let loading = false; // Estado de carga
+
+    // Función para cargar datos desde la API
+    async function loadMoreData(page, offset) {
+        loading = true;
+        try {
+           
+            const response = await apiController(import.meta.env.PUBLIC_BASE_URL, `/consultasCliente/${cliente_id}/getDataBusqueda?${parametros}&limit=${limit}&offset=${offset}`, 'GET', null, objeto.token);
+            if (response.code !== 200 || response.data.errors) {
+                alert('Error al cargar los datos');
+            } else {
+                appendRows(response.data);
+            }
+        } catch (error) {
+            console.error('Error al cargar los datos:', error);
+        }
+        loading = false;
+    }
+
+    // Función para añadir filas a la tabla
+    function appendRows(data) {
+        data.forEach(item => {
+            const row = document.createElement('tr');
+            row.setAttribute('id', 'row-' + item.numero_control);
+            row.innerHTML = `
+                <td hidden>${item.numero_control}</td>
+                <td hidden class="correo_cliente">${item.correo_cliente}</td>
+                <td hidden class="telefono_cliente">${item.telefono_cliente}</td>
+                <td hidden class="rif_prestador">${item.rif_prestador}</td>
+                <td>
+                    <b>
+                        <a target="_blank" href="${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${item.numero_control}/${item.tipo_documento}/${item.numero_documento}/${obtenerNumeroMes(item.fecha_emision)}/${item.encrypt}?encrypt_others=${item.encrypt_others}&token=${objeto.token}">PDF</a> <br>
+
+                        <a href="#" class="ver-xml" data-index="${item.numero_control}">XML</a>
+                    </b>
+                </td>
+                <td class="p-4 numero_control">${formatearNumeroControl(item.numero_control)}</td>
+                <td class="numero_documento">${item.numero_documento}</td>
+                <td class="tipo_documento">${item.tipo_documento}</td>
+                <td class="codigo_operacion">${item.codigo_operacion}</td>
+                <td class="serie">${item.serie}</td>
+                <td class="fecha_emision">${convertDateTime(item.fecha_emision, "DD-MM-YYYY")}</td>
+                <td class="hora_emision">${item.hora_emision}</td>
+                <td class="fecha_asignacion">${convertDateTime(item.fecha_asignacion, "DD-MM-YYYY")}</td>
+                <td class="rif">${item.rif}</td>
+                <td class="neto_pagar">${formatNumber(item.neto_pagar)}</td>
+                <td class="igtf">${formatNumber(item.igtf)}</td>
+                <td class="total_pagar">${formatNumber(item.total_pagar)}</td>
+                <td class="base_imponible">${formatNumber(item.base_imponible)}</td>
+                <td class="monto_iva">${formatNumber(item.monto_iva)}</td>
+                <td class="monto_exento">${formatNumber(item.monto_exento)}</td>
+                <td class="monto_no_sujeto">${formatNumber(item.monto_no_sujeto)}</td>
+                <td class="status">${item.status !== '' ? (item.status == 0 || item.status == "false" ? "Activa" : item.status == 1 || item.status == "true" ? "Anulada" : item.status) : 'Activa'}</td>
+                <td class="motivo_anulacion">${item.motivo_anulacion ? item.motivo_anulacion : '-'}</td>
+                <td class="fecha_anulacion">${item.fecha_anulacion || item.hora_anulacion ? `${item.fecha_anulacion ?? ''} ${item.hora_anulacion ?? ''}`.trim() : '-'}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Inicialmente cargamos la primera página de datos
+    //loadMoreData(page);
+
+    // Evento de scroll para cargar más datos al llegar al final de la tabla
+    divtable.addEventListener('scroll', function() {
+        if (divtable.scrollTop + divtable.clientHeight >= divtable.scrollHeight - 500 && !loading) {
+            page++;
+            offset = (page - 1) * limit + 1;
+            console.log('Cargando más datos, página:', page);
+            loadMoreData(page, offset);
+        }
+        if (divtable.scrollTop === 0 && !loading) {
+           
+        }
+    });
+});
+
 </script>
