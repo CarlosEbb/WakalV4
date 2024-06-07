@@ -3,7 +3,7 @@ import CardContentPage from "../../../components/CardContentPage.astro";
 import Layout from "../../../layouts/Layout.astro";
 import DataForm from "../../../components/DataForm/Clientes.astro";
 
-import { apiController } from '../../../scripts/request.js';
+import { apiController, formDataToObject } from '../../../scripts/request.js';
 import ToastNotification from "../../../components/ToastNotification.astro";
 import { Icon } from "astro-icon/components";
 
@@ -19,9 +19,7 @@ if (Astro.request.method === "POST") {
    
     const formData = await Astro.request.formData();
 
-    for (let [key, value] of formData.entries()) {
-          data[key] = value;
-    }
+    data = formDataToObject(formData);
 
   
     const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/clientes','POST',formData, locals.token, 'multipart/form-data;');

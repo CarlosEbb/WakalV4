@@ -2,17 +2,18 @@
 import { Icon } from 'astro-icon/components'
 
 interface Props {
-	id: string;
+	id?: string;
 	name?: string;
 	icon: string;
 	text: string;
   value?: string;
   checked?: boolean;
   add_class: string;
+  disabled?: boolean;
 }
 
 
-const { id, name, icon, text, add_class, value, checked} = Astro.props;
+const { id, name, icon, text, add_class, value, checked, disabled} = Astro.props;
 
 ---
 
@@ -30,6 +31,7 @@ const { id, name, icon, text, add_class, value, checked} = Astro.props;
       type="checkbox"
       value={value}
       checked={checked}
+      disabled={disabled}
       class="appearance-none w-6 h-6 rounded-full border-2 border-gray-400 checked:bg-custom-primary checked:border-transparent focus:outline-none transition-all duration-300 mr-2"
     />
     <label for={id} class="text-sm cursor-pointer select-none">

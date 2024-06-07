@@ -48,6 +48,7 @@ if (Astro.request.method === "POST") {
         token: responseData.data.token,
         id: responseData.data.id,
         is_tour: responseData.data.is_tour,
+        rol_id: responseData.data.rol_id,
       }
       , {
         expires: date,

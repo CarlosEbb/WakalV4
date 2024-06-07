@@ -3,11 +3,12 @@ import CardContentPage from "../../../../components/CardContentPage.astro";
 import Layout from "../../../../layouts/Layout.astro";
 import DataForm from "../../../../components/DataForm/Clientes.astro";
 
-import { apiController } from '../../../../scripts/request.js';
+import { apiController, formDataToObject } from '../../../../scripts/request.js';
 import ToastNotification from "../../../../components/ToastNotification.astro";
 import { Icon } from "astro-icon/components";
 import ButtonAction from "../../../../components/ButtonAction.astro";
 import InputField from "../../../../components/InputField.astro";
+import Checkbox from "../../../../components/Checkbox.astro";
 
 const locals:any = Astro.locals;
 
@@ -19,15 +20,14 @@ let isConsulta:any = ispage.get('consulta');
 let data:any = {};
 let elimino = false;
 let consultas = [];
+let data_roles:any;
 
 if (Astro.request.method === "POST") {
   try {
    
     const formData = await Astro.request.formData();
 
-    for (let [key, value] of formData.entries()) {
-          data[key] = value;
-    }
+    data = formDataToObject(formData);
 
     const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/consultas/'+data.consulta_id,'DELETE',data, locals.token);
     console.log(responseData);
@@ -58,7 +58,6 @@ if(responseDataConsultas.data.errors || responseDataConsultas.code !== 200){
 
 if ((isConsulta === null && consultas.length > 0) || elimino) {
     // Asignar el valor del primer ID a isConsulta
-    console.log(11111111,consultas);
     if(consultas.length > 0){
         isConsulta = consultas[0].id;
     }else{
@@ -75,7 +74,18 @@ if(isConsulta != null){
     }
 }
 
-      
+
+const responseDataRoles = await apiController(import.meta.env.PUBLIC_BASE_URL,'/roles','GET',null, locals.token);
+if(responseDataRoles.data.errors || responseDataRoles.code !== 200){
+    errors.all = responseDataRoles.data.errors ? responseDataRoles.data.errors : [];
+}else{
+    data_roles = responseDataRoles.data.map(item => ({
+        value: item.id.toString(),
+        label: item.nombre
+    }));
+}
+
+
 ---
 <Layout title="Dashboard" subTitle="Actualizar Cliente" bodyClass="bg-gray-100" isSearchBar={false}>
     <CardContentPage>
@@ -103,6 +113,22 @@ if(isConsulta != null){
                         <h1 class="flex justify-center items-center font-semibold text-custom-secundary text-xl ">{consultaConId.nombre}</h1>
                     </div>
                     <div class="p-14">
+                        <label for="nombre_consulta">Tipos de Usuario:</label>
+                        <div class="flex gap-x-7">
+                            {data_roles.map((role) => (
+                                <Checkbox
+                                add_class="mt-2"
+                                id={`tipo_rol_${role.value}`}
+                                name="tipo_rol[]"
+                                icon="check"
+                                text={role.label}
+                                value={role.value}
+                                checked={consultaConId.roles.includes(role.value)}
+                                disabled={true}
+                                />
+                            ))}
+                        </div><br>
+
                         <h2>Parámetros de búsqueda:</h2>
                         <ul>
                             {consultaConId.parametros.map(parametro => (

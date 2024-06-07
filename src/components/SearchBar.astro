@@ -19,8 +19,11 @@ let successMessage = {all: []};
 
 
 ---
+
+
+
 <div class="bg-gradient-to-r from-custom-Tredenary to-custom-Quattuordenary p-6 pb-24 no-imprimir">
-  <form method="GET" action={"/dashboard/clientes/dashboardSearch"}>
+  <form id="formSearchBar" method="GET" action={"/dashboard/clientes/dashboardSearch"}>
       <input type="text" name="c" value={cliente_id} hidden>
       {cliente_id &&
         <div class="flex items-center justify-center">
@@ -42,7 +45,7 @@ let successMessage = {all: []};
 
           </div>
             {isSearchBar &&
-                <ButtonAction text="Buscar" addClass="ml-2 py-3 px-8 mt-4 sm:mt-0"/>
+                <ButtonAction id="ButtonActionSearch" text="Buscar" addClass="ml-2 py-3 px-8 mt-4 sm:mt-0"/>
             }
         </div>
       }
@@ -51,7 +54,6 @@ let successMessage = {all: []};
       }
   </form>
 </div>
-
 
 <script>
   import {obtenerCookie, getQueryParam, getAllQueryParams, setElementValueByName} from "../scripts/utils.js";
@@ -62,6 +64,7 @@ let successMessage = {all: []};
     let cliente_id = getQueryParam('c');
     var cookies = obtenerCookie('others');
     var objeto = JSON.parse(cookies);
+    
     var storageName_tipoBusqueda = `data_tipoBusqueda_${cliente_id}`;
     let storage_tipoBusqueda = JSON.parse(localStorage.getItem(storageName_tipoBusqueda));
     var data;
@@ -123,9 +126,9 @@ let successMessage = {all: []};
         data = storage_tipoBusqueda;
       }
         
-      const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultas/cliente/${cliente_id}`,'GET',null,objeto.token);
+      const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultas/cliente/${cliente_id}/${objeto.rol_id}`,'GET',null,objeto.token);
       if(responseData.data.errors || responseData.code !== 200){
-        console.log("Conexión perdida a la BD, intente mas tarde");
+        console.log(responseData.data.errors);
       }else{
         data = responseData.data;
         localStorage.setItem(storageName_tipoBusqueda, JSON.stringify(data));
@@ -169,4 +172,18 @@ let successMessage = {all: []};
 
   // Reinicializar después de cambiar de página
   document.addEventListener("astro:after-swap", init);
+</script>
+
+
+<script>
+  document.getElementById('formSearchBar').addEventListener('submit', function(event) {
+      // Muestra la pantalla de carga
+      document.getElementById('loading-screen').classList.remove('hidden');
+
+      // Simula una operación de búsqueda
+      setTimeout(function() {
+          // Oculta la pantalla de carga después de 3 segundos
+          document.getElementById('loading-screen').classList.add('hidden');
+      }, 3000);
+  });
 </script>

@@ -15,7 +15,7 @@ let responseData;
 let responseDataCliente;
 let dataTable = [];
 let dataCliente:any = {};
-let data_tipos_documentos = {};
+let data_tipos_documentos = null;
 
 const locals:any = Astro.locals;
 
@@ -35,20 +35,36 @@ if(responseData.data.errors || responseData.code !== 200){
 responseDataCliente = await apiController(import.meta.env.PUBLIC_BASE_URL,`/clientes/${cliente_id}`,'GET',null,locals.token);
 dataCliente = responseDataCliente.data;
 
-data_tipos_documentos = JSON.parse(dataCliente.name_bd_column_tipo_documento_format);
-console.log(data_tipos_documentos);
+if(responseDataCliente.data.errors || responseDataCliente.code !== 200){
+    errors.all = responseDataCliente.data.errors ? responseDataCliente.data.errors : [];
+}else{
+    console.log(dataCliente)
+    data_tipos_documentos = JSON.parse(dataCliente.name_bd_column_tipo_documento_format);
+}
 
+
+let order = Astro.url.searchParams.get('order');
+let orderClassASC;
+let orderClassDESC;
+if(order == "DESC"){
+    orderClassDESC = 'text-custom-Sedenary';
+}else{
+    orderClassASC = 'text-custom-Sedenary';
+}
+Astro.url.searchParams.delete('order');
 ---
 
 <Layout title="Dashboard" bodyClass="bg-gray-100">
     <CardContentPage>
         <div class="flex justify-between items-center p-6">
-            <div></div>
+            <div class="flex">
+                <i class=`cursor-pointer ${orderClassASC}` data-tippy-content="Orden Ascendente"><a href={"/dashboard/clientes/dashboardSearch"+Astro.url.search+"&order=ASC"}><Icon name="arrow-up" class="text-2xl" /></a></i>
+                <i class=`cursor-pointer ${orderClassDESC}` data-tippy-content="Orden Descendente"><a href={"/dashboard/clientes/dashboardSearch"+Astro.url.search+"&order=DESC"}><Icon name="arrow-down" class="text-2xl" /></a></i>
+            </div>
             <h1 class="text-2xl ml-8">Resultado de consulta</h1>
         
             <div class="flex space-x-4">
-                <!-- Aquí van tus iconos -->
-                <i class="icono1 cursor-pointer"><a id="download-btn"><Icon name="file-type-xml" class="text-2xl" /></a></i>
+                <i class="icono1 cursor-pointer"><a id="download-btn" data-tippy-content="Descargar XML"><Icon name="file-type-xml" class="text-2xl" /></a></i>
                 <i class="icono2"><a href=""><Icon name="file-type-pdf" class="text-2xl" /></a></i>
                 <i class="icono3"><a href=""><Icon name="file-type-csv" class="text-2xl" /></a></i>
             </div>
@@ -102,12 +118,12 @@ console.log(data_tipos_documentos);
                     <td class="p-4 numero_control">{formatearNumeroControl(data.numero_control)}</td>
                     <td class="numero_documento">{data.numero_documento}</td>
                     <td class="tipo_documento">{findPlaceholder(data_tipos_documentos,data.tipo_documento)}</td>
-                    <td class="codigo_operacion">{data.codigo_operacion}</td>
-                    <td class="serie">{data.serie}</td>
+                    <td class="codigo_operacion">{data.codigo_operacion ? data.codigo_operacion : '-'}</td>
+                    <td class="serie">{data.serie ? data.serie : '-'}</td>
                     <td class="fecha_emision">{convertDateTime(data.fecha_emision, "DD-MM-YYYY")}</td>
-                    <td class="hora_emision">{data.hora_emision}</td>
+                    <td class="hora_emision">{data.hora_emision ? data.hora_emision : '-'}</td>
                     <td class="fecha_asignacion">{convertDateTime(data.fecha_asignacion, "DD-MM-YYYY")}</td>
-                    <td class="rif">{data.rif}</td>
+                    <td class="rif">{data.rif ? data.rif : '-'}</td>
 
                     <td class="neto_pagar">{formatNumber(data.neto_pagar)}</td>
                     <td class="igtf">{formatNumber(data.igtf)}</td>
@@ -125,6 +141,7 @@ console.log(data_tipos_documentos);
         </DynamicTable>
         </div>
 
+        <input id="data_tipos_documentos" name="data_tipos_documentos" type="text" value={dataCliente.name_bd_column_tipo_documento_format} hidden>
     </CardContentPage>
 
 
@@ -230,8 +247,11 @@ var parametros = getQueryString(getAllQueryParams());
 
 document.addEventListener('DOMContentLoaded', function() {
     const table = document.getElementById('data-table');
+    const data_tipos_documentos_string:any = document.getElementById('data_tipos_documentos');
+    const data_tipos_documentos = JSON.parse(data_tipos_documentos_string.value);
     const divtable = document.querySelector('.div_tableBusqueda');
     const tbody = table.querySelector('tbody');
+
     let page = 1; // Página inicial
     let limit =  10;
     let offset = (page - 1) * limit + 1;
@@ -274,13 +294,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 </td>
                 <td class="p-4 numero_control">${formatearNumeroControl(item.numero_control)}</td>
                 <td class="numero_documento">${item.numero_documento}</td>
-                <td class="tipo_documento">${item.tipo_documento}</td>
-                <td class="codigo_operacion">${item.codigo_operacion}</td>
-                <td class="serie">${item.serie}</td>
+                <td class="tipo_documento">${findPlaceholder(data_tipos_documentos,item.tipo_documento)}</td>
+                <td class="codigo_operacion">${item.codigo_operacion ? item.codigo_operacion : '-'}</td>
+                <td class="serie">${item.serie ? item.serie : '-'}</td>
                 <td class="fecha_emision">${convertDateTime(item.fecha_emision, "DD-MM-YYYY")}</td>
-                <td class="hora_emision">${item.hora_emision}</td>
+                <td class="hora_emision">${item.hora_emision ? item.hora_emision : "-"}</td>
                 <td class="fecha_asignacion">${convertDateTime(item.fecha_asignacion, "DD-MM-YYYY")}</td>
-                <td class="rif">${item.rif}</td>
+                <td class="rif">${item.rif ? item.rif : '-'}</td>
                 <td class="neto_pagar">${formatNumber(item.neto_pagar)}</td>
                 <td class="igtf">${formatNumber(item.igtf)}</td>
                 <td class="total_pagar">${formatNumber(item.total_pagar)}</td>
