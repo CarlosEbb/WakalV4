@@ -21,6 +21,7 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
       }
     }
     console.log(4);
+    console.log(url, options);
     const response = await fetch(url, options);
     console.log(5);
     const responseParse = await response.json();
