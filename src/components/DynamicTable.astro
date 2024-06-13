@@ -6,9 +6,10 @@ interface Props {
     content?: Array<Array<any>>;
     isScroll?: boolean;
     sizeText?: string;
+    isValidVacio?: boolean;
 }
 
-const {id, addClassTable, columnas, content = [], isScroll = false, sizeText = 'text-sm'} = Astro.props;
+const {id, addClassTable, columnas, content = [], isScroll = false, sizeText = 'text-sm', isValidVacio = false} = Astro.props;
 
 let addClassScroll = "";
 if(isScroll){
@@ -55,7 +56,14 @@ if(isScroll){
             </tr>
         </thead>
         <tbody>
-            {content.map((fila, i) => (
+            {(!isValidVacio) ? (
+                <tr>
+                    <td colspan={columnas.length} class="py-3 text-center">
+                        No se encontraron resultados.
+                    </td>
+                </tr>
+            ) : (
+                content.map((fila, i) => (
                 <tr>
                     {fila.map((celda, j) => (
                         <td class="py-3" data-columna={columnas[j]}>
@@ -63,7 +71,8 @@ if(isScroll){
                         </td>
                     ))}
                 </tr>
-            ))}
+                ))
+            )}
             <slot/>
         </tbody>
     </table>

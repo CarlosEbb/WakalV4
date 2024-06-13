@@ -22,10 +22,7 @@ if (Astro.request.method === "POST") {
     const email = data.get("email");
     const password = data.get("password");
     const recuerdame = data.get("recuerdame");
-	console.log(import.meta.env.PUBLIC_BASE_URL,'/auth/login');
-	console.log(111111);
     const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/auth/login','POST',{email, password});
-    console.log(responseData);
     if(responseData.data.errors || responseData.code !== 200){
       errors.all = responseData.data.errors;
     }else{
@@ -68,7 +65,6 @@ if (Astro.request.method === "POST") {
     }
     
   } catch (error) {
-    console.log(error);
     if (error instanceof Error) {
       console.error(error.message);
       errors.all = ["¡Ups! Parece que algo no salió como se esperaba. Por favor, intenta de nuevo."];

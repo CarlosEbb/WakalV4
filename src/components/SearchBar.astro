@@ -88,7 +88,7 @@ let successMessage = {all: []};
             if (param.tipo_input === 'text') {
                 content += '<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="' + param.name + '" placeholder="' + param.placeholder + '" />';
                 if(param.name == "numero_control" || param.name == "numero_documento"){
-                  content += `<div class="relative flex items-center"><input id="${param.name}_check" name="especifico_check" type="checkbox" value="1" class="appearance-none w-6 h-6 rounded-full border-2 border-gray-400 checked:bg-custom-primary checked:border-transparent focus:outline-none transition-all duration-300 mr-2"/><label for="${param.name}_check" class="text-sm cursor-pointer select-none text-white">Específico</label></div>`;
+                  content += `<div class="relative flex items-center hidden"><input id="${param.name}_check" checked name="especifico_check" type="checkbox" value="1" class="appearance-none w-6 h-6 rounded-full border-2 border-gray-400 checked:bg-custom-primary checked:border-transparent focus:outline-none transition-all duration-300 mr-2"/><label for="${param.name}_check" class="text-sm cursor-pointer select-none text-white">Específico</label></div>`;
                 }
             } else if (param.tipo_input === 'selected') {
               var selectOptions = param.column_reference_cliente_value;

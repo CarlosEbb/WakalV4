@@ -258,28 +258,28 @@ if(locals.rol_id == 1){
                     <div class="md:mr-2">
                         {!disabled &&
                             <Select 
-                                id="estado"
-                                icon="map"
-                                name="jurisdiccion_estado"
-                                rounded="rounded-full"
-                                addClass="mt-4 md:mt-1.5"
-                                placeholder="Estado"
-                            />
-                        }
-                        <InputField icon="map" disabled={disabled} id="estado_temp" value={formData.jurisdiccion_estado || ''} type="text" hidden={ocultarValoresSelect} />
-                    </div>
-                    <div class="md:mr-2">
-                        {!disabled &&
-                            <Select 
                                 id="region"
                                 icon="map-pin-2"
                                 name="jurisdiccion_region"
                                 rounded="rounded-full"
-                                addClass="mt-4 md:mt-1.5" disabled
+                                addClass="mt-4 md:mt-1.5"
                                 placeholder="Región"
                             />
                         }
                         <InputField icon="map-pin-2" disabled={disabled} id="region_temp" value={formData.jurisdiccion_region || ''} type="text" hidden={ocultarValoresSelect} />
+                    </div>
+                    <div class="md:mr-2">
+                        {!disabled &&
+                            <Select 
+                                id="estado"
+                                icon="map"
+                                name="jurisdiccion_estado"
+                                rounded="rounded-full"
+                                addClass="mt-4 md:mt-1.5" disabled
+                                placeholder="Estado"
+                            />
+                        }
+                        <InputField icon="map" disabled={disabled} id="estado_temp" value={formData.jurisdiccion_estado || ''} type="text" hidden={ocultarValoresSelect} />
                     </div>
                     <div class="md:mr-2">
                         {!disabled &&
@@ -335,103 +335,133 @@ if(locals.rol_id == 1){
 
 <script>
     const data = {
-      "Estado1": {
-        "region1": ["sector1", "sector2"],
-        "region2": ["sector3", "sector4"]
+      "Región Capital": {
+        "Miranda": ["Altos Mirandinos", "Higuerote", "Guarenas – Guatire", "Valles del Tuy","Sector Baruta"],
       },
-      "Estado2": {
-        "region3": ["sector5", "sector6"],
-        "region4": ["sector7", "sector8"]
-      }
+      "Región Central": {
+        "Aragua": ["Sector Cagua", "Sector Maracay", 'Unidad La Victoria'],
+        "Carabobo": ["Unidad Bejuma", "Unidad Puerto Cabello"],
+        "Cojedes": ["Unidad San Carlos"],
+      },
+      "Región Centro-Occidental": {
+        "Aragua": ["Sector Cagua", "Sector Maracay"],
+        "Carabobo": ["Unidad Bejuma", "Unidad Puerto Cabello"],
+        "Cojedes": ["Unidad San Carlos"],
+      },
+      "Región Falcon": {
+        "Falcon": ["Sector Punto Fijo", "Sector Tucacas", 'Unidad Churuguara'],
+      },
+      "Región Guayana": {
+        "Bolivar": ["Sector Puerto Ordaz", "Sector Tucacas", 'Unidad Churuguara', "Sector San Félix", "Unidad Caicara del Orinoco", "Unidad del Callao", "Unidad Upata", "Unidad de Santa Elena de Uairén"],
+        "Lara": ["Sector de Acarigua", "Sector Carora", "Sector Quibor","Sector de Cabudare", "Unidad Chivacoa (E)", "Unidad El Tocuyo", "Unidad Guanare"],
+        "Yaracuy": ["Sector San Felipe", "Unidad Nirgua"],
+        "Amazonas": ["Sector Puerto Ayacucho"],
+        "Delta Amacuro": ["Sector Tucupita"],
+      },
+      "Región Libertador": {
+        "La Guaira": ["Sector La Guaira", "Unidad Carayaca"],
+        "Aragua": ["Unida Colonia Tovar"],
+      },
+
+      "Región los Andes": {
+        "Barinas": ["Sector Barinas", "Sector Socopó", "Unidad Sabaneta"],
+        "Merida": ["Sector El Vigía", "Sector Mérida"],
+        "Tachira": ["Sector La Fría", "Sector San Antonio del Táchira", "Unidad Ureña", "Unidad La Grita"],
+        "Trujillo": ["Sector Valera - Trujillo", "Unidad Boconó", "Unidad Trujillo"],
+        "Apure": ["Unidad Guasdualito"],
+      },
+
+      "Región los Llanos": {
+        "Guarico": ["Sector San Fernando de Apure", "Sector San Juan de Los Morros", "Sector Valle de La Pascua", "Unidad Altagracia de Orituco"],
+      },
+
+      "Región Nor-Oriental": {
+        "Sucre": ["Sector Carúpano", "Sector Cumaná", "Unidad Casanay"],
+        "Monagas": ["Sector Maturín"],
+        "Anzoátegui": ["Sector El Tigre", "Sector Anaco", "Unidad Punta de Mata"],
+      },
+
+      "Región Zuliana": {
+        "Zulia": ["Sector Ciudad Ojeda", "Unidad de Cabimas", "Unidad de Machiques", "Unida de Santa Bárbara"],
+      },
     };
   
     function init() {
-        const estadoSelect:any = document.getElementById('estado');
-        const regionSelect:any = document.getElementById('region');
-        const sectorSelect:any = document.getElementById('sector');
-    
-        for (const estado in data) {
-            const option = document.createElement('option');
-            option.text = estado;
-            option.value = estado;
-            estadoSelect.add(option);
-        }
-    
-        estadoSelect.onchange = function() {
-            regionSelect.innerHTML = '<option value="">Región</option>';
-            sectorSelect.innerHTML = '<option value="">Sector / Unidad</option>';
-            regionSelect.disabled = false; // Habilitar el selector de region
-            const regiones = data[this.value];
-            for (const region in regiones) {
+        const regionSelect = document.getElementById('region');
+        const estadoSelect = document.getElementById('estado');
+        const sectorSelect = document.getElementById('sector');
+
+        for (const region in data) {
             const option = document.createElement('option');
             option.text = region;
             option.value = region;
             regionSelect.add(option);
-            }
-        };
-    
+        }
+
         regionSelect.onchange = function() {
+            estadoSelect.innerHTML = '<option value="">Estado</option>';
             sectorSelect.innerHTML = '<option value="">Sector / Unidad</option>';
-            sectorSelect.disabled = false; // Habilitar el selector de sector
-            const sectors = data[estadoSelect.value][this.value];
-            for (const sector of sectors) {
-            const option = document.createElement('option');
-            option.text = sector;
-            option.value = sector;
-            sectorSelect.add(option);
+            estadoSelect.disabled = false; // Habilitar el selector de estado
+            const estados = data[this.value];
+            for (const estado in estados) {
+                const option = document.createElement('option');
+                option.text = estado;
+                option.value = estado;
+                estadoSelect.add(option);
             }
         };
 
-        function selectOptions(estadoValue, regionValue, sectorValue) {
-            if(estadoValue && regionValue && sectorValue){
-                const estadoSelect:any = document.getElementById('estado');
-                const regionSelect:any = document.getElementById('region');
-                const sectorSelect:any = document.getElementById('sector');
-    
-                // Seleccionar el valor en el dropdown de estado
-                estadoSelect.value = estadoValue;
-                estadoSelect.dispatchEvent(new Event('change'));
-    
-                // Esperar a que se carguen las opciones de región
-               
+        estadoSelect.onchange = function() {
+            sectorSelect.innerHTML = '<option value="" disabled>Sector / Unidad</option>';
+            sectorSelect.disabled = false; // Habilitar el selector de sector
+            const sectores = data[regionSelect.value][this.value];
+            for (const sector of sectores) {
+                const option = document.createElement('option');
+                option.text = sector;
+                option.value = sector;
+                sectorSelect.add(option);
+            }
+        };
+
+        function selectOptions(regionValue, estadoValue, sectorValue) {
+            if (regionValue && estadoValue && sectorValue) {
                 regionSelect.value = regionValue;
                 regionSelect.dispatchEvent(new Event('change'));
 
-                // Esperar a que se carguen las opciones de sector
-                
-                sectorSelect.value = sectorValue;
-                   
+                setTimeout(() => {
+                    estadoSelect.value = estadoValue;
+                    estadoSelect.dispatchEvent(new Event('change'));
+                }, 100);
+
+                setTimeout(() => {
+                    sectorSelect.value = sectorValue;
+                }, 200);
             }
         }
 
-        const estadoSelect_temp:any = document.getElementById('estado_temp');
-        const regionSelect_temp:any = document.getElementById('region_temp');
-        const sectorSelect_temp:any = document.getElementById('sector_temp');
+        const regionSelectTemp = document.getElementById('region_temp');
+        const estadoSelectTemp = document.getElementById('estado_temp');
+        const sectorSelectTemp = document.getElementById('sector_temp');
 
-        selectOptions(estadoSelect_temp.value, regionSelect_temp.value, sectorSelect_temp.value);
+        selectOptions(regionSelectTemp.value, estadoSelectTemp.value, sectorSelectTemp.value);
 
-
-        document.getElementById('img_profile_file').addEventListener('change', function(event:any) {
-            var reader = new FileReader();
+        document.getElementById('img_profile_file').addEventListener('change', function(event) {
+            const reader = new FileReader();
             reader.onload = function(){
-                var output = document.getElementById('imageContainer');
+                const output = document.getElementById('imageContainer');
                 output.style.backgroundImage = 'url(' + reader.result + ')';
-                output.style.backgroundSize = 'cover'; // Ajusta la imagen al tamaño del círculo
-                output.style.backgroundPosition = 'center'; // Centra la imagen
-                document.getElementById('icon-camera').style.visibility = 'hidden'; // Oculta el icono
+                output.style.backgroundSize = 'cover';
+                output.style.backgroundPosition = 'center';
+                document.getElementById('icon-camera').style.visibility = 'hidden';
             };
             reader.readAsDataURL(event.target.files[0]);
         });
 
+        const select = document.querySelector('.rol_id');
+        const card = document.querySelector('.jurisdiccion_card');
+        const clienteCard = document.querySelector('.cliente_card');
 
-        // Primero, obtén los elementos del DOM
-        var select:any = document.querySelector('.rol_id');
-        var card:any = document.querySelector('.jurisdiccion_card');
-        var clienteCard:any = document.querySelector('.cliente_card');
-
-        // Luego, agrega un evento de cambio al select
         select.addEventListener('change', function() {
-        // Si el valor del select es 2, añade el atributo hidden a la tarjeta
             if (select.value == '2') {
                 card.removeAttribute('hidden');
             } else {
@@ -444,12 +474,11 @@ if(locals.rol_id == 1){
                 clienteCard.setAttribute('hidden', '');
             }
         });
-
-
     }
 
     // Inicializar en la primera carga
     init();
+
 
     // Reinicializar después de cambiar de página
     document.addEventListener("astro:after-swap", init);

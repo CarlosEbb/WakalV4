@@ -43,6 +43,7 @@ if(responseData.data.errors || responseData.code !== 200){
                     
                     
                 <DynamicTable 
+                    isValidVacio={clientes.length > 0}
                     columnas={[
                         "Nº",
                         "Razón Social",

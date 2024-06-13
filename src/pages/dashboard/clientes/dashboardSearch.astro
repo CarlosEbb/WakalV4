@@ -35,13 +35,12 @@ if(responseData.data.errors || responseData.code !== 200){
 responseDataCliente = await apiController(import.meta.env.PUBLIC_BASE_URL,`/clientes/${cliente_id}`,'GET',null,locals.token);
 dataCliente = responseDataCliente.data;
 
+
 if(responseDataCliente.data.errors || responseDataCliente.code !== 200){
     errors.all = responseDataCliente.data.errors ? responseDataCliente.data.errors : [];
 }else{
-    console.log(dataCliente)
     data_tipos_documentos = JSON.parse(dataCliente.name_bd_column_tipo_documento_format);
 }
-
 
 let order = Astro.url.searchParams.get('order');
 let orderClassASC;
@@ -72,6 +71,7 @@ Astro.url.searchParams.delete('order');
     
         <div class="relative overflow-x-auto">
             <DynamicTable
+            isValidVacio={dataTable.length > 0}
             id="data-table" 
             addClassTable="tableBusqueda"
             isScroll={true}
@@ -112,6 +112,10 @@ Astro.url.searchParams.delete('order');
                     <td>
                         <b>
                             <a target="_blank" href=`${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${data.numero_control}/${data.tipo_documento}/${data.numero_documento}/${obtenerNumeroMes(data.fecha_emision)}/${data.encrypt}?encrypt_others=${data.encrypt_others}&token=${locals.token}`>PDF</a> <br>
+                            {(data.anexos == 1 && locals.rol_id != 2) &&
+                                <a target="_blank" href=`${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${data.numero_control}/${data.tipo_documento}/${data.numero_documento}/${obtenerNumeroMes(data.fecha_emision)}/${data.encrypt}?encrypt_others=${data.encrypt_others}&token=${locals.token}&anexos=1`>ANEXOS</a> <br>
+                            }
+                            
                             <a href="#" class="ver-xml" data-index={data.numero_control}>XML</a>
                         </b>
                     </td>
@@ -280,6 +284,16 @@ document.addEventListener('DOMContentLoaded', function() {
         data.forEach(item => {
             const row = document.createElement('tr');
             row.setAttribute('id', 'row-' + item.numero_control);
+            row.classList.add('bg-white', 'border-b', 'dark:bg-gray-800', 'dark:border-gray-700', 'hover:bg-gray-50', 'dark:hover:bg-gray-600');
+            
+            let anexos = '';
+
+
+            if(item.anexos == 1){
+                anexos = `<a target="_blank" href="${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${item.numero_control}/${item.tipo_documento}/${item.numero_documento}/${obtenerNumeroMes(item.fecha_emision)}/${item.encrypt}?encrypt_others=${item.encrypt_others}&token=${objeto.token}&anexos=1">ANEXOS</a> <br>`; 
+            }
+                
+
             row.innerHTML = `
                 <td hidden>${item.numero_control}</td>
                 <td hidden class="correo_cliente">${item.correo_cliente}</td>
@@ -288,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>
                     <b>
                         <a target="_blank" href="${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${item.numero_control}/${item.tipo_documento}/${item.numero_documento}/${obtenerNumeroMes(item.fecha_emision)}/${item.encrypt}?encrypt_others=${item.encrypt_others}&token=${objeto.token}">PDF</a> <br>
-
+                        ${anexos}
                         <a href="#" class="ver-xml" data-index="${item.numero_control}">XML</a>
                     </b>
                 </td>

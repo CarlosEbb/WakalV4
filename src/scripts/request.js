@@ -1,17 +1,15 @@
 export async function apiController(baseURL, endpoint, method, requestBody, token = null, contentType = 'application/json') {
   try {
-    console.log(1);
     const url = `${baseURL}${endpoint}`;
     let headers = {};
     if (token) {
       headers['Authorization'] = 'Bearer ' + token;
     }
-    console.log(2);
     const options = {
       method,
       headers: headers,
     };
-    console.log(3);
+    
     if (method !== 'GET' && method !== 'HEAD' && requestBody) {
       if (requestBody instanceof FormData || contentType === 'multipart/form-data') {
         options.body = requestBody;
@@ -20,10 +18,8 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
         options.body = JSON.stringify(requestBody);
       }
     }
-    console.log(4);
-    console.log(url, options);
+    
     const response = await fetch(url, options);
-    console.log(5);
     const responseParse = await response.json();
    
     if (response.ok) {
