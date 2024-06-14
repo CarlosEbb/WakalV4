@@ -111,9 +111,9 @@ Astro.url.searchParams.delete('order');
                     <td hidden class="rif_prestador">{data.rif_prestador}</td>
                     <td>
                         <b>
-                            <a target="_blank" href=`${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${data.numero_control}/${data.tipo_documento}/${data.numero_documento}/${obtenerNumeroMes(data.fecha_emision)}/${data.encrypt}?encrypt_others=${data.encrypt_others}&token=${locals.token}`>PDF</a> <br>
+                            <a target="_blank" href=`${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${data.numero_control}/${data.tipo_documento}/${data.numero_documento}/${obtenerNumeroMes(data.fecha_emision)}/${data.encrypt}?encrypt_others=${data.encrypt_others}&token=${locals.token}&status=${data.status}`>PDF</a> <br>
                             {(data.anexos == 1 && locals.rol_id != 2) &&
-                                <a target="_blank" href=`${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${data.numero_control}/${data.tipo_documento}/${data.numero_documento}/${obtenerNumeroMes(data.fecha_emision)}/${data.encrypt}?encrypt_others=${data.encrypt_others}&token=${locals.token}&anexos=1`>ANEXOS</a> <br>
+                                <a target="_blank" href=`${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${data.numero_control}/${data.tipo_documento}/${data.numero_documento}/${obtenerNumeroMes(data.fecha_emision)}/${data.encrypt}?encrypt_others=${data.encrypt_others}&token=${locals.token}&status=${data.status}&anexos=1`>ANEXOS</a> <br>
                             }
                             
                             <a href="#" class="ver-xml" data-index={data.numero_control}>XML</a>
@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
             if(item.anexos == 1){
-                anexos = `<a target="_blank" href="${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${item.numero_control}/${item.tipo_documento}/${item.numero_documento}/${obtenerNumeroMes(item.fecha_emision)}/${item.encrypt}?encrypt_others=${item.encrypt_others}&token=${objeto.token}&anexos=1">ANEXOS</a> <br>`; 
+                anexos = `<a target="_blank" href="${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${item.numero_control}/${item.tipo_documento}/${item.numero_documento}/${obtenerNumeroMes(item.fecha_emision)}/${item.encrypt}?encrypt_others=${item.encrypt_others}&token=${objeto.token}&status=${item.status}&anexos=1">ANEXOS</a> <br>`; 
             }
                 
 
@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td hidden class="rif_prestador">${item.rif_prestador}</td>
                 <td>
                     <b>
-                        <a target="_blank" href="${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${item.numero_control}/${item.tipo_documento}/${item.numero_documento}/${obtenerNumeroMes(item.fecha_emision)}/${item.encrypt}?encrypt_others=${item.encrypt_others}&token=${objeto.token}">PDF</a> <br>
+                        <a target="_blank" href="${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${item.numero_control}/${item.tipo_documento}/${item.numero_documento}/${obtenerNumeroMes(item.fecha_emision)}/${item.encrypt}?encrypt_others=${item.encrypt_others}&token=${objeto.token}&status=${item.status}">PDF</a> <br>
                         ${anexos}
                         <a href="#" class="ver-xml" data-index="${item.numero_control}">XML</a>
                     </b>
