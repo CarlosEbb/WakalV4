@@ -8,11 +8,34 @@ interface Props {
     isSearchBar?: boolean;
 }
 
+let formattedClientes = [];
+let clientes = [];
+
 const cliente_id = Astro.url.searchParams.get('c');
+
+const ispage = Astro.url.pathname == '/dashboard/home';
+
+const ocultar = ispage ? 'hidden' : '';
 
 const {subTitle = '', isSearchBar = true} = Astro.props;
 
 const locals:any = Astro.locals;
+
+if(!cliente_id || locals.rol_id == 1 || locals.rol_id == 2 ){
+  const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/clientes','GET',null,locals.token);
+  const clientes = Array.isArray(responseData.data) ? responseData.data : [];
+  formattedClientes = clientes.map(cliente => ({
+    value: cliente.id,
+    label: cliente.nombre_cliente
+  }));
+
+  if(cliente_id){
+    var nombreCliente = formattedClientes.find(function(cliente) {
+        return cliente.value == cliente_id;
+    }).label;
+  }
+}
+
 
 let errors = {all: [] };
 let successMessage = {all: []};
@@ -23,156 +46,93 @@ let successMessage = {all: []};
 
 
 <div class="bg-gradient-to-r from-custom-Tredenary to-custom-Quattuordenary p-6 pb-24 no-imprimir">
-  <form id="formSearchBar" method="GET" action={"/dashboard/clientes/dashboardSearch"}>
-      <input type="text" name="c" value={cliente_id} hidden>
-      {cliente_id &&
-        <div class="flex items-center justify-center">
-          <h2 class="text-3xl font-semibold mb-4 text-center text-white mr-4">{subTitle}</h2>
-          <div>
-            <Select
-                  id="cod_area"
-                  name="tipoBusqueda"
-                  rounded="rounded-full"
-                  addClass=""
-                  addClassSelect="tipoBusqueda"
-                  placeholder="Seleccionar"
-                  iconSize={35}
-              />
-          </div>
-        </div>
-        <div class="contentConsultas flex flex-col md:flex-row items-center justify-center hidden">
-          <div class="flex contentConsultasInput">
+  { nombreCliente && 
+    <h2 class="text-white font-semibold">{nombreCliente}</h2>
+  }
 
+  {(ispage || cliente_id) && 
+    <form id="formSearchBar" method="GET" action={"/dashboard/clientes/dashboardSearch"}>
+      
+        {ispage && 
+          <div class="flex items-center justify-center">
+            <h2 class="text-3xl font-semibold mb-4 text-center text-white mr-4">Seleccione el contribuyente</h2>
+            <div>
+              <Select
+                    id="clienteSelect"
+                    name="c"
+                    rounded="rounded-full"
+                    addClass=""
+                    addClassSelect="clienteSelect"
+                    placeholder="Seleccionar Cliente"
+                    iconSize={35}
+                    options={formattedClientes}
+                />
+            </div>
           </div>
-            {isSearchBar &&
-                <ButtonAction id="ButtonActionSearch" text="Buscar" addClass="ml-2 py-3 px-8 mt-4 sm:mt-0"/>
-            }
-        </div>
-      }
-      {!cliente_id &&
-        <div class="mt-14"></div>
-      }
-  </form>
+        }
+        
+          <div class=`contentConsultasCliente flex items-center justify-center ${ocultar}`>
+            <h2 class="text-3xl font-semibold mb-4 text-center text-white mr-4">{subTitle}</h2>
+            <div>
+              <Select
+                    id="tipoBusqueda"
+                    name="tipoBusqueda"
+                    rounded="rounded-full"
+                    addClass=""
+                    addClassSelect="tipoBusqueda"
+                    placeholder="Seleccionar"
+                    iconSize={35}
+                />
+            </div>
+          </div>
+          <div class="contentConsultas flex flex-col md:flex-row items-center justify-center hidden">
+            <div class="flex contentConsultasInput">
+
+            </div>
+              {isSearchBar &&
+                  <ButtonAction id="ButtonActionSearch" text="Buscar" addClass="ml-2 py-3 px-8 mt-4 sm:mt-0"/>
+              }
+          </div>
+        
+          
+          {(!ispage) && 
+            <input type="text" name="c" value={cliente_id} hidden>
+          }
+    </form>
+  }
+
+  {(!cliente_id && !ispage) &&
+    <div class="mt-14"></div>
+  }
 </div>
 
 <script>
-  import {obtenerCookie, getQueryParam, getAllQueryParams, setElementValueByName} from "../scripts/utils.js";
+  import { obtenerCookie, getQueryParam, getAllQueryParams, setElementValueByName, handleSelectChange, procesarConsulta } from "../scripts/utils.js";
   import { apiController } from '../scripts/request.js';
 
+  let cookies = obtenerCookie('others');
+  let objeto = JSON.parse(cookies);
 
-  async function init() {
-    let cliente_id = getQueryParam('c');
-    var cookies = obtenerCookie('others');
-    var objeto = JSON.parse(cookies);
-    
-    var storageName_tipoBusqueda = `data_tipoBusqueda_${cliente_id}`;
-    let storage_tipoBusqueda = JSON.parse(localStorage.getItem(storageName_tipoBusqueda));
-    var data;
+  // Obtener cliente_id de la query inicial
+  let cliente_id:any = getQueryParam('c');
 
-    let dataParams = getAllQueryParams();
+  // Ejecutar procesarDatos inicialmente con los parámetros actuales
+  procesarConsulta(cliente_id, cookies, objeto);
 
-    // Manejar el evento change del select .tipoBusqueda
-    function handleSelectChange(selectedOption) {
-        var contentHtml:any = document.querySelector('.contentConsultas');
-        var contentInputHtml:any = document.querySelector('.contentConsultasInput');
+  // Obtener referencia al elemento <select> por su ID
+  const clienteSelect = document.getElementById('clienteSelect');
 
-        if (selectedOption === '') {
-            contentHtml.classList.add('hidden');
-        } else {
-            contentHtml.classList.remove('hidden');
-        }
-        var parametros = data.find(item => item.id == selectedOption).parametros;
-        var content = '';
-
-        parametros.forEach(param => {
-            if (param.tipo_input === 'text') {
-                content += '<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="' + param.name + '" placeholder="' + param.placeholder + '" />';
-                if(param.name == "numero_control" || param.name == "numero_documento"){
-                  content += `<div class="relative flex items-center hidden"><input id="${param.name}_check" checked name="especifico_check" type="checkbox" value="1" class="appearance-none w-6 h-6 rounded-full border-2 border-gray-400 checked:bg-custom-primary checked:border-transparent focus:outline-none transition-all duration-300 mr-2"/><label for="${param.name}_check" class="text-sm cursor-pointer select-none text-white">Específico</label></div>`;
-                }
-            } else if (param.tipo_input === 'selected') {
-              var selectOptions = param.column_reference_cliente_value;
-              if(selectOptions != null){
-                var selectHtml = '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option selected disabled value="">' + param.placeholder + '</option>';
-          
-                for (var i = 0; i < selectOptions.values.length; i++) {
-                    selectHtml += '<option value="' + selectOptions.values[i].join(";") + '">' + selectOptions.placeholder[i] + '</option>';
-                }
-                selectHtml += '<option value="all">Todos</option>';
-                selectHtml += '</select>';
-  
-                content += selectHtml;
-              }else{
-                
-                content += '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option value="">' + param.placeholder + '</option></select>';
-                
-              }
-            } else if (param.tipo_input === 'date') {
-              if(param.name == "fecha"){
-                content += '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="tipo_fecha"><option selected disabled value="">Tipo de Fecha</option><option value="emision">Emisión</option><option value="asignacion">Asignación</option></select>';
-                content += '<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="' + param.name + "_inicio" + '" placeholder="Fecha Inicial" />';
-                content += '<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="' + param.name + "_final" + '" placeholder="Fecha Final" />';
-              }else{
-                content += '<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="' + param.name + '" placeholder="' + param.placeholder + '" />';
-              }
-            }
-        });
-
-        contentInputHtml.innerHTML = content;
-    }
-
-    if(cliente_id){
-      if(storage_tipoBusqueda){
-        data = storage_tipoBusqueda;
-      }
-        
-      const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultas/cliente/${cliente_id}/${objeto.rol_id}`,'GET',null,objeto.token);
-      if(responseData.data.errors || responseData.code !== 200){
-        console.log(responseData.data.errors);
-      }else{
-        data = responseData.data;
-        localStorage.setItem(storageName_tipoBusqueda, JSON.stringify(data));
-      }
-        
-      
-      
-      var selectTipoBusqueda:any = document.querySelector('.tipoBusqueda');
-        // Llenar el select .tipoBusqueda con las opciones disponibles
-    
-      data.forEach(item => {
-          var option = document.createElement('option');
-          option.value = item.id;
-          option.text = item.nombre;
-          selectTipoBusqueda.appendChild(option);
-      });
-
-      let tipoBusqueda = getQueryParam('tipoBusqueda');
-
-      let selectElement:any = document.querySelector('.tipoBusqueda');
-      for(let i=0; i<selectElement.options.length; i++){
-          if(selectElement.options[i].value == tipoBusqueda){
-              selectElement.options[i].selected = true;
-              handleSelectChange(tipoBusqueda);
-              for (const [key, value] of Object.entries(dataParams)) {
-                  setElementValueByName(key, value);
-              }
-              break;
-          }
-      }
-      selectTipoBusqueda.addEventListener('change', function() {
-          handleSelectChange(this.value);
-      });
-    }
-    
-
-  }
-
-  // Inicializar en la primera carga
-  init();
-
-  // Reinicializar después de cambiar de página
-  document.addEventListener("astro:after-swap", init);
+  // Agregar event listener para detectar cambios en el <select>
+  clienteSelect.addEventListener('change', function() {
+    // Obtener el nuevo valor seleccionado
+    cliente_id = this.value;
+    var contentConsultasCliente = document.querySelector('.contentConsultasCliente');
+    contentConsultasCliente.classList.remove('hidden');
+    // Ejecutar procesarDatos con los nuevos parámetros
+    procesarConsulta(cliente_id, cookies, objeto);
+  });
 </script>
+
 
 
 <script>

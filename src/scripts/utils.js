@@ -217,3 +217,180 @@ export function findPlaceholder(data, valueToFind) {
   return '-'; // Si no se encuentra el valor
 }
 
+// Manejar el evento change del select .tipoBusqueda
+export function handleSelectChange(selectedOption, data, created_at) {
+  console.log(data);
+  var contentHtml = document.querySelector('.contentConsultas');
+  var contentInputHtml = document.querySelector('.contentConsultasInput');
+
+  if (selectedOption === '') {
+      contentHtml.classList.add('hidden');
+  } else {
+      contentHtml.classList.remove('hidden');
+  }
+  var parametros = data.find(item => item.id == selectedOption).parametros;
+  var content = '';
+
+  parametros.forEach(param => {
+      if (param.tipo_input === 'text') {
+          content += '<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="' + param.name + '" placeholder="' + param.placeholder + '" />';
+          if(param.name == "numero_control" || param.name == "numero_documento"){
+            content += `<div class="relative flex items-center hidden"><input id="${param.name}_check" checked name="especifico_check" type="checkbox" value="1" class="appearance-none w-6 h-6 rounded-full border-2 border-gray-400 checked:bg-custom-primary checked:border-transparent focus:outline-none transition-all duration-300 mr-2"/><label for="${param.name}_check" class="text-sm cursor-pointer select-none text-white">Específico</label></div>`;
+          }
+      } else if (param.tipo_input === 'selected') {
+        var selectOptions = param.column_reference_cliente_value;
+        if(selectOptions != null){
+          var selectHtml = '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option selected disabled value="">' + param.placeholder + '</option>';
+    
+          for (var i = 0; i < selectOptions.values.length; i++) {
+              selectHtml += '<option value="' + selectOptions.values[i].join(";") + '">' + selectOptions.placeholder[i] + '</option>';
+          }
+          selectHtml += '<option value="all">Todos</option>';
+          selectHtml += '</select>';
+
+          content += selectHtml;
+        }else{
+          
+          content += '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="' + param.name + '"><option value="">' + param.placeholder + '</option></select>';
+          
+        }
+      } else if (param.tipo_input === 'date') {
+        if(param.name == "fecha"){
+
+          const today = new Date();
+          const year = today.getFullYear();
+          const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses son base 0, por eso sumamos 1
+          const day = String(today.getDate()).padStart(2, '0');
+  
+          const formattedDate = `${year}-${month}-${day}`;
+
+          content += '<select required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" name="tipo_fecha"><option selected disabled value="">Tipo de Fecha</option><option value="emision">Emisión</option><option value="asignacion">Asignación</option></select>';
+          content += '<input required min="'+created_at+'" max="'+formattedDate+'" class="limit_date_moth_inicio w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="' + param.name + "_inicio" + '" placeholder="Fecha Inicial" />';
+          content += '<input required min="'+created_at+'" max="'+formattedDate+'" class="limit_date_moth_final w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="' + param.name + "_final" + '" placeholder="Fecha Final" />';
+        }else{
+          content += '<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="' + param.name + '" placeholder="' + param.placeholder + '" />';
+        }
+      }
+  });
+
+  contentInputHtml.innerHTML = content;
+
+  document.querySelector('.limit_date_moth_inicio').addEventListener('change', ValidarFechasMes);
+
+
+
+}
+
+function ValidarFechasMes() {
+  const fechaInicial = document.querySelector('.limit_date_moth_inicio').value;
+  const fechaFinal = document.querySelector('.limit_date_moth_final');
+
+  // Obtener los valores como objetos Date
+  const dateInicial = new Date(fechaInicial);
+  const dateFinal = new Date(fechaFinal.value);
+
+  // Verificar si fechaFinal es mayor que fechaInicial
+  if (dateFinal >= dateInicial) {
+      // No blanquear el valor del input fechaFinal
+  } else {
+      // Blanquear el valor del input fechaFinal
+      fechaFinal.value = "";
+  }
+
+  const date = new Date(fechaInicial);
+  date.setDate(date.getDate() + 1);
+
+  const primerDia = new Date(date.getFullYear(), date.getMonth(), 1);
+  const ultimoDia = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+  const dateFormat1 = ultimoDia.toISOString().split('T')[0];
+
+  // Obtener la fecha actual en formato 'YYYY-MM-DD'
+  const today = new Date().toISOString().split('T')[0];
+
+  // Comparar si dateFormat1 es mayor que la fecha actual
+  if (dateFormat1 > today) {
+      fechaFinal.setAttribute('max', today); // Establecer la fecha máxima como la fecha actual
+  } else {
+      fechaFinal.setAttribute('max', dateFormat1); // Establecer la fecha máxima como dateFormat1
+  }
+
+  // Establecer la fecha mínima como fechaInicial
+  fechaFinal.setAttribute('min', fechaInicial);
+}
+
+
+
+
+export async function procesarConsulta(cliente_id, cookies, objeto) {
+  // Obtener cookies y objeto
+  var cookiesObject = JSON.parse(cookies);
+
+  // Nombre de almacenamiento local
+  let storageName_tipoBusqueda = `data_tipoBusqueda_${cliente_id}`;
+
+  // Obtener datos de localStorage si están disponibles
+  let storage_tipoBusqueda = JSON.parse(localStorage.getItem(storageName_tipoBusqueda));
+
+  // Variable para almacenar datos
+  var data;
+  var created_at = '';
+
+  // Obtener todos los parámetros de la query
+  let dataParams = getAllQueryParams();
+
+  // Verificar si cliente_id está presente
+  if (cliente_id) {
+      // Usar datos almacenados si están disponibles
+      if (storage_tipoBusqueda) {
+          data = storage_tipoBusqueda;
+      }
+
+      // Llamar a la API para obtener datos actualizados
+      const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL, `/consultas/cliente/${cliente_id}/${cookiesObject.rol_id}`, 'GET', null, cookiesObject.token);
+      
+      // Procesar la respuesta de la API
+      if (responseData.data.errors || responseData.code !== 200) {
+          console.log(responseData.data.errors);
+      } else {
+          // Almacenar datos y guardar en localStorage
+          data = responseData.data;
+          created_at = responseData.others.created_at
+          localStorage.setItem(storageName_tipoBusqueda, JSON.stringify(data));
+      }
+
+      // Llenar el select .tipoBusqueda con las opciones disponibles
+      var selectTipoBusqueda = document.querySelector('.tipoBusqueda');
+      selectTipoBusqueda.innerHTML = '';
+
+      data.forEach(item => {
+          var option = document.createElement('option');
+          option.value = item.id;
+          option.text = item.nombre;
+          selectTipoBusqueda.appendChild(option);
+      });
+
+      // Obtener el valor de tipoBusqueda de los parámetros de la query
+      let tipoBusqueda = getQueryParam('tipoBusqueda');
+
+      // Seleccionar la opción correspondiente en el select
+      let selectElement = document.querySelector('.tipoBusqueda');
+      for (let i = 0; i < selectElement.options.length; i++) {
+          if (selectElement.options[i].value == tipoBusqueda) {
+              selectElement.options[i].selected = true;
+              handleSelectChange(tipoBusqueda,data,created_at);
+
+              // Establecer los valores de los elementos según los parámetros de la query
+              for (const [key, value] of Object.entries(dataParams)) {
+                  setElementValueByName(key, value);
+              }
+              break;
+          }
+      }
+
+      // Escuchar cambios en el select tipoBusqueda
+      selectTipoBusqueda.addEventListener('change', function() {
+          handleSelectChange(this.value, data,created_at);
+      });
+  }
+}
