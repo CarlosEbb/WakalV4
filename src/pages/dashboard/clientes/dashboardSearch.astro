@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let anexos = '';
 
 
-            if(item.anexos == 1){
+            if(item.anexos == 1 && objeto.rol_id != 2){
                 anexos = `<a target="_blank" href="${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${item.numero_control}/${item.tipo_documento}/${item.numero_documento}/${obtenerNumeroMes(item.fecha_emision)}/${item.encrypt}?encrypt_others=${item.encrypt_others}&token=${objeto.token}&status=${item.status}&anexos=1&tipo_war=${item.tipo_war}">ANEXOS</a> <br>`; 
             }
                 
