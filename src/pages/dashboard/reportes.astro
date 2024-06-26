@@ -1,0 +1,64 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+import CardInfoDashboard from "../../components/CardInfoDashboard.astro";
+import CardContentPage from "../../components/CardContentPage.astro";
+
+
+const locals:any = Astro.locals;
+
+// if(locals.rol_id != 1 && locals.rol_id != 2){
+//     return Astro.redirect("/");
+// }
+
+---
+
+<Layout title="Dashboard" bodyClass="bg-gray-100">
+    <div class="pl-6 pr-6 -mt-36">
+        <div class="flex items-center mb-10">
+            <div class="w-48"></div>
+            <h2 class="font-semibold text-white text-xl text-center flex-grow">Panel de Reportes</h2>
+            
+            <div class="w-48"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <!-- Card 1 -->
+            <CardInfoDashboard
+            addClassValue={"card_1_"}
+            value="0"
+            text="Cant. Total de Doc Emitidos."
+            icon="chart-area-line"
+            color="bg-gradient-to-r from-custom-senary to-custom-tertiary"
+            />
+
+            <CardInfoDashboard
+            addClassValue={"card_2_"}
+            value="0"
+            text="Cant. Nº Control Mes Anterior."
+            icon="chart-bar"
+            color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
+            />
+
+            <CardInfoDashboard
+            addClassValue={"card_3_"}
+            value="0"
+            text="Cant. Nº Control Mes Actual."
+            icon="timeline"
+            color="bg-gradient-to-r from-custom-denary to-custom-undenary"
+            />
+
+            <CardInfoDashboard
+            addClassValue={"card_4_"}
+            value="0"
+            text="Correos Enviados."
+            icon="mail-forward"
+            color="bg-gradient-to-r from-custom-denary to-custom-undenary"
+            />
+        </div>
+    </div>
+   
+</Layout>
+
+<script>
+
+</script>

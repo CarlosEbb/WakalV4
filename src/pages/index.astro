@@ -9,6 +9,8 @@ import { apiController } from '../scripts/request.js';
 let errors = {all: [] };
 let successMessage = {all: []};
 let recuerdame_cookies = Astro.cookies.get('recuerdame');
+
+
 let recuerdame_value = "";
 let recuerdame_checked = false;
 if(recuerdame_cookies){
@@ -72,6 +74,17 @@ if (Astro.request.method === "POST") {
   }
 }
 
+let msg_error = Astro.cookies.get('msg_error');
+Astro.cookies.set('msg_error', '', { path: '/', expires: new Date(0) });
+if(msg_error){  
+  errors.all.push(msg_error.value);
+}
+
+let msg_success = Astro.cookies.get('msg_success');
+Astro.cookies.set('msg_success', '', { path: '/', expires: new Date(0) });
+if(msg_success){  
+  successMessage.all.push(msg_success.value);
+}
 //Astro.cookies.delete('session');
 ---
 <Layout title="Login Soluciones Laser" bodyClass="bg-gray-100 flex justify-center items-center mt-16 md:mt-0 md:h-screen md:p-24">
@@ -110,6 +123,7 @@ if (Astro.request.method === "POST") {
 						<InputField isrequired={true} id="password" name="password" type="password" icon="lock" placeholder="Contraseña" addClass="mb-8"/>
 						
 						{errors.all && <p class="text-min -mt-3 ml-4 text-custom-Quinquadrenary">{errors.all}</p>}
+						{successMessage.all && <p class="text-min -mt-3 ml-4 text-custom-Sedenary">{successMessage.all}</p>}
 						
 						<div class="flex flex-wrap justify-center items-center mb-4">
 							<Checkbox add_class="mt-2" id="recuerdame" name="recuerdame" icon="check" text="Recuérdame" value={"1"} checked={recuerdame_checked}/>

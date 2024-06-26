@@ -22,9 +22,11 @@ export async function onRequest({ locals, request, url, cookies }, next) {
         session = JSON.parse(session.value);
 
         try {
+
             const decodedToken = await new Promise((resolve, reject) => {
-                jwt.verify(session.token, 'secretKey', (err, decoded) => {
+                jwt.verify(session.token, import.meta.env.JWT_SECRET, (err, decoded) => {
                     if (err) {
+                        cookies.set('msg_error', 'La sesión ha caducado por inactividad. Acceda nuevamente para retomar sus actividades', { path: '/', httpOnly: false });
                         reject(err);
                     } else {
                         resolve(decoded);
