@@ -121,10 +121,10 @@ if(msg_success){
 						<h2 class="text-center text-lg mb-4 text-custom-primary font-semibold">Ingresa tu información</h2>
 						<InputField isrequired={true} id="email" name="email" type="text" icon="user" placeholder="Usuario o correo electrónico" value={recuerdame_value} addClass="mb-4" />
 						<InputField isrequired={true} id="password" name="password" type="password" icon="lock" placeholder="Contraseña" addClass="mb-8"/>
-						
-						{errors.all && <p class="text-min -mt-3 ml-4 text-custom-Quinquadrenary">{errors.all}</p>}
-						{successMessage.all && <p class="text-min -mt-3 ml-4 text-custom-Sedenary">{successMessage.all}</p>}
-						
+						<div class="mb-3">
+              {errors.all && <p class="text-min -mt-3 ml-4 text-custom-Quinquadrenary">{errors.all}</p>}
+              {successMessage.all && <p class="text-min -mt-3 ml-4 text-custom-Sedenary">{successMessage.all}</p>}
+            </div>
 						<div class="flex flex-wrap justify-center items-center mb-4">
 							<Checkbox add_class="mt-2" id="recuerdame" name="recuerdame" icon="check" text="Recuérdame" value={"1"} checked={recuerdame_checked}/>
 							<a href="/auth/forgetPassword" class="ml-2 mt-2 text-sm text-custom-tertiary font-semibold">¿Olvidaste tu contraseña?</a>
