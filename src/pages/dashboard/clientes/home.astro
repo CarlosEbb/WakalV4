@@ -121,6 +121,7 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
               let json = {};
               for(let month = 1; month <= current_month; month++){
                   const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultasCliente/${cliente_id}/getTotalMes/${current_year}/${month}`,'GET',null,token);
+                  console.log(responseData);
                   // Almacenar la información en el objeto json
                   json[obtenerNombreDelMes(month)] = responseData.data.total;
               }
