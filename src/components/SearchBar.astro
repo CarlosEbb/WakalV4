@@ -122,20 +122,15 @@ let successMessage = {all: []};
   // Obtener referencia al elemento <select> por su ID
   const clienteSelect = document.getElementById('clienteSelect');
 
-  if (clienteSelect) {
-    clienteSelect.addEventListener('change', function() {
-      // Obtener el nuevo valor seleccionado
-      var cliente_id = this.value;
-      var contentConsultasCliente = document.querySelector('.contentConsultasCliente');
-      if (contentConsultasCliente) {
-        contentConsultasCliente.classList.remove('hidden');
-        // Ejecutar procesarDatos con los nuevos parámetros
-        procesarConsulta(cliente_id, cookies, objeto);
-      }
-    });
-  } else {
-    console.log('El elemento clienteSelect no se encontró en el DOM.');
-  }
+  // Agregar event listener para detectar cambios en el <select>
+  clienteSelect.addEventListener('change', function() {
+    // Obtener el nuevo valor seleccionado
+    cliente_id = this.value;
+    var contentConsultasCliente = document.querySelector('.contentConsultasCliente');
+    contentConsultasCliente.classList.remove('hidden');
+    // Ejecutar procesarDatos con los nuevos parámetros
+    procesarConsulta(cliente_id, cookies, objeto);
+  });
 </script>
 
 

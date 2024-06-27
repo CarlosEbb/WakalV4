@@ -2,6 +2,7 @@ import { sequence } from "astro:middleware";
 import jwt from 'jsonwebtoken';
 
 export async function onRequest({ locals, request, url, cookies }, next) {
+    
     let isPrivate = [
         '/auth/selectedAction',
     ];
