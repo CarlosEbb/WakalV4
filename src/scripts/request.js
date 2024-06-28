@@ -1,7 +1,7 @@
 // Función para obtener el token CSRF desde el servicio
-async function obtenerCSRFToken() {
+async function obtenerCSRFToken(baseURL) {
   try {
-    const response = await fetch('http://localhost:8001/csrf-token', {
+    const response = await fetch(baseURL+'/csrf-token', {
       credentials: 'include'  // Indicar al navegador que incluya cookies y credenciales
     });
     if (!response.ok) {
@@ -19,7 +19,7 @@ async function obtenerCSRFToken() {
 export async function apiController(baseURL, endpoint, method, requestBody, token = null, contentType = 'application/json') {
   try {
     // Obtener el token CSRF
-    const csrfToken = await obtenerCSRFToken();
+    const csrfToken = await obtenerCSRFToken(baseURL);
     
     const url = `${baseURL}${endpoint}`;
     let headers = {};
