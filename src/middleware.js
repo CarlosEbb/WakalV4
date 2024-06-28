@@ -1,8 +1,8 @@
 import { sequence } from "astro:middleware";
 import jwt from 'jsonwebtoken';
 
-export async function onRequest({ locals, request, url, cookies }, next) {
-    
+export async function onRequest({ locals, request, url, cookies, response }, next) {
+
     let isPrivate = [
         '/auth/selectedAction',
     ];
@@ -15,7 +15,8 @@ export async function onRequest({ locals, request, url, cookies }, next) {
             return new Response(null, {
                 status: 302,
                 headers: {
-                    Location: '/'
+                    ...securityHeaders,
+                    Location: '/',
                 }
             });
         }
@@ -47,11 +48,40 @@ export async function onRequest({ locals, request, url, cookies }, next) {
             return new Response(null, {
                 status: 302,
                 headers: {
+                    ...securityHeaders,
                     Location: '/'
                 }
             });
         }
     } else {
-        return next();
+        const response = await next();
+        // Aplica los encabezados de seguridad
+        return applySecurityHeaders(response);
     }
+}
+
+
+function applySecurityHeaders(response) {
+    const securityHeaders = {
+        'Content-Security-Policy': "default-src 'self';",
+        'X-DNS-Prefetch-Control': 'off',
+        'Expect-CT': "max-age=0",
+        'X-Frame-Options': 'SAMEORIGIN',
+        'Strict-Transport-Security': "max-age=15552000; includeSubDomains",
+        'X-Download-Options': 'noopen',
+        'X-Content-Type-Options': 'nosniff',
+        'Referrer-Policy': 'no-referrer',
+        'X-Permitted-Cross-Domain-Policies': 'none',
+        'X-XSS-Protection': "0",
+        'Feature-Policy': "camera 'none'; geolocation 'none'; microphone 'none'",
+    };
+    
+    const newHeaders = new Headers(response.headers);
+    Object.entries(securityHeaders).forEach(([key, value]) => {
+        newHeaders.set(key, value);
+    });
+    return new Response(response.body, {
+        status: response.status,
+        headers: newHeaders,
+    });
 }
