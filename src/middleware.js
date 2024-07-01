@@ -63,7 +63,7 @@ export async function onRequest({ locals, request, url, cookies, response }, nex
 
 function applySecurityHeaders(response) {
     const securityHeaders = {
-        'Content-Security-Policy': "default-src 'self';",
+        'Content-Security-Policy': "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests",
         'X-DNS-Prefetch-Control': 'off',
         'Expect-CT': "max-age=0",
         'X-Frame-Options': 'SAMEORIGIN',
