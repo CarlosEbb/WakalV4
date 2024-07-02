@@ -64,8 +64,8 @@ Astro.url.searchParams.delete('order');
         
             <div class="flex space-x-4">
                 <i class="icono1 cursor-pointer"><a id="download-btn" data-tippy-content="Descargar XML"><Icon name="file-type-xml" class="text-2xl" /></a></i>
-                <i class="icono2"><a href=""><Icon name="file-type-pdf" class="text-2xl" /></a></i>
-                <i class="icono3"><a href=""><Icon name="file-type-csv" class="text-2xl" /></a></i>
+                <i class="icono2 cursor-pointer"><a id="download-btn-pdf" data-tippy-content="Descargar PDF"><Icon name="file-type-pdf" class="text-2xl" /></a></i>
+                <i class="icono3 cursor-pointer"><a id="download-btn-excel" data-tippy-content="Descargar EXCEL"><Icon name="file-type-csv" class="text-2xl" /></a></i>
             </div>
         </div>
     
@@ -152,30 +152,7 @@ Astro.url.searchParams.delete('order');
 </Layout>
 
 <script>
-    import {getQueryParam} from "../../../scripts/utils.js";
-    
-    function buscarYResaltar(valor) {
-        // Selecciona todas las filas en la tabla
-        
-            var filas:any = document.querySelectorAll('.tableBusqueda tr');
-
-            // Selecciona el div que contiene la tabla
-            var div:any = document.querySelector('.div_tableBusqueda');
-
-            // Itera sobre las filas
-            for (var i = 0; i < filas.length; i++) {
-                // Si la fila contiene el número de control
-                if (filas[i].textContent.includes(valor)) {
-                    // Pinta la fila de azul
-                    filas[i].style.backgroundColor = '#4e4f9d';
-                    filas[i].classList.add('text-white');
-                    // Enfoca la fila en el div
-                    div.scrollTop = filas[i].offsetTop - div.offsetTop - div.clientHeight / 2 + filas[i].clientHeight / 2;
-                }
-            }
-        
-    }
-
+    import {getQueryParam, buscarYResaltar} from "../../../scripts/utils.js";
 
     async function init() {
        
@@ -208,7 +185,7 @@ Astro.url.searchParams.delete('order');
 
 
 <script>
-    import {generateXML, downloadXML, collectRowData} from "../../../scripts/generateXML";
+    import {generateXML, downloadXML, collectRowData, generarXMLIndividual} from "../../../scripts/generateXML";
 
     
     document.getElementById('download-btn').addEventListener('click', () => {
@@ -223,12 +200,6 @@ Astro.url.searchParams.delete('order');
         downloadXML(xml, 'XML.xml');
     });
 
-    function generarXMLIndividual(row) {
-        const rowData = collectRowData(row);
-        const xml = generateXML([rowData]);
-        downloadXML(xml, `XML-DOC-${rowData.NumeroDocumento}.xml`);
-    }
-
     document.addEventListener('click', (event:any) => {
         if (event.target.matches('.ver-xml')) {
             const index = event.target.getAttribute('data-index');
@@ -241,8 +212,7 @@ Astro.url.searchParams.delete('order');
 <script>
 import { obtenerCookie, getQueryParam, obtenerNombreDelMes, getAllQueryParams, getQueryString } from "../../../scripts/utils.js";
 import { apiController } from '../../../scripts/request.js';
-import { formatearNumeroControl, obtenerNumeroMes, formatNumber, findPlaceholder } from '../../../scripts/utils.js';
-import { convertDateTime } from '../../../scripts/utils.js';
+import { formatearNumeroControl, obtenerNumeroMes, formatNumber, findPlaceholder, convertDateTime, getTableData, downloadReporte} from '../../../scripts/utils.js';
 
 let cliente_id = getQueryParam('c');
 var cookies = obtenerCookie('others');
@@ -346,5 +316,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
+document.getElementById('download-btn-pdf').addEventListener('click', async function() {
+  const tableId = 'data-table'; // Reemplaza esto con el ID de tu tabla
+  const ruta_servicio = `/consultasCliente/${cliente_id}/generateDataPDFHTML`;
+  // Obtener los datos de la tabla
+  const tableData = getTableData(tableId);
+
+  await downloadReporte(tableId, ruta_servicio, tableData, objeto.token);
+});
+
+document.getElementById('download-btn-excel').addEventListener('click', async function() {
+  const tableId = 'data-table'; // Reemplaza esto con el ID de tu tabla
+  const ruta_servicio = `/consultasCliente/${cliente_id}/generateDataExcelHTML`;
+
+  // Obtener los datos de la tabla
+  const tableData = getTableData(tableId);
+    
+  await downloadReporte(tableId, ruta_servicio, tableData, objeto.token);
+});
+
 
 </script>

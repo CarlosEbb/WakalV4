@@ -54,3 +54,9 @@ export function downloadXML(xml, filename) {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
+
+export function generarXMLIndividual(row) {
+  const rowData = collectRowData(row);
+  const xml = generateXML([rowData]);
+  downloadXML(xml, `XML-DOC-${rowData.NumeroDocumento}.xml`);
+}

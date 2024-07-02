@@ -16,18 +16,18 @@ async function obtenerCSRFToken(baseURL) {
 }
 
 // Función para realizar solicitudes con CSRF
-export async function apiController(baseURL, endpoint, method, requestBody, token = null, contentType = 'application/json') {
+export async function apiController(baseURL, endpoint, method, requestBody, token = null, contentType = 'application/json', isBlob = false) {
   try {
     // Obtener el token CSRF
     const csrfToken = await obtenerCSRFToken(baseURL);
-    
+
     const url = `${baseURL}${endpoint}`;
     let headers = {};
-    
+
     if (token) {
       headers['Authorization'] = 'Bearer ' + token;
     }
-    
+
     // Agregar el token CSRF a los encabezados
     headers['csrf-token'] = csrfToken;
 
@@ -36,7 +36,7 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
       headers: headers,
       credentials: 'include'  // Indicar al navegador que incluya cookies y credenciales
     };
-    
+
     if (method !== 'GET' && method !== 'HEAD' && requestBody) {
       if (requestBody instanceof FormData || contentType === 'multipart/form-data') {
         options.body = requestBody;
@@ -45,19 +45,36 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
         options.body = JSON.stringify(requestBody);
       }
     }
-    
-    const response = await fetch(url, options);
-    const responseParse = await response.json();
 
+    const response = await fetch(url, options);
     if (response.ok) {
-      return responseParse;
+      if (isBlob) {
+        // Manejar la respuesta como blob
+        const blob = await response.blob();
+
+        // Obtener el nombre del archivo desde Content-Disposition
+        let filename = 'reporte';
+        const contentDisposition = response.headers.get('Content-Disposition');
+        
+        if (contentDisposition && contentDisposition.includes('filename=')) {
+          filename = contentDisposition.split('filename=')[1].trim().replace(/['"]/g, '');
+        }
+        return { blob, filename };
+      } else {
+        // Manejar la respuesta como JSON
+        const responseParse = await response.json();
+        return responseParse;
+      }
     } else {
+      const responseParse = await response.json();
       return responseParse;
     }
   } catch (error) {
     return error;
   }
 }
+
+
 
 
 export function formDataToObject(formData) {
