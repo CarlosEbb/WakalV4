@@ -1,3 +1,5 @@
+import { obtenerCookie } from "./utils.js";
+
 // Función para obtener el token CSRF desde el servicio
 async function obtenerCSRFToken(baseURL) {
   try {
@@ -15,12 +17,16 @@ async function obtenerCSRFToken(baseURL) {
   }
 }
 
+
 // Función para realizar solicitudes con CSRF
 export async function apiController(baseURL, endpoint, method, requestBody, token = null, contentType = 'application/json', isBlob = false) {
   try {
+
+    let ipClient = 'xx.xx.xxx.xx';
+
     // Obtener el token CSRF
     const csrfToken = await obtenerCSRFToken(baseURL);
-
+   
     const url = `${baseURL}${endpoint}`;
     let headers = {};
 
@@ -30,12 +36,15 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
 
     // Agregar el token CSRF a los encabezados
     headers['csrf-token'] = csrfToken;
+    headers['IpClient'] = ipClient;
 
     const options = {
       method,
       headers: headers,
       credentials: 'include'  // Indicar al navegador que incluya cookies y credenciales
     };
+
+   
 
     if (method !== 'GET' && method !== 'HEAD' && requestBody) {
       if (requestBody instanceof FormData || contentType === 'multipart/form-data') {

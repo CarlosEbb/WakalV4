@@ -481,3 +481,18 @@ export async function downloadReporte(tableId, ruta_servicio, tableData, token) 
     console.error('Error al enviar los datos de la tabla al servidor:', error);
   }
 }
+
+export async function getIpClient() {
+  let cookies = obtenerCookie('IpClient');
+	if(cookies == null){
+		try {
+      const response = await fetch("https://api.ipify.org?format=json");
+      const data = await response.json();
+      const ipAddress = data.ip;
+      document.cookie = `IpClient=${ipAddress}; max-age=3600;`;
+    } catch (error) {
+      console.error(error);
+    }
+	}
+  
+}
