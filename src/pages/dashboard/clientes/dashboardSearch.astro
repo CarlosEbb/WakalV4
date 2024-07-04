@@ -319,23 +319,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 document.getElementById('download-btn-pdf').addEventListener('click', async function() {
+  // Mostrar el indicador de carga
+  document.getElementById('loading-screen').classList.remove('hidden');
+
   const tableId = 'data-table'; // Reemplaza esto con el ID de tu tabla
   const ruta_servicio = `/consultasCliente/${cliente_id}/generateDataPDFHTML`;
+  
   // Obtener los datos de la tabla
   const tableData = getTableData(tableId);
 
-  await downloadReporte(tableId, ruta_servicio, tableData, objeto.token);
+  try {
+    await downloadReporte(tableId, ruta_servicio, tableData, objeto.token);
+  } catch (error) {
+    console.error('Hubo un error al descargar el reporte:', error);
+  } finally {
+    // Ocultar el indicador de carga
+    document.getElementById('loading-screen').classList.add('hidden');
+  }
 });
 
 document.getElementById('download-btn-excel').addEventListener('click', async function() {
+  // Mostrar el indicador de carga
+  document.getElementById('loading-screen').classList.remove('hidden');
+
   const tableId = 'data-table'; // Reemplaza esto con el ID de tu tabla
   const ruta_servicio = `/consultasCliente/${cliente_id}/generateDataExcelHTML`;
-
+  
   // Obtener los datos de la tabla
   const tableData = getTableData(tableId);
-    
-  await downloadReporte(tableId, ruta_servicio, tableData, objeto.token);
-});
 
+  try {
+    await downloadReporte(tableId, ruta_servicio, tableData, objeto.token);
+  } catch (error) {
+    console.error('Hubo un error al descargar el reporte:', error);
+  } finally {
+    // Ocultar el indicador de carga
+    document.getElementById('loading-screen').classList.add('hidden');
+  }
+});
 
 </script>
