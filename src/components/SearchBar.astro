@@ -123,14 +123,16 @@ let successMessage = {all: []};
   const clienteSelect = document.getElementById('clienteSelect');
 
   // Agregar event listener para detectar cambios en el <select>
-  clienteSelect.addEventListener('change', function() {
-    // Obtener el nuevo valor seleccionado
-    cliente_id = this.value;
-    var contentConsultasCliente = document.querySelector('.contentConsultasCliente');
-    contentConsultasCliente.classList.remove('hidden');
-    // Ejecutar procesarDatos con los nuevos parámetros
-    procesarConsulta(cliente_id, cookies, objeto);
-  });
+  if(clienteSelect){
+    clienteSelect.addEventListener('change', function() {
+      // Obtener el nuevo valor seleccionado
+      cliente_id = this.value;
+      var contentConsultasCliente = document.querySelector('.contentConsultasCliente');
+      contentConsultasCliente.classList.remove('hidden');
+      // Ejecutar procesarDatos con los nuevos parámetros
+      procesarConsulta(cliente_id, cookies, objeto);
+    });
+  }
 </script>
 
 
