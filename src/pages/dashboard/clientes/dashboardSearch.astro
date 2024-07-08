@@ -285,6 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td class="hora_emision">${item.hora_emision ? item.hora_emision : "-"}</td>
                 <td class="fecha_asignacion">${convertDateTime(item.fecha_asignacion, "DD-MM-YYYY")}</td>
                 <td class="rif">${item.rif ? item.rif : '-'}</td>
+                `;
                 // <td class="neto_pagar">${formatNumber(item.neto_pagar)}</td>
                 // <td class="igtf">${formatNumber(item.igtf)}</td>
                 // <td class="total_pagar">${formatNumber(item.total_pagar)}</td>
@@ -295,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // <td class="status">${item.status !== '' ? (item.status == 0 || item.status == "false" ? "Activa" : item.status == 1 || item.status == "true" ? "Anulada" : item.status) : 'Activa'}</td>
                 // <td class="motivo_anulacion">${item.motivo_anulacion ? item.motivo_anulacion : '-'}</td>
                 // <td class="fecha_anulacion">${item.fecha_anulacion || item.hora_anulacion ? `${item.fecha_anulacion ?? ''} ${item.hora_anulacion ?? ''}`.trim() : '-'}</td>
-            `;
+            //`;
             tbody.appendChild(row);
         });
     }
