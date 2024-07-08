@@ -90,17 +90,17 @@ Astro.url.searchParams.delete('order');
                 
                 "RIF/CI",
                 
-                "Total Neto a Pagar",
-                "Monto IGTF",
-                "Total Pagar",
-                "Base Imponible IVA",
-                "Monto IVA",
-                "Monto Exento",
-                "Monto No Sujeto",
-                //"Razón Social",
-                "Status",
-                "Motivo Anulación",
-                "Fecha y Hora Anulación",
+                //"Total Neto a Pagar",
+                //"Monto IGTF",
+                //"Total Pagar",
+                //"Base Imponible IVA",
+                //"Monto IVA",
+                //"Monto Exento",
+                //"Monto No Sujeto",
+                ////"Razón Social",
+                //"Status",
+                //"Motivo Anulación",
+                //"Fecha y Hora Anulación",
             ]}
             >
             {dataTable.map((data, index) => (
@@ -129,17 +129,17 @@ Astro.url.searchParams.delete('order');
                     <td class="fecha_asignacion">{convertDateTime(data.fecha_asignacion, "DD-MM-YYYY")}</td>
                     <td class="rif">{data.rif ? data.rif : '-'}</td>
 
-                    <td class="neto_pagar">{formatNumber(data.neto_pagar)}</td>
-                    <td class="igtf">{formatNumber(data.igtf)}</td>
-                    <td class="total_pagar">{formatNumber(data.total_pagar)}</td>
-                    <td class="base_imponible">{formatNumber(data.base_imponible)}</td>
-                    <td class="monto_iva">{formatNumber(data.monto_iva)}</td>
-                    <td class="monto_exento">{formatNumber(data.monto_exento)}</td>
-                    <td class="monto_no_sujeto">{formatNumber(data.monto_no_sujeto)}</td>
+                    // <td class="neto_pagar">{formatNumber(data.neto_pagar)}</td>
+                    // <td class="igtf">{formatNumber(data.igtf)}</td>
+                    // <td class="total_pagar">{formatNumber(data.total_pagar)}</td>
+                    // <td class="base_imponible">{formatNumber(data.base_imponible)}</td>
+                    // <td class="monto_iva">{formatNumber(data.monto_iva)}</td>
+                    // <td class="monto_exento">{formatNumber(data.monto_exento)}</td>
+                    // <td class="monto_no_sujeto">{formatNumber(data.monto_no_sujeto)}</td>
                     {/* <td><p class="truncate text-xs w-52">{data.razon_social}</p> </td> */}
-                    <td class="status">{data.status !== '' ? (data.status == 0 || data.status == "false" ? "Activa" : data.status == 1 || data.status == "true" ? "Anulada" : data.status) : 'Activa'}</td>
-                    <td class="motivo_anulacion">{data.motivo_anulacion ? data.motivo_anulacion : '-'}</td>
-                    <td class="fecha_anulacion"> {data.fecha_anulacion || data.hora_anulacion ? `${data.fecha_anulacion ?? ''} ${data.hora_anulacion ?? ''}`.trim() : '-'}</td>
+                    // <td class="status">{data.status !== '' ? (data.status == 0 || data.status == "false" ? "Activa" : data.status == 1 || data.status == "true" ? "Anulada" : data.status) : 'Activa'}</td>
+                    // <td class="motivo_anulacion">{data.motivo_anulacion ? data.motivo_anulacion : '-'}</td>
+                    // <td class="fecha_anulacion"> {data.fecha_anulacion || data.hora_anulacion ? `${data.fecha_anulacion ?? ''} ${data.hora_anulacion ?? ''}`.trim() : '-'}</td>
                 </tr>
             ))}
         </DynamicTable>
@@ -285,16 +285,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td class="hora_emision">${item.hora_emision ? item.hora_emision : "-"}</td>
                 <td class="fecha_asignacion">${convertDateTime(item.fecha_asignacion, "DD-MM-YYYY")}</td>
                 <td class="rif">${item.rif ? item.rif : '-'}</td>
-                <td class="neto_pagar">${formatNumber(item.neto_pagar)}</td>
-                <td class="igtf">${formatNumber(item.igtf)}</td>
-                <td class="total_pagar">${formatNumber(item.total_pagar)}</td>
-                <td class="base_imponible">${formatNumber(item.base_imponible)}</td>
-                <td class="monto_iva">${formatNumber(item.monto_iva)}</td>
-                <td class="monto_exento">${formatNumber(item.monto_exento)}</td>
-                <td class="monto_no_sujeto">${formatNumber(item.monto_no_sujeto)}</td>
-                <td class="status">${item.status !== '' ? (item.status == 0 || item.status == "false" ? "Activa" : item.status == 1 || item.status == "true" ? "Anulada" : item.status) : 'Activa'}</td>
-                <td class="motivo_anulacion">${item.motivo_anulacion ? item.motivo_anulacion : '-'}</td>
-                <td class="fecha_anulacion">${item.fecha_anulacion || item.hora_anulacion ? `${item.fecha_anulacion ?? ''} ${item.hora_anulacion ?? ''}`.trim() : '-'}</td>
+                // <td class="neto_pagar">${formatNumber(item.neto_pagar)}</td>
+                // <td class="igtf">${formatNumber(item.igtf)}</td>
+                // <td class="total_pagar">${formatNumber(item.total_pagar)}</td>
+                // <td class="base_imponible">${formatNumber(item.base_imponible)}</td>
+                // <td class="monto_iva">${formatNumber(item.monto_iva)}</td>
+                // <td class="monto_exento">${formatNumber(item.monto_exento)}</td>
+                // <td class="monto_no_sujeto">${formatNumber(item.monto_no_sujeto)}</td>
+                // <td class="status">${item.status !== '' ? (item.status == 0 || item.status == "false" ? "Activa" : item.status == 1 || item.status == "true" ? "Anulada" : item.status) : 'Activa'}</td>
+                // <td class="motivo_anulacion">${item.motivo_anulacion ? item.motivo_anulacion : '-'}</td>
+                // <td class="fecha_anulacion">${item.fecha_anulacion || item.hora_anulacion ? `${item.fecha_anulacion ?? ''} ${item.hora_anulacion ?? ''}`.trim() : '-'}</td>
             `;
             tbody.appendChild(row);
         });
