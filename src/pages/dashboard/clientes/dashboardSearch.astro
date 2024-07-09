@@ -51,6 +51,39 @@ if(order == "DESC"){
     orderClassASC = 'text-custom-Sedenary';
 }
 Astro.url.searchParams.delete('order');
+
+let columnas = [
+    "Actividad",
+    "Nº de Control",
+    "Nº de Documento",
+    "Tipo de Documento",
+    "Código de Operación",
+    "Serie",
+    "Fecha de Emisión",
+    "Hora Emisión",
+    "Fecha de Asig",
+
+    
+    "RIF/CI",
+];
+
+if(locals.rol_id != 3){
+    let nuevosDatos = [
+        //"Razón Social",
+        "Total Neto a Pagar",
+        "Monto IGTF",
+        "Total Pagar",
+        "Base Imponible IVA",
+        "Monto IVA",
+        "Monto Exento",
+        "Monto No Sujeto",
+        "Status",
+        "Motivo Anulación",
+        "Fecha y Hora Anulación",
+    ];
+    columnas = columnas.concat(nuevosDatos);
+}
+
 ---
 
 <Layout title="Dashboard" bodyClass="bg-gray-100">
@@ -76,32 +109,7 @@ Astro.url.searchParams.delete('order');
             addClassTable="tableBusqueda"
             isScroll={true}
             sizeText="text-xs"
-            columnas={[
-                "Actividad",
-                "Nº de Control",
-                "Nº de Documento",
-                "Tipo de Documento",
-                "Código de Operación",
-                "Serie",
-                "Fecha de Emisión",
-                "Hora Emisión",
-                "Fecha de Asig",
-
-                
-                "RIF/CI",
-                
-                //"Total Neto a Pagar",
-                //"Monto IGTF",
-                //"Total Pagar",
-                //"Base Imponible IVA",
-                //"Monto IVA",
-                //"Monto Exento",
-                //"Monto No Sujeto",
-                ////"Razón Social",
-                //"Status",
-                //"Motivo Anulación",
-                //"Fecha y Hora Anulación",
-            ]}
+            columnas={columnas}
             >
             {dataTable.map((data, index) => (
                 <tr id={"row-"+data.numero_control} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -128,6 +136,21 @@ Astro.url.searchParams.delete('order');
                     <td class="hora_emision">{data.hora_emision ? data.hora_emision : '-'}</td>
                     <td class="fecha_asignacion">{convertDateTime(data.fecha_asignacion, "DD-MM-YYYY")}</td>
                     <td class="rif">{data.rif ? data.rif : '-'}</td>
+                     {/* <td><p class="truncate text-xs w-52">{data.razon_social}</p> </td> */}
+                    {locals.rol_id != 3 &&
+
+                        <td class="neto_pagar">{formatNumber(data.neto_pagar)}</td>
+                        <td class="igtf">{formatNumber(data.igtf)}</td>
+                        <td class="total_pagar">{formatNumber(data.total_pagar)}</td>
+                        <td class="base_imponible">{formatNumber(data.base_imponible)}</td>
+                        <td class="monto_iva">{formatNumber(data.monto_iva)}</td>
+                        <td class="monto_exento">{formatNumber(data.monto_exento)}</td>
+                        <td class="monto_no_sujeto">{formatNumber(data.monto_no_sujeto)}</td>
+                        
+                        <td class="status">{data.status !== '' ? (data.status == 0 || data.status == "false" ? "Activa" : data.status == 1 || data.status == "true" ? "Anulada" : data.status) : 'Activa'}</td>
+                        <td class="motivo_anulacion">{data.motivo_anulacion ? data.motivo_anulacion : '-'}</td>
+                        <td class="fecha_anulacion"> {data.fecha_anulacion || data.hora_anulacion ? `${data.fecha_anulacion ?? ''} ${data.hora_anulacion ?? ''}`.trim() : '-'}</td>
+                    }
                 </tr>
             ))}
         </DynamicTable>
@@ -274,17 +297,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td class="fecha_asignacion">${convertDateTime(item.fecha_asignacion, "DD-MM-YYYY")}</td>
                 <td class="rif">${item.rif ? item.rif : '-'}</td>
                 `;
-                // <td class="neto_pagar">${formatNumber(item.neto_pagar)}</td>
-                // <td class="igtf">${formatNumber(item.igtf)}</td>
-                // <td class="total_pagar">${formatNumber(item.total_pagar)}</td>
-                // <td class="base_imponible">${formatNumber(item.base_imponible)}</td>
-                // <td class="monto_iva">${formatNumber(item.monto_iva)}</td>
-                // <td class="monto_exento">${formatNumber(item.monto_exento)}</td>
-                // <td class="monto_no_sujeto">${formatNumber(item.monto_no_sujeto)}</td>
-                // <td class="status">${item.status !== '' ? (item.status == 0 || item.status == "false" ? "Activa" : item.status == 1 || item.status == "true" ? "Anulada" : item.status) : 'Activa'}</td>
-                // <td class="motivo_anulacion">${item.motivo_anulacion ? item.motivo_anulacion : '-'}</td>
-                // <td class="fecha_anulacion">${item.fecha_anulacion || item.hora_anulacion ? `${item.fecha_anulacion ?? ''} ${item.hora_anulacion ?? ''}`.trim() : '-'}</td>
-            //`;
+
+                if(objeto.rol_id != 3){
+                    row.innerHTML += `
+                         <td class="neto_pagar">${formatNumber(item.neto_pagar)}</td>
+                         <td class="igtf">${formatNumber(item.igtf)}</td>
+                         <td class="total_pagar">${formatNumber(item.total_pagar)}</td>
+                         <td class="base_imponible">${formatNumber(item.base_imponible)}</td>
+                         <td class="monto_iva">${formatNumber(item.monto_iva)}</td>
+                         <td class="monto_exento">${formatNumber(item.monto_exento)}</td>
+                         <td class="monto_no_sujeto">${formatNumber(item.monto_no_sujeto)}</td>
+                         <td class="status">${item.status !== '' ? (item.status == 0 || item.status == "false" ? "Activa" : item.status == 1 || item.status == "true" ? "Anulada" : item.status) : 'Activa'}</td>
+                         <td class="motivo_anulacion">${item.motivo_anulacion ? item.motivo_anulacion : '-'}</td>
+                         <td class="fecha_anulacion">${item.fecha_anulacion || item.hora_anulacion ? `${item.fecha_anulacion ?? ''} ${item.hora_anulacion ?? ''}`.trim() : '-'}</td>
+                    `;
+                }
+
             tbody.appendChild(row);
         });
     }
