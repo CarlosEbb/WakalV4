@@ -138,14 +138,24 @@ let successMessage = {all: []};
 
 
 <script>
-  document.getElementById('formSearchBar').addEventListener('submit', function(event) {
-      // Muestra la pantalla de carga
-      document.getElementById('loading-screen').classList.remove('hidden');
+  // Verificar si el elemento existe
+  var formSearchBar = document.getElementById('formSearchBar');
+  if (formSearchBar) {
+      // Si el elemento existe, agregar el evento 'submit'
+      formSearchBar.addEventListener('submit', function(event) {
+          // Muestra la pantalla de carga
+          var loadingScreen = document.getElementById('loading-screen');
+          if (loadingScreen) {
+              loadingScreen.classList.remove('hidden');
 
-      // Simula una operación de búsqueda
-      setTimeout(function() {
-          // Oculta la pantalla de carga después de 60 segundos
-          document.getElementById('loading-screen').classList.add('hidden');
-      }, 60000);
-  });
+              // Simula una operación de búsqueda
+              setTimeout(function() {
+                  // Verifica nuevamente si la pantalla de carga existe antes de ocultarla
+                  if (loadingScreen) {
+                      loadingScreen.classList.add('hidden');
+                  }
+              }, 60000);
+          }
+      });
+  }
 </script>
