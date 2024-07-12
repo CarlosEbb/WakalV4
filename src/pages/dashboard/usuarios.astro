@@ -39,7 +39,7 @@ if(responseData.data.errors || responseData.code !== 200){
                 
                 
             <DynamicTable 
-                isValidVacio={users > 0}
+                isValidVacio={users.length > 0}
                 columnas={[
                     "Nº",
                     "Nombre | Apellido | Correo",

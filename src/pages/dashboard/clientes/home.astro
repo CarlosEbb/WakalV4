@@ -134,12 +134,12 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
 
           //renderizar graficas por cache
           let chart_2 = await preparechart(cliente_id, 'chart_2', 'area', ["#765ba6"], ["#765ba6"], "Cant. Nº Control Anual (" + yearActual + ")", () => null,);
-          let chart_3 = await preparechart(cliente_id, 'chart_3', 'radialBar', ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6", "#ea5f5a"], ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6", "#ea5f5a"], "Proyección Nº Control: Mes Entrante (" + obtenerNombreDelMes(proximoMes) + ")", () => null);
+          let chart_3 = await preparechart(cliente_id, 'chart_3', 'pie', ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6", "#ea5f5a"], ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6", "#ea5f5a"], "Proyección Nº Control: Mes Entrante (" + obtenerNombreDelMes(proximoMes) + ")", () => null);
           // Ejecutar customFunctionApi_chart_2 sin detener la ejecución del resto del código
           customFunctionApi_chart_2('chart_2', objeto.token, yearActual, mesActual, true)
               .then(datos_mesuales => {
                   preparechart(cliente_id, 'chart_2', 'area', ["#765ba6"], ["#765ba6"], "Cant. Nº Control Anual (" + yearActual + ")", () => datos_mesuales, chart_2);
-                  preparechart(cliente_id, 'chart_3', 'radialBar', ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6", "#ea5f5a"], ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6", "#ea5f5a"], "Proyección Nº Control: Mes Entrante (" + obtenerNombreDelMes(proximoMes) + ")", () => datos_mesuales, chart_3);
+                  preparechart(cliente_id, 'chart_3', 'pie', ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6", "#ea5f5a"], ["#1e1e40", "#6258a1", "#4f61ab", "#3494c6", "#ea5f5a"], "Proyección Nº Control: Mes Entrante (" + obtenerNombreDelMes(proximoMes) + ")", () => datos_mesuales, chart_3);
                   
                   actualizarDatos(objeto.token, null, clase_card_3 , datos_mesuales[obtenerNombreDelMes(mesActual)] );
                   actualizarDatos(objeto.token, null, clase_card_2, datos_mesuales[obtenerNombreDelMes(mesAnterior)]);

@@ -63,17 +63,17 @@ export async function onRequest({ locals, request, url, cookies, response }, nex
 
 function applySecurityHeaders(response) {
     const securityHeaders = {
-        'Content-Security-Policy': "default-src 'self';",
-        'X-DNS-Prefetch-Control': 'off',
-        'Expect-CT': "max-age=0",
-        'X-Frame-Options': 'SAMEORIGIN',
-        'Strict-Transport-Security': "max-age=15552000; includeSubDomains",
-        'X-Download-Options': 'noopen',
-        'X-Content-Type-Options': 'nosniff',
-        'Referrer-Policy': 'no-referrer',
-        'X-Permitted-Cross-Domain-Policies': 'none',
-        'X-XSS-Protection': "0",
-        'Feature-Policy': "camera 'none'; geolocation 'none'; microphone 'none'",
+        //'Content-Security-Policy': "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests",
+        //'X-DNS-Prefetch-Control': 'off',
+        //'Expect-CT': "max-age=0",
+        //'X-Frame-Options': 'SAMEORIGIN',
+        //'Strict-Transport-Security': "max-age=15552000; includeSubDomains",
+        //'X-Download-Options': 'noopen',
+        //'X-Content-Type-Options': 'nosniff',
+        //'Referrer-Policy': 'no-referrer',
+        //'X-Permitted-Cross-Domain-Policies': 'none',
+        //'X-XSS-Protection': "0",
+        //'Feature-Policy': "camera 'none'; geolocation 'none'; microphone 'none'",
     };
     
     const newHeaders = new Headers(response.headers);

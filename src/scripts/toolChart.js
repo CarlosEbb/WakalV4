@@ -8,6 +8,9 @@ export  function optionConfig(totales, category, color_1 = ["#e2cf41"], color_2 
     if(type_chart == "radialBar"){
       values_height = 390;
       values_series = calculatePercentages(totales);
+    }else if(type_chart == "pie"){
+      values_height = 390;
+      values_series = calculatePercentages(totales);
     }else{
       values_height = 300;
       values_series = [
@@ -17,7 +20,8 @@ export  function optionConfig(totales, category, color_1 = ["#e2cf41"], color_2 
           },
       ];
     }
-    return  {
+    
+    let option = {
       series: values_series,
       labels: category,
       legend: {
@@ -105,6 +109,12 @@ export  function optionConfig(totales, category, color_1 = ["#e2cf41"], color_2 
         }
       },
   };
+  if(type_chart == "pie"){
+    console.log(11111);
+    console.log(JSON.stringify(option));
+  }
+  
+  return  option;
 }
 
 export async function preparechart(cliente_id, id_chart, type_chart, color_1, color_2, title, customFunction, old_chart = null){

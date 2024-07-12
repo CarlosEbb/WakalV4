@@ -275,7 +275,11 @@ export function handleSelectChange(selectedOption, data, created_at) {
 
   contentInputHtml.innerHTML = content;
 
-  document.querySelector('.limit_date_moth_inicio').addEventListener('change', ValidarFechasMes);
+  // Verificar si existe al menos un elemento con la clase '.limit_date_moth_inicio'
+  if (document.querySelector('.limit_date_moth_inicio')) {
+    // Si existe, añadir el evento 'change'
+    document.querySelector('.limit_date_moth_inicio').addEventListener('change', ValidarFechasMes);
+  }
 
 
 
@@ -393,4 +397,102 @@ export async function procesarConsulta(cliente_id, cookies, objeto) {
           handleSelectChange(this.value, data,created_at);
       });
   }
+}
+
+export function buscarYResaltar(valor) {
+  // Selecciona todas las filas en la tabla
+  
+      var filas = document.querySelectorAll('.tableBusqueda tr');
+
+      // Selecciona el div que contiene la tabla
+      var div = document.querySelector('.div_tableBusqueda');
+
+      // Itera sobre las filas
+      for (var i = 0; i < filas.length; i++) {
+          // Si la fila contiene el número de control
+          if (filas[i].textContent.includes(valor)) {
+              // Pinta la fila de azul
+              filas[i].style.backgroundColor = '#4e4f9d';
+              filas[i].classList.add('text-white');
+              // Enfoca la fila en el div
+              div.scrollTop = filas[i].offsetTop - div.offsetTop - div.clientHeight / 2 + filas[i].clientHeight / 2;
+          }
+      }
+  
+}
+
+
+export function getTableData(tableId) {
+  const table = document.getElementById(tableId);
+  if (!table) {
+    console.error(`La tabla con el id "${tableId}" no se encuentra.`);
+    return null;
+  }
+
+  const isVisible = (element) => {
+    return !element.hasAttribute('hidden');
+  };
+
+  const headers = Array.from(table.querySelectorAll('thead th'))
+    .slice(1) // Omitir la primera columna
+    .filter(th => isVisible(th))
+    .map(th => th.innerText.trim());
+
+  const rows = Array.from(table.querySelectorAll('tbody tr')).map(tr => 
+    Array.from(tr.querySelectorAll('td'))
+    .filter(td => isVisible(td))
+    .slice(1) // Omitir la primera columna
+      .map(td => td.innerText.trim())
+  );
+
+  return {
+    columns: headers,
+    body: rows,
+  };
+}
+
+
+export async function downloadReporte(tableId, ruta_servicio, tableData, token) {
+  if (!tableData) {
+    console.error('No se pudieron obtener los datos de la tabla.');
+    return;
+  }
+
+  // Construir el cuerpo de la solicitud
+  const requestBody = {
+    tableData: tableData,
+    // Otros campos necesarios pueden ser añadidos aquí
+  };
+
+  try {
+    const response = await apiController(import.meta.env.PUBLIC_BASE_URL, ruta_servicio, 'POST', requestBody, token, 'application/json', true);
+    if (response.blob) {
+      const url = window.URL.createObjectURL(new Blob([response.blob], { type: 'application/pdf' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', response.filename || 'reporte.pdf');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      console.error('Error en la respuesta del servidor:', response);
+    }
+  } catch (error) {
+    console.error('Error al enviar los datos de la tabla al servidor:', error);
+  }
+}
+
+export async function getIpClient() {
+  let cookies = obtenerCookie('IpClient');
+	if(cookies == null){
+		try {
+      const response = await fetch("https://api.ipify.org?format=json");
+      const data = await response.json();
+      const ipAddress = data.ip;
+      document.cookie = `IpClient=${ipAddress}; max-age=3600;`;
+    } catch (error) {
+      console.error(error);
+    }
+	}
+  
 }

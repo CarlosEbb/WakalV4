@@ -51,6 +51,39 @@ if(order == "DESC"){
     orderClassASC = 'text-custom-Sedenary';
 }
 Astro.url.searchParams.delete('order');
+
+let columnas = [
+    "Actividad",
+    "Nº de Control",
+    "Nº de Documento",
+    "Tipo de Documento",
+    "Código de Operación",
+    "Serie",
+    "Fecha de Emisión",
+    "Hora Emisión",
+    "Fecha de Asig",
+
+    
+    "RIF/CI",
+];
+
+if(locals.rol_id != 3){
+    let nuevosDatos = [
+        //"Razón Social",
+        "Total Neto a Pagar",
+        "Monto IGTF",
+        "Total Pagar",
+        "Base Imponible IVA",
+        "Monto IVA",
+        "Monto Exento",
+        "Monto No Sujeto",
+        "Status",
+        "Motivo Anulación",
+        "Fecha y Hora Anulación",
+    ];
+    columnas = columnas.concat(nuevosDatos);
+}
+
 ---
 
 <Layout title="Dashboard" bodyClass="bg-gray-100">
@@ -64,44 +97,19 @@ Astro.url.searchParams.delete('order');
         
             <div class="flex space-x-4">
                 <i class="icono1 cursor-pointer"><a id="download-btn" data-tippy-content="Descargar XML"><Icon name="file-type-xml" class="text-2xl" /></a></i>
-                <i class="icono2"><a href=""><Icon name="file-type-pdf" class="text-2xl" /></a></i>
-                <i class="icono3"><a href=""><Icon name="file-type-csv" class="text-2xl" /></a></i>
+                <i class="icono2 cursor-pointer"><a id="download-btn-pdf" data-tippy-content="Descargar PDF"><Icon name="file-type-pdf" class="text-2xl" /></a></i>
+                <i class="icono3 cursor-pointer"><a id="download-btn-excel" data-tippy-content="Descargar EXCEL"><Icon name="file-type-csv" class="text-2xl" /></a></i>
             </div>
         </div>
     
-        <div class="relative overflow-x-auto">
+        <div class="relative overflow-x-auto h-[43vh]">
             <DynamicTable
             isValidVacio={dataTable.length > 0}
             id="data-table" 
             addClassTable="tableBusqueda"
             isScroll={true}
             sizeText="text-xs"
-            columnas={[
-                "Actividad",
-                "Nº de Control",
-                "Nº de Documento",
-                "Tipo de Documento",
-                "Código de Operación",
-                "Serie",
-                "Fecha de Emisión",
-                "Hora Emisión",
-                "Fecha de Asig",
-
-                
-                "RIF/CI",
-                
-                "Total Neto a Pagar",
-                "Monto IGTF",
-                "Total Pagar",
-                "Base Imponible IVA",
-                "Monto IVA",
-                "Monto Exento",
-                "Monto No Sujeto",
-                //"Razón Social",
-                "Status",
-                "Motivo Anulación",
-                "Fecha y Hora Anulación",
-            ]}
+            columnas={columnas}
             >
             {dataTable.map((data, index) => (
                 <tr id={"row-"+data.numero_control} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -111,12 +119,12 @@ Astro.url.searchParams.delete('order');
                     <td hidden class="rif_prestador">{data.rif_prestador}</td>
                     <td>
                         <b>
-                            <a target="_blank" href=`${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${data.numero_control}/${data.tipo_documento}/${data.numero_documento}/${obtenerNumeroMes(data.fecha_emision)}/${data.encrypt}?encrypt_others=${data.encrypt_others}&token=${locals.token}&status=${data.status}&tipo_war=${data.tipo_war}`>PDF</a> <br>
+                            <a target="_blank" class="text-custom-secundary" href=`${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${data.numero_control}/${data.tipo_documento}/${data.numero_documento}/${obtenerNumeroMes(data.fecha_emision)}/${data.encrypt}?encrypt_others=${data.encrypt_others}&token=${locals.token}&status=${data.status}&tipo_war=${data.tipo_war}`>PDF</a> <br>
                             {(data.anexos == 1 && locals.rol_id != 2) &&
                                 <a target="_blank" href=`${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${data.numero_control}/${data.tipo_documento}/${data.numero_documento}/${obtenerNumeroMes(data.fecha_emision)}/${data.encrypt}?encrypt_others=${data.encrypt_others}&token=${locals.token}&status=${data.status}&anexos=1&tipo_war=${data.tipo_war}`>ANEXOS</a> <br>
                             }
                             
-                            <a href="#" class="ver-xml" data-index={data.numero_control}>XML</a>
+                            <a href="#" class="ver-xml text-custom-secundary" data-index={data.numero_control}>XML</a>
                         </b>
                     </td>
                     <td class="p-4 numero_control">{formatearNumeroControl(data.numero_control)}</td>
@@ -128,18 +136,21 @@ Astro.url.searchParams.delete('order');
                     <td class="hora_emision">{data.hora_emision ? data.hora_emision : '-'}</td>
                     <td class="fecha_asignacion">{convertDateTime(data.fecha_asignacion, "DD-MM-YYYY")}</td>
                     <td class="rif">{data.rif ? data.rif : '-'}</td>
+                     {/* <td><p class="truncate text-xs w-52">{data.razon_social}</p> </td> */}
+                    {locals.rol_id != 3 &&
 
-                    <td class="neto_pagar">{formatNumber(data.neto_pagar)}</td>
-                    <td class="igtf">{formatNumber(data.igtf)}</td>
-                    <td class="total_pagar">{formatNumber(data.total_pagar)}</td>
-                    <td class="base_imponible">{formatNumber(data.base_imponible)}</td>
-                    <td class="monto_iva">{formatNumber(data.monto_iva)}</td>
-                    <td class="monto_exento">{formatNumber(data.monto_exento)}</td>
-                    <td class="monto_no_sujeto">{formatNumber(data.monto_no_sujeto)}</td>
-                    {/* <td><p class="truncate text-xs w-52">{data.razon_social}</p> </td> */}
-                    <td class="status">{data.status !== '' ? (data.status == 0 || data.status == "false" ? "Activa" : data.status == 1 || data.status == "true" ? "Anulada" : data.status) : 'Activa'}</td>
-                    <td class="motivo_anulacion">{data.motivo_anulacion ? data.motivo_anulacion : '-'}</td>
-                    <td class="fecha_anulacion"> {data.fecha_anulacion || data.hora_anulacion ? `${data.fecha_anulacion ?? ''} ${data.hora_anulacion ?? ''}`.trim() : '-'}</td>
+                        <td class="neto_pagar">{formatNumber(data.neto_pagar)}</td>
+                        <td class="igtf">{formatNumber(data.igtf)}</td>
+                        <td class="total_pagar">{formatNumber(data.total_pagar)}</td>
+                        <td class="base_imponible">{formatNumber(data.base_imponible)}</td>
+                        <td class="monto_iva">{formatNumber(data.monto_iva)}</td>
+                        <td class="monto_exento">{formatNumber(data.monto_exento)}</td>
+                        <td class="monto_no_sujeto">{formatNumber(data.monto_no_sujeto)}</td>
+                        
+                        <td class="status">{data.status !== '' ? (data.status == 0 || data.status == "false" ? "Activa" : data.status == 1 || data.status == "true" ? "Anulada" : data.status) : 'Activa'}</td>
+                        <td class="motivo_anulacion">{data.motivo_anulacion ? data.motivo_anulacion : '-'}</td>
+                        <td class="fecha_anulacion"> {data.fecha_anulacion || data.hora_anulacion ? `${data.fecha_anulacion ?? ''} ${data.hora_anulacion ?? ''}`.trim() : '-'}</td>
+                    }
                 </tr>
             ))}
         </DynamicTable>
@@ -152,30 +163,7 @@ Astro.url.searchParams.delete('order');
 </Layout>
 
 <script>
-    import {getQueryParam} from "../../../scripts/utils.js";
-    
-    function buscarYResaltar(valor) {
-        // Selecciona todas las filas en la tabla
-        
-            var filas:any = document.querySelectorAll('.tableBusqueda tr');
-
-            // Selecciona el div que contiene la tabla
-            var div:any = document.querySelector('.div_tableBusqueda');
-
-            // Itera sobre las filas
-            for (var i = 0; i < filas.length; i++) {
-                // Si la fila contiene el número de control
-                if (filas[i].textContent.includes(valor)) {
-                    // Pinta la fila de azul
-                    filas[i].style.backgroundColor = '#4e4f9d';
-                    filas[i].classList.add('text-white');
-                    // Enfoca la fila en el div
-                    div.scrollTop = filas[i].offsetTop - div.offsetTop - div.clientHeight / 2 + filas[i].clientHeight / 2;
-                }
-            }
-        
-    }
-
+    import {getQueryParam, buscarYResaltar} from "../../../scripts/utils.js";
 
     async function init() {
        
@@ -208,7 +196,7 @@ Astro.url.searchParams.delete('order');
 
 
 <script>
-    import {generateXML, downloadXML, collectRowData} from "../../../scripts/generateXML";
+    import {generateXML, downloadXML, collectRowData, generarXMLIndividual} from "../../../scripts/generateXML";
 
     
     document.getElementById('download-btn').addEventListener('click', () => {
@@ -223,12 +211,6 @@ Astro.url.searchParams.delete('order');
         downloadXML(xml, 'XML.xml');
     });
 
-    function generarXMLIndividual(row) {
-        const rowData = collectRowData(row);
-        const xml = generateXML([rowData]);
-        downloadXML(xml, `XML-DOC-${rowData.NumeroDocumento}.xml`);
-    }
-
     document.addEventListener('click', (event:any) => {
         if (event.target.matches('.ver-xml')) {
             const index = event.target.getAttribute('data-index');
@@ -241,8 +223,7 @@ Astro.url.searchParams.delete('order');
 <script>
 import { obtenerCookie, getQueryParam, obtenerNombreDelMes, getAllQueryParams, getQueryString } from "../../../scripts/utils.js";
 import { apiController } from '../../../scripts/request.js';
-import { formatearNumeroControl, obtenerNumeroMes, formatNumber, findPlaceholder } from '../../../scripts/utils.js';
-import { convertDateTime } from '../../../scripts/utils.js';
+import { formatearNumeroControl, obtenerNumeroMes, formatNumber, findPlaceholder, convertDateTime, getTableData, downloadReporte} from '../../../scripts/utils.js';
 
 let cliente_id = getQueryParam('c');
 var cookies = obtenerCookie('others');
@@ -301,9 +282,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td hidden class="rif_prestador">${item.rif_prestador}</td>
                 <td>
                     <b>
-                        <a target="_blank" href="${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${item.numero_control}/${item.tipo_documento}/${item.numero_documento}/${obtenerNumeroMes(item.fecha_emision)}/${item.encrypt}?encrypt_others=${item.encrypt_others}&token=${objeto.token}&status=${item.status}&tipo_war=${item.tipo_war}">PDF</a> <br>
+                        <a target="_blank" class="text-custom-secundary" href="${import.meta.env.PUBLIC_BASE_URL}/consultas/cliente/${cliente_id}/getpdf/${item.numero_control}/${item.tipo_documento}/${item.numero_documento}/${obtenerNumeroMes(item.fecha_emision)}/${item.encrypt}?encrypt_others=${item.encrypt_others}&token=${objeto.token}&status=${item.status}&tipo_war=${item.tipo_war}">PDF</a> <br>
                         ${anexos}
-                        <a href="#" class="ver-xml" data-index="${item.numero_control}">XML</a>
+                        <a href="#" class="ver-xml text-custom-secundary" data-index="${item.numero_control}">XML</a>
                     </b>
                 </td>
                 <td class="p-4 numero_control">${formatearNumeroControl(item.numero_control)}</td>
@@ -315,17 +296,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td class="hora_emision">${item.hora_emision ? item.hora_emision : "-"}</td>
                 <td class="fecha_asignacion">${convertDateTime(item.fecha_asignacion, "DD-MM-YYYY")}</td>
                 <td class="rif">${item.rif ? item.rif : '-'}</td>
-                <td class="neto_pagar">${formatNumber(item.neto_pagar)}</td>
-                <td class="igtf">${formatNumber(item.igtf)}</td>
-                <td class="total_pagar">${formatNumber(item.total_pagar)}</td>
-                <td class="base_imponible">${formatNumber(item.base_imponible)}</td>
-                <td class="monto_iva">${formatNumber(item.monto_iva)}</td>
-                <td class="monto_exento">${formatNumber(item.monto_exento)}</td>
-                <td class="monto_no_sujeto">${formatNumber(item.monto_no_sujeto)}</td>
-                <td class="status">${item.status !== '' ? (item.status == 0 || item.status == "false" ? "Activa" : item.status == 1 || item.status == "true" ? "Anulada" : item.status) : 'Activa'}</td>
-                <td class="motivo_anulacion">${item.motivo_anulacion ? item.motivo_anulacion : '-'}</td>
-                <td class="fecha_anulacion">${item.fecha_anulacion || item.hora_anulacion ? `${item.fecha_anulacion ?? ''} ${item.hora_anulacion ?? ''}`.trim() : '-'}</td>
-            `;
+                `;
+
+                if(objeto.rol_id != 3){
+                    row.innerHTML += `
+                         <td class="neto_pagar">${formatNumber(item.neto_pagar)}</td>
+                         <td class="igtf">${formatNumber(item.igtf)}</td>
+                         <td class="total_pagar">${formatNumber(item.total_pagar)}</td>
+                         <td class="base_imponible">${formatNumber(item.base_imponible)}</td>
+                         <td class="monto_iva">${formatNumber(item.monto_iva)}</td>
+                         <td class="monto_exento">${formatNumber(item.monto_exento)}</td>
+                         <td class="monto_no_sujeto">${formatNumber(item.monto_no_sujeto)}</td>
+                         <td class="status">${item.status !== '' ? (item.status == 0 || item.status == "false" ? "Activa" : item.status == 1 || item.status == "true" ? "Anulada" : item.status) : 'Activa'}</td>
+                         <td class="motivo_anulacion">${item.motivo_anulacion ? item.motivo_anulacion : '-'}</td>
+                         <td class="fecha_anulacion">${item.fecha_anulacion || item.hora_anulacion ? `${item.fecha_anulacion ?? ''} ${item.hora_anulacion ?? ''}`.trim() : '-'}</td>
+                    `;
+                }
+
             tbody.appendChild(row);
         });
     }
@@ -345,6 +332,47 @@ document.addEventListener('DOMContentLoaded', function() {
            
         }
     });
+});
+
+
+document.getElementById('download-btn-pdf').addEventListener('click', async function() {
+  // Mostrar el indicador de carga
+  document.getElementById('loading-screen').classList.remove('hidden');
+
+  const tableId = 'data-table'; // Reemplaza esto con el ID de tu tabla
+  const ruta_servicio = `/consultasCliente/${cliente_id}/generateDataPDFHTML`;
+  
+  // Obtener los datos de la tabla
+  const tableData = getTableData(tableId);
+
+  try {
+    await downloadReporte(tableId, ruta_servicio, tableData, objeto.token);
+  } catch (error) {
+    console.error('Hubo un error al descargar el reporte:', error);
+  } finally {
+    // Ocultar el indicador de carga
+    document.getElementById('loading-screen').classList.add('hidden');
+  }
+});
+
+document.getElementById('download-btn-excel').addEventListener('click', async function() {
+  // Mostrar el indicador de carga
+  document.getElementById('loading-screen').classList.remove('hidden');
+
+  const tableId = 'data-table'; // Reemplaza esto con el ID de tu tabla
+  const ruta_servicio = `/consultasCliente/${cliente_id}/generateDataExcelHTML`;
+  
+  // Obtener los datos de la tabla
+  const tableData = getTableData(tableId);
+
+  try {
+    await downloadReporte(tableId, ruta_servicio, tableData, objeto.token);
+  } catch (error) {
+    console.error('Hubo un error al descargar el reporte:', error);
+  } finally {
+    // Ocultar el indicador de carga
+    document.getElementById('loading-screen').classList.add('hidden');
+  }
 });
 
 </script>

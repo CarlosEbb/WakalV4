@@ -21,7 +21,7 @@ const {subTitle = '', isSearchBar = true} = Astro.props;
 
 const locals:any = Astro.locals;
 
-if(!cliente_id || locals.rol_id == 1 || locals.rol_id == 2 ){
+if(!cliente_id && locals.rol_id == 1 || locals.rol_id == 2 ){
   const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/clientes','GET',null,locals.token);
   const clientes = Array.isArray(responseData.data) ? responseData.data : [];
   formattedClientes = clientes.map(cliente => ({
@@ -123,27 +123,39 @@ let successMessage = {all: []};
   const clienteSelect = document.getElementById('clienteSelect');
 
   // Agregar event listener para detectar cambios en el <select>
-  clienteSelect.addEventListener('change', function() {
-    // Obtener el nuevo valor seleccionado
-    cliente_id = this.value;
-    var contentConsultasCliente = document.querySelector('.contentConsultasCliente');
-    contentConsultasCliente.classList.remove('hidden');
-    // Ejecutar procesarDatos con los nuevos parámetros
-    procesarConsulta(cliente_id, cookies, objeto);
-  });
+  if(clienteSelect){
+    clienteSelect.addEventListener('change', function() {
+      // Obtener el nuevo valor seleccionado
+      cliente_id = this.value;
+      var contentConsultasCliente = document.querySelector('.contentConsultasCliente');
+      contentConsultasCliente.classList.remove('hidden');
+      // Ejecutar procesarDatos con los nuevos parámetros
+      procesarConsulta(cliente_id, cookies, objeto);
+    });
+  }
 </script>
 
 
 
 <script>
-  document.getElementById('formSearchBar').addEventListener('submit', function(event) {
-      // Muestra la pantalla de carga
-      document.getElementById('loading-screen').classList.remove('hidden');
+  // Verificar si el elemento existe
+  var formSearchBar = document.getElementById('formSearchBar');
+  if (formSearchBar) {
+      // Si el elemento existe, agregar el evento 'submit'
+      formSearchBar.addEventListener('submit', function(event) {
+          // Muestra la pantalla de carga
+          var loadingScreen = document.getElementById('loading-screen');
+          if (loadingScreen) {
+              loadingScreen.classList.remove('hidden');
 
-      // Simula una operación de búsqueda
-      setTimeout(function() {
-          // Oculta la pantalla de carga después de 60 segundos
-          document.getElementById('loading-screen').classList.add('hidden');
-      }, 60000);
-  });
+              // Simula una operación de búsqueda
+              setTimeout(function() {
+                  // Verifica nuevamente si la pantalla de carga existe antes de ocultarla
+                  if (loadingScreen) {
+                      loadingScreen.classList.add('hidden');
+                  }
+              }, 60000);
+          }
+      });
+  }
 </script>

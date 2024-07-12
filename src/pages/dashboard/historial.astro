@@ -4,6 +4,8 @@ import Layout from "../../layouts/Layout.astro";
 import { Icon } from "astro-icon/components";
 
 import DynamicTable from "../../components/DynamicTable.astro";
+import { translateUrl, translateMethod, formatJSON } from '../../scripts/dictionaryAuditoria.js';
+import { convertDateTime } from '../../scripts/utils.js';
 import { apiController } from '../../scripts/request.js';
 import CardContentPage from "../../components/CardContentPage.astro";
 import ToastNotification from "../../components/ToastNotification.astro";
@@ -13,8 +15,7 @@ const locals:any = Astro.locals;
 let errors = {all: [] };
 let successMessage = {all: []};
 
-
-const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/auditorias','GET',null,locals.token);
+const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/auditorias','GET',null ,locals.token);
 
 const auditorias = Array.isArray(responseData.data) ? responseData.data : [];
 
@@ -36,11 +37,14 @@ if(responseData.data.errors || responseData.code !== 200){
             </div>
                 
             <DynamicTable 
+                isValidVacio={auditorias.length != 0}
                 columnas={[
                     "Nº",
+                    "Nombre y apellido",
+                    "Username",
                     "Rol",
-                    "Usuario",
                     "Actividad",
+                    "Accion",
                     "IP",
                     "Fecha de Registro",
                     "Hora de Registro",
@@ -51,12 +55,28 @@ if(responseData.data.errors || responseData.code !== 200){
                         <td class="w-4 p-4">
                         {index+1}
                         </td>
-                        <td>{auditoria.rol_id}</td>
-                        <td>{auditoria.usuario_id}</td>
-                        <td>{auditoria.ruta}</td>
-                        <td>{auditoria.ip_cliente}</td>
-                        <td>{auditoria.created_at}</td>
-                        <td>{auditoria.created_at}</td>
+                        
+                        <td class="w-40">{auditoria.nombre_usuario} {auditoria.apellido_usuario}</td>
+                        <td class="w-20">{auditoria.username}</td>
+                        <td class="w-20">{auditoria.nombre_rol}</td>
+                        <td>{translateUrl(auditoria.ruta)}</td>
+                        <td class="w-4">
+                            <div class="flex">
+                                {translateMethod(auditoria.method)}
+                                {auditoria.body !== '{}' && (
+                                <a
+                                    class="text-blue-600 dark:text-blue-500 hover:underline ml-1"
+                                    data-tippy-content={`"${formatJSON(auditoria.body)}"`}  // Asegúrate de que auditoria.body esté correctamente escapado si contiene comillas dobles u otros caracteres especiales.
+                                >
+                                    <Icon name="eye" size={25} />
+                                </a>
+                                )}
+                            </div>
+                        </td>
+
+                        <td class="w-44">{auditoria.ip_cliente}</td>
+                        <td class="w-20">{convertDateTime(auditoria.created_at, 'DD-MM-YYYY')}</td>
+                        <td class="w-20">{convertDateTime(auditoria.created_at, 'hh:mm:ss A')}</td>
 
                     </tr>
                 ))}
