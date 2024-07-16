@@ -1,9 +1,8 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 
-import CardInfoDashboard from "../../components/CardInfoDashboard.astro";
+import CardReporteDashboard from "../../components/CardReporteDashboard.astro";
 import CardContentPage from "../../components/CardContentPage.astro";
-
 
 const locals:any = Astro.locals;
 
@@ -21,8 +20,36 @@ const locals:any = Astro.locals;
             
             <div class="w-48"></div>
         </div>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
            
+            <CardReporteDashboard
+                value="0"
+                text="Libro de Ventas"
+                icon="list-check"
+                color="bg-gradient-to-r from-custom-denary to-custom-undenary"
+                tipo_busqueda="libro_ventas"
+                input="date"
+            />
+           
+            
+            <CardReporteDashboard
+                value="0"
+                text="Archivo Retorno"
+                icon="report"
+                color="bg-gradient-to-r from-custom-senary to-custom-tertiary"
+                tipo_busqueda="libro_ventas"
+                input="month"
+            />
+
+            <CardReporteDashboard
+                value="0"
+                text="Rango de Facturas"
+                icon="reorder"
+                color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
+                tipo_busqueda="libro_ventas"
+                input="day"
+            />
+
         </div>
     </div>
    

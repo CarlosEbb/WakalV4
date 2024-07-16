@@ -387,9 +387,9 @@ if(locals.rol_id == 1){
     };
   
     function init() {
-        const regionSelect = document.getElementById('region');
-        const estadoSelect = document.getElementById('estado');
-        const sectorSelect = document.getElementById('sector');
+        const regionSelect:any = document.getElementById('region');
+        const estadoSelect:any = document.getElementById('estado');
+        const sectorSelect:any = document.getElementById('sector');
 
         for (const region in data) {
             const option = document.createElement('option');
@@ -412,6 +412,7 @@ if(locals.rol_id == 1){
         };
 
         estadoSelect.onchange = function() {
+            console.log(this);
             sectorSelect.innerHTML = '<option value="" disabled>Sector / Unidad</option>';
             sectorSelect.disabled = false; // Habilitar el selector de sector
             const sectores = data[regionSelect.value][this.value];
