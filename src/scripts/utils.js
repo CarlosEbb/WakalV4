@@ -452,20 +452,14 @@ export function getTableData(tableId) {
 }
 
 
-export async function downloadReporte(tableId, ruta_servicio, tableData, token) {
-  if (!tableData) {
-    console.error('No se pudieron obtener los datos de la tabla.');
+export async function downloadReporte(ruta_servicio, requestBody, token, method = 'POST') {
+  if (!requestBody) {
+    console.error('No se pudieron obtener los datos.');
     return;
   }
 
-  // Construir el cuerpo de la solicitud
-  const requestBody = {
-    tableData: tableData,
-    // Otros campos necesarios pueden ser añadidos aquí
-  };
-
   try {
-    const response = await apiController(import.meta.env.PUBLIC_BASE_URL, ruta_servicio, 'POST', requestBody, token, 'application/json', true);
+    const response = await apiController(import.meta.env.PUBLIC_BASE_URL, ruta_servicio, method, requestBody, token, 'application/json', true);
     if (response.blob) {
       const url = window.URL.createObjectURL(new Blob([response.blob], { type: 'application/pdf' }));
       const link = document.createElement('a');

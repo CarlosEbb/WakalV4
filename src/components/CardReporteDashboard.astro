@@ -16,6 +16,8 @@ interface Props {
 
 const { id ,value = '0', text = 'Titulo', icon = 'chart-bar' , color = 'bg-gradient-to-r from-custom-secundary to-custom-tertiary', addClassValue, tipo_busqueda, input} = Astro.props;
 const tipo = input == "month" ? "month" : 'date';
+const cliente_id = Astro.url.searchParams.get('c');
+
 let textInput, espaciadoInput;
 
 if (input == "month") {
@@ -29,7 +31,7 @@ if (input == "month") {
 	espaciadoInput = "col-span-8";
 }
 ---
-<div id={id} class=`bg-white p-5 mt-5 rounded-xl shadow-md`>
+<div class=`bg-white p-5 mt-5 rounded-xl shadow-md`>
 	<div class="grid grid-cols-2">
 		<div class=`flex bg-custom-Sedenary w-20 h-20 items-center justify-center -mt-10 rounded-md ${color}`>
 			<Icon name={icon} class="text-4xl text-white"/>
@@ -43,7 +45,7 @@ if (input == "month") {
 	</div>
 	<hr>
     <div class="truncate flex text-gray-500 items-center"><Icon name="calendar-month" class="text-xl mt-1 mr-2" /><p class="text-xs pt-1">{textInput}</p></div>
-	<form method="post">
+	<form id={id}>
 		<div class="grid grid-cols-4 md:grid-cols-10 gap-4 mt-2">
 			{ (input == 'day' || 'date' || 'month') &&
 				<div class=`${espaciadoInput}  items-center justify-center`>
@@ -57,15 +59,50 @@ if (input == "month") {
 				</div>
 			}	
 			<div class="col-span-4 md:col-span-2  items-center justify-center flex">
-				<button class="text-center truncate w-full bg-gradient-to-r from-custom-secundary to-custom-tertiary text-white rounded-full py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 capitalize flex items-center justify-center">
-				<Icon name="search" class="text-xl text-white"/>
-				<span class="md:hidden pl-2">Buscar</span>
+				<button type="submit" class="text-center truncate w-full bg-gradient-to-r from-custom-secundary to-custom-tertiary text-white rounded-full py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 capitalize flex items-center justify-center">
+					<Icon name="search" class="text-xl text-white"/>
+					<span class="md:hidden pl-2">Buscar</span>
 				</button>
 
 				<input required class="hidden" type="text" name="tipo_reporte" value={tipo_busqueda}/>
+				<input required class="hidden" type="text" name="c" value={1}/>
+				<input required class="hidden" type="text" name="formato" value="pdf"/>
+				<input required class="hidden" type="text" name="tipo_fecha" value="asignacion"/>
+
 			</div>
 		</div>
 	</form>
 	  
 	  
 </div>
+
+<script>
+    import { obtenerCookie, getQueryParam } from "../scripts/utils.js";
+    import { downloadReporte } from '../scripts/utils.js';
+    
+    let cliente_id = getQueryParam('c');
+    var cookies = obtenerCookie('others');
+    var objeto = JSON.parse(cookies);
+
+	
+    document.getElementById('libro_ventas').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Evita el envío del formulario por defecto
+
+        // Mostrar el indicador de carga
+        document.getElementById('loading-screen').classList.remove('hidden');
+
+        const ruta_servicio = `/consultasCliente/13/getDataReporte`;
+        
+		const formData = new FormData(document.getElementById('libro_ventas'));
+		const requestBody = Object.fromEntries(formData.entries());
+
+        try {
+            await downloadReporte(ruta_servicio, requestBody, objeto.token, 'POST');
+        } catch (error) {
+            console.error('Hubo un error al descargar el reporte:', error);
+        } finally {
+            // Ocultar el indicador de carga
+            document.getElementById('loading-screen').classList.add('hidden');
+        }
+    });
+</script>

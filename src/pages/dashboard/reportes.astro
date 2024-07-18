@@ -3,12 +3,25 @@ import Layout from "../../layouts/Layout.astro";
 
 import CardReporteDashboard from "../../components/CardReporteDashboard.astro";
 import CardContentPage from "../../components/CardContentPage.astro";
+import { apiController } from '../../scripts/request.js';
 
 const locals:any = Astro.locals;
-
+let data:any = {};
+let errors = {all: [] };
+let successMessage = {all: []};
 // if(locals.rol_id != 1 && locals.rol_id != 2){
 //     return Astro.redirect("/");
 // }
+
+if (Astro.request.method === "POST") {
+    // const formData = await Astro.request.formData();
+
+    // const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/clientes/'+Astro.params.id,'GET',formData, locals.token);
+    // console.log(responseData);
+    // if(responseData.data.errors || responseData.code !== 200){
+    //     errors.all = responseData.data.errors ? responseData.data.errors : [];
+    // }
+}
 
 ---
 
@@ -23,6 +36,7 @@ const locals:any = Astro.locals;
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
            
             <CardReporteDashboard
+                id="libro_ventas"
                 value="0"
                 text="Libro de Ventas"
                 icon="list-check"
@@ -37,7 +51,7 @@ const locals:any = Astro.locals;
                 text="Archivo Retorno"
                 icon="report"
                 color="bg-gradient-to-r from-custom-senary to-custom-tertiary"
-                tipo_busqueda="libro_ventas"
+                tipo_busqueda="archivo_retorno"
                 input="month"
             />
 
@@ -46,7 +60,7 @@ const locals:any = Astro.locals;
                 text="Rango de Facturas"
                 icon="reorder"
                 color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
-                tipo_busqueda="libro_ventas"
+                tipo_busqueda="rango_facturas"
                 input="day"
             />
 
@@ -55,6 +69,3 @@ const locals:any = Astro.locals;
    
 </Layout>
 
-<script>
-
-</script>

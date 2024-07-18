@@ -342,11 +342,13 @@ document.getElementById('download-btn-pdf').addEventListener('click', async func
   const tableId = 'data-table'; // Reemplaza esto con el ID de tu tabla
   const ruta_servicio = `/consultasCliente/${cliente_id}/generateDataPDFHTML`;
   
-  // Obtener los datos de la tabla
-  const tableData = getTableData(tableId);
+  // Obtener los datos de la tabla y Construir el cuerpo de la solicitud
+  const tableData = {
+      tableData: getTableData(tableId),
+  };
 
   try {
-    await downloadReporte(tableId, ruta_servicio, tableData, objeto.token);
+    await downloadReporte(ruta_servicio, tableData, objeto.token);
   } catch (error) {
     console.error('Hubo un error al descargar el reporte:', error);
   } finally {
@@ -362,11 +364,13 @@ document.getElementById('download-btn-excel').addEventListener('click', async fu
   const tableId = 'data-table'; // Reemplaza esto con el ID de tu tabla
   const ruta_servicio = `/consultasCliente/${cliente_id}/generateDataExcelHTML`;
   
-  // Obtener los datos de la tabla
-  const tableData = getTableData(tableId);
+  // Obtener los datos de la tabla y Construir el cuerpo de la solicitud
+  const tableData = {
+      tableData: getTableData(tableId),
+  };
 
   try {
-    await downloadReporte(tableId, ruta_servicio, tableData, objeto.token);
+    await downloadReporte(ruta_servicio, tableData, objeto.token);
   } catch (error) {
     console.error('Hubo un error al descargar el reporte:', error);
   } finally {
