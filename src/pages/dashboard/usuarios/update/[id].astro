@@ -40,7 +40,7 @@ if (Astro.request.method === "POST") {
     if (password == "" || password === newPassword) {
       const responseDataActualizar = await apiController(
         import.meta.env.PUBLIC_BASE_URL,
-        "/usuarios/" + Astro.params.id,
+        "/usuarios/" + userCook.id,
         "PUT",
         formData,
         locals.token,
