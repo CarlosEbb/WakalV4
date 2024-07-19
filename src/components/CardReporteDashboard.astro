@@ -4,14 +4,14 @@ import InputField from "./InputField.astro";
 import ButtonAction from "./ButtonAction.astro";
 
 interface Props {
-	id?: string;
-	value: string;
-	text: string;
-	icon: string;
-	color: string;
-	addClassValue?: string;
-	tipo_busqueda: string;
-	input: "day" | "date" | "month";
+    id?: string;
+    value: string;
+    text: string;
+    icon: string;
+    color: string;
+    addClassValue?: string;
+    tipo_busqueda: string;
+    input: "day" | "date" | "month";
 }
 
 const { id ,value = '0', text = 'Titulo', icon = 'chart-bar' , color = 'bg-gradient-to-r from-custom-secundary to-custom-tertiary', addClassValue, tipo_busqueda, input} = Astro.props;
@@ -22,87 +22,137 @@ let textInput, espaciadoInput;
 
 if (input == "month") {
     textInput = "Se obtiene por año y mes.";
-	espaciadoInput = "col-span-8";
+    espaciadoInput = "col-span-8";
 } else if (input == "date") {
     textInput = "Se obtiene por rango de fecha.";
-	espaciadoInput = "col-span-4";
+    espaciadoInput = "col-span-4";
 } else if(input == "day") {
     textInput = "Se obtiene por fecha.";
-	espaciadoInput = "col-span-8";
+    espaciadoInput = "col-span-8";
 }
 ---
-<div class=`bg-white p-5 mt-5 rounded-xl shadow-md`>
-	<div class="grid grid-cols-2">
-		<div class=`flex bg-custom-Sedenary w-20 h-20 items-center justify-center -mt-10 rounded-md ${color}`>
-			<Icon name={icon} class="text-4xl text-white"/>
-		</div>
-		<div class=" justify-end text-right text-gray-500 mb-6">
-				Reporte
-			<h2 class="text-right text-gray-500 text-2xl">
-				{text}
-			</h2>
-		</div>
-	</div>
-	<hr>
-    <div class="truncate flex text-gray-500 items-center"><Icon name="calendar-month" class="text-xl mt-1 mr-2" /><p class="text-xs pt-1">{textInput}</p></div>
-	<form id={id}>
-		<div class="grid grid-cols-4 md:grid-cols-10 gap-4 mt-2">
-			{ (input == 'day' || 'date' || 'month') &&
-				<div class=`${espaciadoInput}  items-center justify-center`>
-					<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type={tipo} name="fecha_inicio" />
-				</div>
-			}
+<div class="bg-white p-5 mt-5 rounded-xl shadow-md">
+    <div class="grid grid-cols-2">
+        <div class={`flex bg-custom-Sedenary w-20 h-20 items-center justify-center -mt-10 rounded-md ${color}`}>
+            <Icon name={icon} class="text-4xl text-white"/>
+        </div>
+        <div class="justify-end text-right text-gray-500 mb-6">
+            Reporte
+            <h2 class="text-right text-gray-500 text-2xl">
+                {text}
+            </h2>
+        </div>
+    </div>
+    <hr>
+    <form id={tipo_busqueda}>
+        <div class="truncate flex text-gray-500 items-center justify-between w-full">
+            <div class="truncate flex text-gray-500 items-center">
+                <Icon name="calendar-month" class="text-xl mt-1 mr-2" />
+                <p class="text-xs pt-1">{textInput}</p>
+            </div>
+            <div class="truncate flex text-gray-500 items-center">
+                <Icon id={`pdf-icon-${tipo_busqueda}`} name="file-type-pdf" class="text-xl mt-1 mr-2 cursor-pointer text-blue-500 focus:outline-none" data-tippy-content="Formato PDF" />
+                <input id={`pdf-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="pdf" checked/>
+                <Icon id={`xls-icon-${tipo_busqueda}`} name="file-type-xls" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato XLS" />
+                <input id={`xls-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="excel"/>
+                <Icon id={`csv-icon-${tipo_busqueda}`} name="file-type-csv" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato CSV" />
+                <input id={`csv-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="csv"/>
+                <Icon id={`txt-icon-${tipo_busqueda}`} name="file-type-txt" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato TXT" />
+                <input id={`txt-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="txt"/>
+            </div>
+        </div>
+    
+        <div class="grid grid-cols-4 md:grid-cols-10 gap-4 mt-2">
+            { (input == 'day' || 'date' || 'month') &&
+                <div class={`${espaciadoInput} items-center justify-center`}>
+                    <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type={tipo} name="fecha_inicio" />
+                </div>
+            }
 
-			{ (input == 'date') &&
-				<div class=`${espaciadoInput}  items-center justify-center`>
-					<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="fecha_final" />
-				</div>
-			}	
-			<div class="col-span-4 md:col-span-2  items-center justify-center flex">
-				<button type="submit" class="text-center truncate w-full bg-gradient-to-r from-custom-secundary to-custom-tertiary text-white rounded-full py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 capitalize flex items-center justify-center">
-					<Icon name="search" class="text-xl text-white"/>
-					<span class="md:hidden pl-2">Buscar</span>
-				</button>
+            { (input == 'date') &&
+                <div class={`${espaciadoInput} items-center justify-center`}>
+                    <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="fecha_final" />
+                </div>
+            }    
+            <div class="col-span-4 md:col-span-2 items-center justify-center flex">
+                <button type="submit" class="text-center truncate w-full bg-gradient-to-r from-custom-secundary to-custom-tertiary text-white rounded-full py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 capitalize flex items-center justify-center">
+                    <Icon name="search" class="text-xl text-white"/>
+                    <span class="md:hidden pl-2">Buscar</span>
+                </button>
 
-				<input required class="hidden" type="text" name="tipo_reporte" value={tipo_busqueda}/>
-				<input required class="hidden" type="text" name="c" value={1}/>
-				<input required class="hidden" type="text" name="formato" value="pdf"/>
-				<input required class="hidden" type="text" name="tipo_fecha" value="asignacion"/>
-
-			</div>
-		</div>
-	</form>
-	  
-	  
+                <input required class="hidden" type="text" name="tipo_reporte" value={tipo_busqueda}/>
+                <input required class="hidden" type="text" name="c" value={1}/>
+                <input required class="hidden" type="text" name="tipo_fecha" value="asignacion"/>
+            </div>
+        </div>
+    </form>
 </div>
 
 <script>
     import { obtenerCookie, getQueryParam } from "../scripts/utils.js";
     import { downloadReporte } from '../scripts/utils.js';
-    
-    let cliente_id = getQueryParam('c');
-    var cookies = obtenerCookie('others');
-    var objeto = JSON.parse(cookies);
 
-	
-    document.getElementById('libro_ventas').addEventListener('submit', async function(event) {
-        event.preventDefault(); // Evita el envío del formulario por defecto
-
-        // Mostrar el indicador de carga
-        document.getElementById('loading-screen').classList.remove('hidden');
-
-        const ruta_servicio = `/consultasCliente/13/getDataReporte`;
+    document.addEventListener("DOMContentLoaded", () => {
+        const forms = document.querySelectorAll('form');
         
-		const formData = new FormData(document.getElementById('libro_ventas'));
-		const requestBody = Object.fromEntries(formData.entries());
+        forms.forEach(form => {
+            const formId = form.querySelector('input[name="tipo_reporte"]').value;
 
-        try {
-            await downloadReporte(ruta_servicio, requestBody, objeto.token, 'POST');
-        } catch (error) {
-            console.error('Hubo un error al descargar el reporte:', error);
-        } finally {
-            // Ocultar el indicador de carga
-            document.getElementById('loading-screen').classList.add('hidden');
-        }
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault(); // Evita el envío del formulario por defecto
+
+                // Mostrar el indicador de carga
+                document.getElementById('loading-screen').classList.remove('hidden');
+
+                const ruta_servicio = `/consultasCliente/13/getDataReporte`;
+
+                const formData = new FormData(form);
+                const requestBody = Object.fromEntries(formData.entries());
+
+                var cookies = obtenerCookie('others');
+                var objeto = JSON.parse(cookies);
+
+                try {
+                    await downloadReporte(ruta_servicio, requestBody, objeto.token, 'POST');
+                } catch (error) {
+                    console.error('Hubo un error al descargar el reporte:', error);
+                } finally {
+                    // Ocultar el indicador de carga
+                    document.getElementById('loading-screen').classList.add('hidden');
+                }
+            });
+
+            form.querySelector(`#pdf-icon-${formId}`).addEventListener('click', function() {
+                form.querySelector(`#pdf-radio-${formId}`).checked = true;
+                this.classList.add('text-blue-500');
+                form.querySelector(`#csv-icon-${formId}`).classList.remove('text-blue-500');
+                form.querySelector(`#xls-icon-${formId}`).classList.remove('text-blue-500');
+                form.querySelector(`#txt-icon-${formId}`).classList.remove('text-blue-500');
+            });
+
+            form.querySelector(`#csv-icon-${formId}`).addEventListener('click', function() {
+                form.querySelector(`#csv-radio-${formId}`).checked = true;
+                this.classList.add('text-blue-500');
+                form.querySelector(`#pdf-icon-${formId}`).classList.remove('text-blue-500');
+                form.querySelector(`#xls-icon-${formId}`).classList.remove('text-blue-500');
+                form.querySelector(`#txt-icon-${formId}`).classList.remove('text-blue-500');
+            });
+
+            form.querySelector(`#xls-icon-${formId}`).addEventListener('click', function() {
+                form.querySelector(`#xls-radio-${formId}`).checked = true;
+                this.classList.add('text-blue-500');
+                form.querySelector(`#pdf-icon-${formId}`).classList.remove('text-blue-500');
+                form.querySelector(`#csv-icon-${formId}`).classList.remove('text-blue-500');
+                form.querySelector(`#txt-icon-${formId}`).classList.remove('text-blue-500');
+            });
+
+            form.querySelector(`#txt-icon-${formId}`).addEventListener('click', function() {
+                form.querySelector(`#txt-radio-${formId}`).checked = true;
+                this.classList.add('text-blue-500');
+                form.querySelector(`#pdf-icon-${formId}`).classList.remove('text-blue-500');
+                form.querySelector(`#csv-icon-${formId}`).classList.remove('text-blue-500');
+                form.querySelector(`#xls-icon-${formId}`).classList.remove('text-blue-500');
+            });
+        });
     });
 </script>
