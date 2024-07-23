@@ -1,6 +1,20 @@
 import { sequence } from "astro:middleware";
 import jwt from 'jsonwebtoken';
 
+const securityHeaders = {
+    //'Content-Security-Policy': "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests",
+    //'X-DNS-Prefetch-Control': 'off',
+    //'Expect-CT': "max-age=0",
+    //'X-Frame-Options': 'SAMEORIGIN',
+    //'Strict-Transport-Security': "max-age=15552000; includeSubDomains",
+    //'X-Download-Options': 'noopen',
+    //'X-Content-Type-Options': 'nosniff',
+    //'Referrer-Policy': 'no-referrer',
+    //'X-Permitted-Cross-Domain-Policies': 'none',
+    'X-XSS-Protection': "0",
+    'Feature-Policy': "camera 'none'; geolocation 'none'; microphone 'none'",
+};
+
 export async function onRequest({ locals, request, url, cookies, response }, next) {
 
     let isPrivate = [
@@ -24,17 +38,19 @@ export async function onRequest({ locals, request, url, cookies, response }, nex
         session = JSON.parse(session.value);
 
         try {
-
-            // const decodedToken = await new Promise((resolve, reject) => {
-            //     jwt.verify(session.token, import.meta.env.JWT_SECRET, (err, decoded) => {
-            //         if (err) {
-            //             cookies.set('msg_error', 'La sesión ha caducado por inactividad. Acceda nuevamente para retomar sus actividades', { path: '/', httpOnly: false });
-            //             reject(err);
-            //         } else {
-            //             resolve(decoded);
-            //         }
-            //     });
-            // });
+            console.log(url.pathname);
+            const decodedToken = await new Promise((resolve, reject) => {
+                jwt.verify(session.token, import.meta.env.JWT_SECRET, (err, decoded) => {
+                    
+                    if (err) {
+                        cookies.set('msg_error', 'La sesión ha caducado por inactividad. Acceda nuevamente para retomar sus actividades', { path: '/', httpOnly: false });
+                        reject(err);
+                    } else {
+                        //renovar el token
+                        resolve(decoded);
+                    }
+                });
+            });
 
             // Agrega el token a locals
             locals.token = session.token;
@@ -62,20 +78,7 @@ export async function onRequest({ locals, request, url, cookies, response }, nex
 
 
 function applySecurityHeaders(response) {
-    const securityHeaders = {
-        //'Content-Security-Policy': "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests",
-        //'X-DNS-Prefetch-Control': 'off',
-        //'Expect-CT': "max-age=0",
-        //'X-Frame-Options': 'SAMEORIGIN',
-        //'Strict-Transport-Security': "max-age=15552000; includeSubDomains",
-        //'X-Download-Options': 'noopen',
-        //'X-Content-Type-Options': 'nosniff',
-        //'Referrer-Policy': 'no-referrer',
-        //'X-Permitted-Cross-Domain-Policies': 'none',
-        //'X-XSS-Protection': "0",
-        //'Feature-Policy': "camera 'none'; geolocation 'none'; microphone 'none'",
-    };
-    
+   
     const newHeaders = new Headers(response.headers);
     Object.entries(securityHeaders).forEach(([key, value]) => {
         newHeaders.set(key, value);

@@ -11,11 +11,12 @@ interface Props {
     color: string;
     addClassValue?: string;
     tipo_busqueda: string;
-    input: "day" | "date" | "month";
+    input: "day" | "date" | "month" | "range_control" | "range_documento";
 }
 
 const { id ,value = '0', text = 'Titulo', icon = 'chart-bar' , color = 'bg-gradient-to-r from-custom-secundary to-custom-tertiary', addClassValue, tipo_busqueda, input} = Astro.props;
 const tipo = input == "month" ? "month" : 'date';
+
 const cliente_id = Astro.url.searchParams.get('c');
 
 let textInput, espaciadoInput;
@@ -29,14 +30,18 @@ if (input == "month") {
 } else if(input == "day") {
     textInput = "Se obtiene por fecha.";
     espaciadoInput = "col-span-8";
+}else{
+	textInput = "Se obtiene por rangos";
+    espaciadoInput = "col-span-4";
 }
+
 ---
 <div class="bg-white p-5 mt-5 rounded-xl shadow-md">
-    <div class="grid grid-cols-2">
-        <div class={`flex bg-custom-Sedenary w-20 h-20 items-center justify-center -mt-10 rounded-md ${color}`}>
+    <div class="grid grid-cols-3">
+        <div class={`col-span-1 flex bg-custom-Sedenary w-20 h-20 items-center justify-center -mt-10 rounded-md ${color}`}>
             <Icon name={icon} class="text-4xl text-white"/>
         </div>
-        <div class="justify-end text-right text-gray-500 mb-6">
+        <div class="col-span-2 justify-end text-right text-gray-500 mb-6">
             Reporte
             <h2 class="text-right text-gray-500 text-2xl">
                 {text}
@@ -59,11 +64,13 @@ if (input == "month") {
                 <input id={`csv-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="csv"/>
                 <Icon id={`txt-icon-${tipo_busqueda}`} name="file-type-txt" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato TXT" />
                 <input id={`txt-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="txt"/>
+				<Icon id={`xml-icon-${tipo_busqueda}`} name="file-type-xml" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato XML" />
+                <input id={`xml-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="xml"/>
             </div>
         </div>
     
         <div class="grid grid-cols-4 md:grid-cols-10 gap-4 mt-2">
-            { (input == 'day' || 'date' || 'month') &&
+            { (input == 'day' || input == 'date' || input == 'month') &&
                 <div class={`${espaciadoInput} items-center justify-center`}>
                     <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type={tipo} name="fecha_inicio" />
                 </div>
@@ -73,7 +80,25 @@ if (input == "month") {
                 <div class={`${espaciadoInput} items-center justify-center`}>
                     <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="fecha_final" />
                 </div>
-            }    
+            } 
+			
+			{ (input == 'range_control') &&
+                <div class={`${espaciadoInput} items-center justify-center`}>
+                    <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="control_inicial" placeholder="Número de control inicial" />
+                </div>
+				<div class={`${espaciadoInput} items-center justify-center`}>
+                    <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="control_final" placeholder="Número de control final" />
+                </div>
+            } 
+
+			{ (input == 'range_documento') &&
+				<div class={`${espaciadoInput} items-center justify-center`}>
+					<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="documento_inicial" placeholder="Número de documento inicial" />
+				</div>
+				<div class={`${espaciadoInput} items-center justify-center`}>
+					<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="documento_final" placeholder="Número de documento final" />
+				</div>
+			} 
             <div class="col-span-4 md:col-span-2 items-center justify-center flex">
                 <button type="submit" class="text-center truncate w-full bg-gradient-to-r from-custom-secundary to-custom-tertiary text-white rounded-full py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 capitalize flex items-center justify-center">
                     <Icon name="search" class="text-xl text-white"/>
@@ -128,6 +153,7 @@ if (input == "month") {
                 form.querySelector(`#csv-icon-${formId}`).classList.remove('text-blue-500');
                 form.querySelector(`#xls-icon-${formId}`).classList.remove('text-blue-500');
                 form.querySelector(`#txt-icon-${formId}`).classList.remove('text-blue-500');
+                form.querySelector(`#xml-icon-${formId}`).classList.remove('text-blue-500');
             });
 
             form.querySelector(`#csv-icon-${formId}`).addEventListener('click', function() {
@@ -136,6 +162,7 @@ if (input == "month") {
                 form.querySelector(`#pdf-icon-${formId}`).classList.remove('text-blue-500');
                 form.querySelector(`#xls-icon-${formId}`).classList.remove('text-blue-500');
                 form.querySelector(`#txt-icon-${formId}`).classList.remove('text-blue-500');
+                form.querySelector(`#xml-icon-${formId}`).classList.remove('text-blue-500');
             });
 
             form.querySelector(`#xls-icon-${formId}`).addEventListener('click', function() {
@@ -144,6 +171,7 @@ if (input == "month") {
                 form.querySelector(`#pdf-icon-${formId}`).classList.remove('text-blue-500');
                 form.querySelector(`#csv-icon-${formId}`).classList.remove('text-blue-500');
                 form.querySelector(`#txt-icon-${formId}`).classList.remove('text-blue-500');
+				form.querySelector(`#xml-icon-${formId}`).classList.remove('text-blue-500');
             });
 
             form.querySelector(`#txt-icon-${formId}`).addEventListener('click', function() {
@@ -152,6 +180,16 @@ if (input == "month") {
                 form.querySelector(`#pdf-icon-${formId}`).classList.remove('text-blue-500');
                 form.querySelector(`#csv-icon-${formId}`).classList.remove('text-blue-500');
                 form.querySelector(`#xls-icon-${formId}`).classList.remove('text-blue-500');
+				form.querySelector(`#xml-icon-${formId}`).classList.remove('text-blue-500');
+            });
+
+			form.querySelector(`#xml-icon-${formId}`).addEventListener('click', function() {
+                form.querySelector(`#xml-radio-${formId}`).checked = true;
+                this.classList.add('text-blue-500');
+                form.querySelector(`#pdf-icon-${formId}`).classList.remove('text-blue-500');
+                form.querySelector(`#csv-icon-${formId}`).classList.remove('text-blue-500');
+                form.querySelector(`#xls-icon-${formId}`).classList.remove('text-blue-500');
+				form.querySelector(`#txt-icon-${formId}`).classList.remove('text-blue-500');
             });
         });
     });

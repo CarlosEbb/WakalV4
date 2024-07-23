@@ -53,7 +53,17 @@ if (Astro.request.method === "POST") {
                 icon="report"
                 color="bg-gradient-to-r from-custom-senary to-custom-tertiary"
                 tipo_busqueda="archivo_retorno"
-                input="month"
+                input="date"
+            />
+
+            <CardReporteDashboard
+                id="rango_facturas"
+                value="0"
+                text="Rango de números de control"
+                icon="reorder"
+                color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
+                tipo_busqueda="rango_control"
+                input="range_control"
             />
 
             <CardReporteDashboard
@@ -61,9 +71,9 @@ if (Astro.request.method === "POST") {
                 value="0"
                 text="Rango de Facturas"
                 icon="reorder"
-                color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
+                color="bg-gradient-to-r from-green-300 to-green-600"
                 tipo_busqueda="rango_facturas"
-                input="day"
+                input="range_documento"
             />
 
         </div>
