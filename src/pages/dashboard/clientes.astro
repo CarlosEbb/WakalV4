@@ -61,7 +61,7 @@ if(responseData.data.errors || responseData.code !== 200){
                                 <div transition:name=`imagen-perfil-${cliente.id}`>
                                     {cliente.logo ? (
                                         <a href={locals.rol_id == 1 ? `/dashboard/clientes/show/${cliente.id}` : ''} data-tippy-content={locals.rol_id == 1 ? 'Perfil' : 'Logo'}>
-                                            <Image src={import.meta.env.PUBLIC_BASE_URL+cliente.logo} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
+                                            <Image src={import.meta.env.PUBLIC_BASE_URL_IP+cliente.logo} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
                                         </a>
                                     ) : (
                                         <a href={locals.rol_id == 1 ? `/dashboard/clientes/show/${cliente.id}` : ''} data-tippy-content={locals.rol_id == 1 ? 'Perfil' : 'Logo'} id={cliente.id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center">
