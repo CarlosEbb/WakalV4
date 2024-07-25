@@ -17,7 +17,7 @@ let errors = {all: [] };
 let successMessage = {all: []};
 
 
-const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL_IP,'/usuarios','GET',null,locals.token);
+const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/usuarios','GET',null,locals.token);
 const users = Array.isArray(responseData.data) ? responseData.data : [];
 
 if(responseData.data.errors || responseData.code !== 200){
@@ -60,7 +60,7 @@ if(responseData.data.errors || responseData.code !== 200){
                             <div transition:name=`imagen-perfil-${user.id}`>
                                 {user.img_profile ? (
                                     <a href=`/dashboard/usuarios/show/${user.id}` data-tippy-content="Perfil">
-                                        <Image src={import.meta.env.PUBLIC_BASE_URL_IP+user.img_profile} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
+                                        <Image src={import.meta.env.PUBLIC_BASE_URL+user.img_profile} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
                                     </a>
                                 ) : (
                                     <a href=`/dashboard/usuarios/show/${user.id}` data-tippy-content="Perfil" id={user.id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center">
