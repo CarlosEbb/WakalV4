@@ -11,8 +11,8 @@ const securityHeaders = {
     //'X-Content-Type-Options': 'nosniff',
     //'Referrer-Policy': 'no-referrer',
     //'X-Permitted-Cross-Domain-Policies': 'none',
-    //'X-XSS-Protection': "0",
-    //'Feature-Policy': "camera 'none'; geolocation 'none'; microphone 'none'",
+    'X-XSS-Protection': "0",
+    'Feature-Policy': "camera 'none'; geolocation 'none'; microphone 'none'",
 };
 
 export async function onRequest({ locals, request, url, cookies, response }, next) {
