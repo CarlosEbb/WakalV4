@@ -12,9 +12,10 @@ interface Props {
     addClassValue?: string;
     tipo_busqueda: string;
     input: "day" | "date" | "month" | "range_control" | "range_documento";
+    options?: { nombre: string; value: string; checked: boolean; }[];
 }
 
-const { id ,value = '0', text = 'Titulo', icon = 'chart-bar' , color = 'bg-gradient-to-r from-custom-secundary to-custom-tertiary', addClassValue, tipo_busqueda, input} = Astro.props;
+const { id ,value = '0', text = 'Titulo', icon = 'chart-bar' , color = 'bg-gradient-to-r from-custom-secundary to-custom-tertiary', addClassValue, tipo_busqueda, input, options = [] } = Astro.props;
 const tipo = input == "month" ? "month" : 'date';
 
 const cliente_id = Astro.url.searchParams.get('c');
@@ -36,86 +37,114 @@ if (input == "month") {
 }
 
 ---
-<div class="bg-white p-5 mt-5 rounded-xl shadow-md">
-    <div class="grid grid-cols-3">
-        <div class={`col-span-1 flex bg-custom-Sedenary w-20 h-20 items-center justify-center -mt-10 rounded-md ${color}`}>
-            <Icon name={icon} class="text-4xl text-white"/>
-        </div>
-        <div class="col-span-2 justify-end text-right text-gray-500 mb-6">
-            Reporte
-            <h2 class="text-right text-gray-500 text-2xl">
-                {text}
-            </h2>
-        </div>
-    </div>
-    <hr>
-    <form id={tipo_busqueda}>
-        <div class="truncate flex text-gray-500 items-center justify-between w-full">
-            <div class="truncate flex text-gray-500 items-center">
-                <Icon name="calendar-month" class="text-xl mt-1 mr-2" />
-                <p class="text-xs pt-1">{textInput}</p>
+<form id={tipo_busqueda}>
+    <div class="bg-white p-5 mt-5 rounded-xl shadow-md">
+        <div class="grid grid-cols-3">
+            <div class={`col-span-1 flex bg-custom-Sedenary w-20 h-20 items-center justify-center -mt-10 rounded-md ${color}`}>
+                <Icon name={icon} class="text-4xl text-white"/>
             </div>
-            <div class="truncate flex text-gray-500 items-center">
-                <Icon id={`pdf-icon-${tipo_busqueda}`} name="file-type-pdf" class="text-xl mt-1 mr-2 cursor-pointer text-blue-500 focus:outline-none" data-tippy-content="Formato PDF" />
-                <input id={`pdf-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="pdf" checked/>
-                <Icon id={`xls-icon-${tipo_busqueda}`} name="file-type-xls" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato XLS" />
-                <input id={`xls-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="excel"/>
-                <Icon id={`csv-icon-${tipo_busqueda}`} name="file-type-csv" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato CSV" />
-                <input id={`csv-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="csv"/>
-                <Icon id={`txt-icon-${tipo_busqueda}`} name="file-type-txt" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato TXT" />
-                <input id={`txt-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="txt"/>
-				<Icon id={`xml-icon-${tipo_busqueda}`} name="file-type-xml" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato XML" />
-                <input id={`xml-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="xml"/>
+            <div class="col-span-2 justify-end text-right text-gray-500 mb-6">
+                {options.length != 0 && 
+                    <div>
+                        <div class="relative inline-block text-left menu-trigger mx-3 no-imprimir">
+                            <button data-dropdown-toggle={"dropdown_"+tipo_busqueda} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center" type="button">
+                            <Icon name="settings-plus" class="text-lg" />
+                            </button>
+                            
+                            <!-- Dropdown menu -->
+                            <div id={"dropdown_" + tipo_busqueda} class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute">
+                                <ul class="py-2 text-xs text-gray-700 dark:text-gray-200">
+                                    {options.map(option => (
+                                        <li>
+                                            <label class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                <input type="checkbox" name="config_params[]" value={option.value} checked={option.checked} class="mr-2">
+                                                {option.nombre}
+                                            </label>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+                <div>
+                    Reporte
+                </div>
+                <h2 class="text-right text-gray-500 text-2xl">
+                    {text}
+                </h2>
             </div>
         </div>
+        <hr>
     
-        <div class="grid grid-cols-4 md:grid-cols-10 gap-4 mt-2">
-            { (input == 'day' || input == 'date' || input == 'month') &&
-                <div class={`${espaciadoInput} items-center justify-center`}>
-                    <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type={tipo} name="fecha_inicio" />
+            <div class="truncate flex text-gray-500 items-center justify-between w-full">
+                <div class="truncate flex text-gray-500 items-center">
+                    <Icon name="calendar-month" class="text-xl mt-1 mr-2" />
+                    <p class="text-xs pt-1">{textInput}</p>
                 </div>
-            }
-
-            { (input == 'date') &&
-                <div class={`${espaciadoInput} items-center justify-center`}>
-                    <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="fecha_final" />
+                <div class="truncate flex text-gray-500 items-center">
+                    <Icon id={`pdf-icon-${tipo_busqueda}`} name="file-type-pdf" class="text-xl mt-1 mr-2 cursor-pointer text-blue-500 focus:outline-none" data-tippy-content="Formato PDF" />
+                    <input id={`pdf-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="pdf" checked/>
+                    <Icon id={`xls-icon-${tipo_busqueda}`} name="file-type-xls" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato XLS" />
+                    <input id={`xls-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="excel"/>
+                    <Icon id={`csv-icon-${tipo_busqueda}`} name="file-type-csv" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato CSV" />
+                    <input id={`csv-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="csv"/>
+                    <Icon id={`txt-icon-${tipo_busqueda}`} name="file-type-txt" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato TXT" />
+                    <input id={`txt-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="txt"/>
+                    <Icon id={`xml-icon-${tipo_busqueda}`} name="file-type-xml" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato XML" />
+                    <input id={`xml-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="xml"/>
                 </div>
-            } 
-			
-			{ (input == 'range_control') &&
-                <div class={`${espaciadoInput} items-center justify-center`}>
-                    <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="control_inicial" placeholder="Número de control inicial" />
-                </div>
-				<div class={`${espaciadoInput} items-center justify-center`}>
-                    <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="control_final" placeholder="Número de control final" />
-                </div>
-            } 
-
-			{ (input == 'range_documento') &&
-				<div class={`${espaciadoInput} items-center justify-center`}>
-					<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="documento_inicial" placeholder="Número de documento inicial" />
-				</div>
-				<div class={`${espaciadoInput} items-center justify-center`}>
-					<input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="documento_final" placeholder="Número de documento final" />
-				</div>
-			} 
-            <div class="col-span-4 md:col-span-2 items-center justify-center flex">
-                <button type="submit" class="text-center truncate w-full bg-gradient-to-r from-custom-secundary to-custom-tertiary text-white rounded-full py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 capitalize flex items-center justify-center">
-                    <Icon name="search" class="text-xl text-white"/>
-                    <span class="md:hidden pl-2">Buscar</span>
-                </button>
-
-                <input required class="hidden" type="text" name="tipo_reporte" value={tipo_busqueda}/>
-                <input required class="hidden" type="text" name="c" value={1}/>
-                <input required class="hidden" type="text" name="tipo_fecha" value="asignacion"/>
             </div>
-        </div>
-    </form>
-</div>
+        
+            <div class="grid grid-cols-4 md:grid-cols-10 gap-4 mt-2">
+                { (input == 'day' || input == 'date' || input == 'month') &&
+                    <div class={`${espaciadoInput} items-center justify-center`}>
+                        <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type={tipo} name="fecha_inicio" />
+                    </div>
+                }
+
+                { (input == 'date') &&
+                    <div class={`${espaciadoInput} items-center justify-center`}>
+                        <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="fecha_final" />
+                    </div>
+                } 
+                
+                { (input == 'range_control') &&
+                    <div class={`${espaciadoInput} items-center justify-center`}>
+                        <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="control_inicial" placeholder="Número de control inicial" />
+                    </div>
+                    <div class={`${espaciadoInput} items-center justify-center`}>
+                        <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="control_final" placeholder="Número de control final" />
+                    </div>
+                } 
+
+                { (input == 'range_documento') &&
+                    <div class={`${espaciadoInput} items-center justify-center`}>
+                        <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="documento_inicial" placeholder="Número de documento inicial" />
+                    </div>
+                    <div class={`${espaciadoInput} items-center justify-center`}>
+                        <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="text" name="documento_final" placeholder="Número de documento final" />
+                    </div>
+                } 
+                <div class="col-span-4 md:col-span-2 items-center justify-center flex">
+                    <button type="submit" class="text-center truncate w-full bg-gradient-to-r from-custom-secundary to-custom-tertiary text-white rounded-full py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 capitalize flex items-center justify-center">
+                        <Icon name="search" class="text-xl text-white"/>
+                        <span class="md:hidden pl-2">Buscar</span>
+                    </button>
+
+                    <input required class="hidden" type="text" name="tipo_reporte" value={tipo_busqueda}/>
+                    <input required class="hidden" type="text" name="c" value={1}/>
+                    <input required class="hidden" type="text" name="tipo_fecha" value="asignacion"/>
+                </div>
+            </div>
+    </div>
+</form>
 
 <script>
     import { obtenerCookie, getQueryParam } from "../scripts/utils.js";
     import { downloadReporte } from '../scripts/utils.js';
+    import { formDataToObject } from '../scripts/request.js';
 
     document.addEventListener("DOMContentLoaded", () => {
         const forms = document.querySelectorAll('form');
@@ -132,7 +161,7 @@ if (input == "month") {
                 const ruta_servicio = `/consultasCliente/13/getDataReporte`;
 
                 const formData = new FormData(form);
-                const requestBody = Object.fromEntries(formData.entries());
+                const requestBody = formDataToObject(formData);
 
                 var cookies = obtenerCookie('others');
                 var objeto = JSON.parse(cookies);

@@ -43,6 +43,10 @@ if (Astro.request.method === "POST") {
                 color="bg-gradient-to-r from-custom-denary to-custom-undenary"
                 tipo_busqueda="libro_ventas"
                 input="date"
+                options={[
+                    { nombre: "Neto a Pagar", value: "neto_apagar", checked: true },
+                    { nombre: "IGTF", value: "igtf", checked: true }
+                ]}
             />
            
             

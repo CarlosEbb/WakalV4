@@ -16,7 +16,7 @@ let errors = {all: [] };
 let successMessage = {all: []};
 
 
-const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/clientes','GET',null,locals.token);
+const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL_IP,'/clientes','GET',null,locals.token);
 
 const clientes = Array.isArray(responseData.data) ? responseData.data : [];
 
