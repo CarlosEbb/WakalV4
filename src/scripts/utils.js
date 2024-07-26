@@ -490,3 +490,22 @@ export async function getIpClient() {
 	}
   
 }
+
+export function filterConfigByAvailable(config, name) {
+  return config.filter(item => {
+      // Si 'available' no está presente, se considera disponible
+      if (!item.available) return true;
+      // Verifica si el nombre está en el array de 'available'
+      return item.available.includes(name);
+  });
+}
+
+export function countWithoutAvailable(config) {
+  return config.reduce((count, item) => {
+      // Si 'available' no está presente, incrementa el contador
+      if (!item.available) {
+          count++;
+      }
+      return count;
+  }, 0);
+}

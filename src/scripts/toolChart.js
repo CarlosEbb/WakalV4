@@ -109,10 +109,10 @@ export  function optionConfig(totales, category, color_1 = ["#e2cf41"], color_2 
         }
       },
   };
-  if(type_chart == "pie"){
-    console.log(11111);
-    console.log(JSON.stringify(option));
-  }
+  // if(type_chart == "pie"){
+  //   console.log(11111);
+  //   console.log(JSON.stringify(option));
+  // }
   
   return  option;
 }

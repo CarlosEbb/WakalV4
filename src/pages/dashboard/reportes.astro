@@ -5,6 +5,7 @@ import CardReporteDashboard from "../../components/CardReporteDashboard.astro";
 import CardContentPage from "../../components/CardContentPage.astro";
 import { apiController } from '../../scripts/request.js';
 
+
 const locals:any = Astro.locals;
 let data:any = {};
 let errors = {all: [] };
@@ -22,6 +23,33 @@ if (Astro.request.method === "POST") {
     //     errors.all = responseData.data.errors ? responseData.data.errors : [];
     // }
 }
+
+const config_params = [
+                    { "nombre": "Nro Control", "value": "numero_control", "checked": true, "hidden": true },
+                    { "nombre": "Nro de Doc", "value": "numero_documento", "checked": true, "hidden": true },
+                    { "nombre": "Tip doc", "value": "tipo_documento", "checked": true, "hidden": true },
+                    { "nombre": "Fecha asig", "value": "fecha_emision", "checked": true, "hidden": true },
+                    { "nombre": "Fecha emisión", "value": "fecha_asignacion", "checked": true, "hidden": true },
+
+                    { "nombre": "Razon Social", "value": "razon_social", "checked": true, "available": ['libro_ventas']},
+                    { "nombre": "Neto a pagar", "value": "neto_pagar", "checked": true, "available": ['libro_ventas'] },
+                    { "nombre": "IGTF", "value": "igtf", "checked": true, "available": ['libro_ventas'] },
+                    { "nombre": "Total a pagar", "value": "total_pagar", "checked": true, "available": ['libro_ventas'] },
+                    { "nombre": "Base imponible", "value": "base_imponible", "checked": true, "available": ['libro_ventas'] },
+                    { "nombre": "Monto IVA", "value": "monto_iva", "checked": true, "available": ['libro_ventas'] },
+                    { "nombre": "Monto exento", "value": "monto_exento", "checked": true, "available": ['libro_ventas'] },
+                    { "nombre": "Monto no sujeto", "value": "monto_no_sujeto", "checked": true, "available": ['libro_ventas'] },
+                    //{ "nombre": "Código operación", "value": "codigo_operacion", "checked": true, "available": ['libro_ventas'] },
+                    { "nombre": "Serie", "value": "serie", "checked": true, "available": ['libro_ventas'] },
+                    //{ "nombre": "Código suscriptor", "value": "codigo_suscriptor", "checked": true, "available": ['libro_ventas'] },
+                    { "nombre": "Hora emisión", "value": "hora_emision", "checked": true, "available": ['libro_ventas'] },
+                    { "nombre": "Estatus", "value": "status", "checked": true, "available": ['libro_ventas'] },
+                    //{ "nombre": "Motivo anulación", "value": "motivo_anulacion", "checked": true, "available": ['libro_ventas'] },
+                    //{ "nombre": "Fecha anulación", "value": "fecha_anulacion", "checked": true, "available": ['libro_ventas'] },
+                    //{ "nombre": "Hora anulación", "value": "hora_anulacion", "checked": true, "available": ['libro_ventas'] },
+                    //{ "nombre": "Correo cliente", "value": "correo_cliente", "checked": true, "available": ['libro_ventas'] },
+                    //{ "nombre": "Teléfono cliente", "value": "telefono_cliente", "checked": true, "available": ['libro_ventas'] },
+                ];
 
 ---
 
@@ -43,10 +71,7 @@ if (Astro.request.method === "POST") {
                 color="bg-gradient-to-r from-custom-denary to-custom-undenary"
                 tipo_busqueda="libro_ventas"
                 input="date"
-                options={[
-                    { nombre: "Neto a Pagar", value: "neto_apagar", checked: true },
-                    { nombre: "IGTF", value: "igtf", checked: true }
-                ]}
+                options={config_params}
             />
            
             
@@ -58,6 +83,7 @@ if (Astro.request.method === "POST") {
                 color="bg-gradient-to-r from-custom-senary to-custom-tertiary"
                 tipo_busqueda="archivo_retorno"
                 input="date"
+                options={config_params}
             />
 
             <CardReporteDashboard
@@ -68,6 +94,7 @@ if (Astro.request.method === "POST") {
                 color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
                 tipo_busqueda="rango_control"
                 input="range_control"
+                options={config_params}
             />
 
             <CardReporteDashboard
@@ -78,6 +105,7 @@ if (Astro.request.method === "POST") {
                 color="bg-gradient-to-r from-green-300 to-green-600"
                 tipo_busqueda="rango_facturas"
                 input="range_documento"
+                options={config_params}
             />
 
         </div>

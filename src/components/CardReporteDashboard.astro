@@ -2,6 +2,7 @@
 import { Icon } from 'astro-icon/components';
 import InputField from "./InputField.astro";
 import ButtonAction from "./ButtonAction.astro";
+import { filterConfigByAvailable, countWithoutAvailable } from '../scripts/utils';
 
 interface Props {
     id?: string;
@@ -12,11 +13,13 @@ interface Props {
     addClassValue?: string;
     tipo_busqueda: string;
     input: "day" | "date" | "month" | "range_control" | "range_documento";
-    options?: { nombre: string; value: string; checked: boolean; }[];
+    options?: any;
 }
 
 const { id ,value = '0', text = 'Titulo', icon = 'chart-bar' , color = 'bg-gradient-to-r from-custom-secundary to-custom-tertiary', addClassValue, tipo_busqueda, input, options = [] } = Astro.props;
 const tipo = input == "month" ? "month" : 'date';
+let options_filter = [];
+options_filter = filterConfigByAvailable(options, tipo_busqueda);
 
 const cliente_id = Astro.url.searchParams.get('c');
 
@@ -44,18 +47,19 @@ if (input == "month") {
                 <Icon name={icon} class="text-4xl text-white"/>
             </div>
             <div class="col-span-2 justify-end text-right text-gray-500 mb-6">
-                {options.length != 0 && 
+               {options.length != 0 && 
                     <div>
                         <div class="relative inline-block text-left menu-trigger mx-3 no-imprimir">
+                            {options_filter.length > countWithoutAvailable(options_filter) && 
                             <button data-dropdown-toggle={"dropdown_"+tipo_busqueda} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center" type="button">
                             <Icon name="settings-plus" class="text-lg" />
                             </button>
-                            
+                            }
                             <!-- Dropdown menu -->
                             <div id={"dropdown_" + tipo_busqueda} class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute">
                                 <ul class="py-2 text-xs text-gray-700 dark:text-gray-200">
-                                    {options.map(option => (
-                                        <li>
+                                    {options_filter.map(option => (
+                                        <li class={option.hidden ? 'hidden' : ''}>
                                             <label class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                                 <input type="checkbox" name="config_params[]" value={option.value} checked={option.checked} class="mr-2">
                                                 {option.nombre}
@@ -139,6 +143,7 @@ if (input == "month") {
                 </div>
             </div>
     </div>
+    <input type="text" name="name_config_params" value={JSON.stringify(options_filter)} hidden>
 </form>
 
 <script>
