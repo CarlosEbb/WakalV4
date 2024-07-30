@@ -52,7 +52,6 @@ if(responseData.data.errors || responseData.code !== 200){
         super();
         console
         const user = JSON.parse(this.dataset.user);
-        console.log(user);
         
         document.getElementById('download-btn-pdf').addEventListener('click', async function() {
             // Mostrar el indicador de carga
@@ -70,7 +69,6 @@ if(responseData.data.errors || responseData.code !== 200){
             }
             });
     
-            // TODO: handle data
         }
     }
   
