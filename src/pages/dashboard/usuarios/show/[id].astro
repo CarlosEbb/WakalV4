@@ -5,6 +5,7 @@ import DataForm from "../../../../components/DataForm/Usuarios.astro";
 
 import { apiController } from '../../../../scripts/request.js';
 import ToastNotification from "../../../../components/ToastNotification.astro";
+import { Icon } from "astro-icon/components";
 
 
 const locals:any = Astro.locals;
@@ -25,8 +26,53 @@ if(responseData.data.errors || responseData.code !== 200){
 ---
 <Layout title="Dashboard" subTitle="Consultar Usuario" bodyClass="bg-gray-100" isSearchBar={false}>
     <CardContentPage>
+        <div class="flex justify-end">
+            <i class="icono2 cursor-pointer"><a id="download-btn-pdf" data-tippy-content="Descargar PDF"><Icon name="file-type-pdf" class="text-2xl" /></a></i>
+        </div>
         <DataForm method="GET" formData={data} locals={locals} disabled/>
     </CardContentPage>
     {errors.all.length > 0 && <ToastNotification slot="toast" type={'error'} textArray={errors.all}/>}
     {successMessage.all.length > 0 && <ToastNotification slot="toast" type={'success'} textArray={successMessage.all}/>}
 </Layout>
+
+<user-script data-user={ JSON.stringify({id: Astro.params.id}) }></user-script>
+
+<script>
+    import { obtenerCookie, getQueryParam, obtenerNombreDelMes, getAllQueryParams, getQueryString } from "../../../../scripts/utils.js";
+    import { apiController } from '../../../../scripts/request.js';
+    import { formatearNumeroControl, obtenerNumeroMes, formatNumber, findPlaceholder, convertDateTime, getTableData, downloadReporte} from '../../../../scripts/utils.js';
+
+    let cliente_id = getQueryParam('c');
+    var cookies = obtenerCookie('others');
+    var objeto = JSON.parse(cookies);
+    var parametros = getQueryString(getAllQueryParams());
+
+    class Render extends HTMLElement {
+      constructor() {
+        super();
+        console
+        const user = JSON.parse(this.dataset.user);
+        console.log(user);
+        
+        document.getElementById('download-btn-pdf').addEventListener('click', async function() {
+            // Mostrar el indicador de carga
+            document.getElementById('loading-screen').classList.remove('hidden');
+
+            const ruta_servicio = `/usuarios/${user.id}/reporte`;
+            
+            try {
+                await downloadReporte(ruta_servicio, {}, objeto.token, 'GET');
+            } catch (error) {
+                console.error('Hubo un error al descargar el reporte:', error);
+            } finally {
+                // Ocultar el indicador de carga
+                document.getElementById('loading-screen').classList.add('hidden');
+            }
+            });
+    
+            // TODO: handle data
+        }
+    }
+  
+    customElements.define('user-script', Render);
+  </script>
