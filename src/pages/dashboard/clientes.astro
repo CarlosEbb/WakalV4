@@ -6,10 +6,11 @@ import { Icon } from "astro-icon/components";
 import DynamicTable from "../../components/DynamicTable.astro";
 import { apiController } from '../../scripts/request.js';
 import { Image } from 'astro:assets';
-import {convertDateTime} from "../../scripts/utils.js";
+import {convertDateTime, capitalizeFirstWord} from "../../scripts/utils.js";
 import CardContentPage from "../../components/CardContentPage.astro";
 import ButtonAction from "../../components/ButtonAction.astro";
 import ToastNotification from "../../components/ToastNotification.astro";
+import InputField from "../../components/InputField.astro";
 
 const locals:any = Astro.locals;
 let errors = {all: [] };
@@ -31,7 +32,17 @@ if(responseData.data.errors || responseData.code !== 200){
     <div class="card_table">
         <CardContentPage>
                 <div class="flex items-center">
-                    <div class="w-48"></div>
+                    <div class="w-48">
+                        <InputField
+                            id="searchInput"
+                            name="searchInput"
+                            type="text"
+                            icon="search"
+                            placeholder="Buscar..."
+                            addClass="mb-4"
+                        />
+
+                    </div>
                     <h2 class="font-semibold text-custom-secundary text-xl text-center flex-grow">Panel de {locals.rol_id == 2 ? 'Contribuyentes' : 'Clientes'}</h2>
                     
                     <div class="w-48">
@@ -41,9 +52,11 @@ if(responseData.data.errors || responseData.code !== 200){
                     </div>
                 </div>
                     
+                
                     
                 <DynamicTable 
                     isValidVacio={clientes.length > 0}
+                    id="data-table"
                     columnas={[
                         "Nº",
                         "Razón Social",
@@ -57,11 +70,11 @@ if(responseData.data.errors || responseData.code !== 200){
                             <td class="w-4 p-4">
                             {index+1}
                             </td>
-                            <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                            <td scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                 <div transition:name=`imagen-perfil-${cliente.id}`>
                                     {cliente.logo ? (
                                         <a href={locals.rol_id == 1 ? `/dashboard/clientes/show/${cliente.id}` : ''} data-tippy-content={locals.rol_id == 1 ? 'Perfil' : 'Logo'}>
-                                            <Image src={import.meta.env.PUBLIC_BASE_URL+cliente.logo} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
+                                        <Image src={import.meta.env.PUBLIC_BASE_URL+cliente.logo} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
                                         </a>
                                     ) : (
                                         <a href={locals.rol_id == 1 ? `/dashboard/clientes/show/${cliente.id}` : ''} data-tippy-content={locals.rol_id == 1 ? 'Perfil' : 'Logo'} id={cliente.id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center">
@@ -72,9 +85,9 @@ if(responseData.data.errors || responseData.code !== 200){
                                     )}
                                 </div>
                                 <div class="ps-3">
-                                    <div class="text-base font-semibold">{cliente.nombre_cliente}</div>
+                                    <div class="text-base font-semibold">{capitalizeFirstWord(cliente.nombre_cliente)}</div>
                                 </div>  
-                            </th>
+                            </td>
                             <td>
                                 {cliente.rif}
                             </td>
@@ -127,3 +140,29 @@ if(responseData.data.errors || responseData.code !== 200){
     {errors.all.length > 0 && <ToastNotification slot="toast" type={'error'} textArray={errors.all}/>}
     {successMessage.all.length > 0 && <ToastNotification slot="toast" type={'success'} textArray={successMessage.all}/>}
 </Layout>
+
+<script>
+    // JavaScript para filtrar la tabla
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        var input = this.value.toLowerCase();
+        var rows = document.querySelectorAll('#data-table tbody tr');
+    
+        rows.forEach(function(row) {
+            var cells = row.getElementsByTagName('td');
+            var found = false;
+    
+            for (var i = 0; i < cells.length; i++) {
+                if (cells[i].textContent.toLowerCase().indexOf(input) > -1) {
+                    found = true;
+                    break; // Si encontramos un resultado, no necesitamos seguir buscando en esta fila
+                }
+            }
+    
+            if (found) {
+                row.style.display = ''; // Mostrar fila
+            } else {
+                row.style.display = 'none'; // Ocultar fila
+            }
+        });
+    });
+</script>

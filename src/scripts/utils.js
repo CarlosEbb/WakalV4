@@ -518,3 +518,13 @@ export function countWithoutAvailable(config) {
       return count;
   }, 0);
 }
+
+export function capitalizeFirstWord(str) {
+  if (!str) return str;
+  // Dividir la cadena en palabras
+  let words = str.split(' ');
+  // Capitalizar la primera palabra y poner las demás en minúsculas
+  words = words.map((word, index) => index === 0 ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word.toLowerCase());
+  // Unir las palabras de nuevo en una cadena
+  return words.join(' ');
+}

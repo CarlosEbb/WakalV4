@@ -83,6 +83,7 @@ if(locals.rol_id == 4){
                 <span class="ml-2 text-sm tracking-wide truncate">Usuarios</span>
               </a>
             </li>
+            {(locals.rol_id == 1 || locals.rol_id == 2) &&
             <li>
               <a href="/dashboard/reportes" class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage.includes('/dashboard/reportes') ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
                 <span class="inline-flex justify-center items-center ml-4">
@@ -91,6 +92,17 @@ if(locals.rol_id == 4){
                 <span class="ml-2 text-sm tracking-wide truncate">Reportes</span>
               </a>
             </li>
+            }
+            {locals.rol_id == 3 &&
+              <li>
+                <a href={"/dashboard/reportes?c="+locals.cliente_id} class={`button_option relative flex flex-row items-center h-11 focus:outline-none ${ispage.includes('/dashboard/reportes') ? 'bg-custom-secundary text-white' : 'text-custom-secundary'} hover:bg-custom-secundary hover:text-white hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6`}>
+                  <span class="inline-flex justify-center items-center ml-4">
+                    <Icon name="file"  class="w-5 h-5" />
+                  </span>
+                  <span class="ml-2 text-sm tracking-wide truncate">Reportes</span>
+                </a>
+              </li>
+            }
 
            
             {(locals.rol_id == 1 || locals.rol_id == 2 || locals.rol_id == 3) &&
