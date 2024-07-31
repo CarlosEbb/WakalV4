@@ -2,6 +2,7 @@
 import Select from "../components/Select.astro";
 import ButtonAction from "./ButtonAction.astro";
 import { apiController } from '../scripts/request.js';
+import {convertDateTime, capitalizeFirstWord} from "../scripts/utils.js";
 
 interface Props {
     subTitle?: string;
@@ -22,12 +23,12 @@ const {subTitle = '', isSearchBar = true} = Astro.props;
 
 const locals:any = Astro.locals;
 
-if(cliente_id && locals.rol_id == 1 || locals.rol_id == 2 ){
+if(!cliente_id && locals.rol_id == 1 || locals.rol_id == 2 ){
   const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/clientes','GET',null,locals.token);
   const clientes = Array.isArray(responseData.data) ? responseData.data : [];
   formattedClientes = clientes.map(cliente => ({
     value: cliente.id,
-    label: cliente.nombre_cliente
+    label: cliente.nombre_cliente.toUpperCase()
   }));
 
   if(cliente_id){
@@ -47,7 +48,7 @@ let successMessage = {all: []};
 
 <div class="bg-gradient-to-r from-custom-Tredenary to-custom-Quattuordenary p-6 pb-24 no-imprimir">
   { nombreCliente && 
-    <h2 class="text-white font-semibold">{nombreCliente}</h2>
+    <h2 class="text-white font-semibold">{nombreCliente.toUpperCase()}</h2>
   }
 
   {(ispage && !notPage || cliente_id && !notPage) && 

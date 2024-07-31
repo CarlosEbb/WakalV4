@@ -24,7 +24,7 @@ let successMessage = {all: []};
 
 const cliente_id = Astro.url.searchParams.get('c');
 responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,`/consultasCliente/${cliente_id}/getDataBusqueda${Astro.url.search}`,'GET',null,locals.token);
-//console.log(responseData);
+
 dataTable = Array.isArray(responseData.data) ? responseData.data : [];
 
 if(responseData.data.errors || responseData.code !== 200){
@@ -88,12 +88,15 @@ if(locals.rol_id != 3){
 
 <Layout title="Dashboard" bodyClass="bg-gray-100">
     <CardContentPage>
-        <div class="flex justify-between items-center p-6">
+        <div class="flex justify-between items-center p-3">
             <div class="flex">
                 <i class=`cursor-pointer ${orderClassASC}` data-tippy-content="Orden Ascendente"><a href={"/dashboard/clientes/dashboardSearch"+Astro.url.search+"&order=ASC"}><Icon name="arrow-up" class="text-2xl" /></a></i>
                 <i class=`cursor-pointer ${orderClassDESC}` data-tippy-content="Orden Descendente"><a href={"/dashboard/clientes/dashboardSearch"+Astro.url.search+"&order=DESC"}><Icon name="arrow-down" class="text-2xl" /></a></i>
+                <div>
+                    Total Registros: <b>{Math.floor(responseData.others.totalCount).toLocaleString('de-DE')}</b>
+                </div>
             </div>
-            <h1 class="text-2xl ml-8">Resultado de consulta</h1>
+            <h1 class="text-2xl w-80">Resultado de consulta</h1>
         
             <div class="flex space-x-4">
                 <i class="icono1 cursor-pointer"><a id="download-btn" data-tippy-content="Descargar XML"><Icon name="file-type-xml" class="text-2xl" /></a></i>
@@ -101,7 +104,6 @@ if(locals.rol_id != 3){
                 <i class="icono3 cursor-pointer"><a id="download-btn-excel" data-tippy-content="Descargar EXCEL"><Icon name="file-type-csv" class="text-2xl" /></a></i>
             </div>
         </div>
-    
         <div class="relative overflow-x-auto h-[43vh]">
             <DynamicTable
             isValidVacio={dataTable.length > 0}
@@ -157,8 +159,8 @@ if(locals.rol_id != 3){
         </div>
 
         <input id="data_tipos_documentos" name="data_tipos_documentos" type="text" value={dataCliente.name_bd_column_tipo_documento_format} hidden>
+    
     </CardContentPage>
-
 
 </Layout>
 
