@@ -85,7 +85,7 @@ if(responseData.data.errors || responseData.code !== 200){
                                     )}
                                 </div>
                                 <div class="ps-3">
-                                    <div class="text-base font-semibold">{capitalizeFirstWord(cliente.nombre_cliente)}</div>
+                                    <div class="text-base font-semibold">{cliente.nombre_cliente.toUpperCase()}</div>
                                 </div>  
                             </td>
                             <td>
