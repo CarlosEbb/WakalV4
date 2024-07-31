@@ -1,18 +1,30 @@
 ---
 import { Icon } from 'astro-icon/components'
+import { Image } from 'astro:assets';
 
 interface Props {
   id: string;
   text: string;
+  user: any;
 }
 
-const {id, text} = Astro.props;
+const {id, text, user} = Astro.props;
 ---
 
 <div class="relative inline-block text-left menu-trigger mx-3 no-imprimir">
     <button id={id} data-dropdown-toggle={"dropdown_"+id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center" type="button">
-      <div class="menu-trigger h-11 w-11 ml-auto rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white select-none text-lg font-semibold">
-        {text}
+      <div transition:name=`imagen-perfil-${user.id}`>
+          {user.img_profile ? (
+              <a data-tippy-content="Perfil">
+                  <Image src={import.meta.env.PUBLIC_BASE_URL+user.img_profile} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
+              </a>
+          ) : (
+              <a data-tippy-content="Perfil" id={user.id} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center">
+                  <div class="menu-trigger h-11 w-11 ml-auto rounded-full flex items-center justify-center bg-gradient-to-tr from-custom-nonary to-custom-denary text-white select-none text-lg font-semibold">
+                      {(user.nombre.charAt(0) + user.apellido.charAt(0)).toUpperCase()}
+                  </div>
+              </a>
+          )}
       </div>
       <Icon name="chevron-down" class="text-lg" />
     </button>
@@ -21,7 +33,7 @@ const {id, text} = Astro.props;
     <div id={"dropdown_"+id} class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute">
         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby={id}>
           <li>
-            <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Configuración</a>
+            <a href={"/dashboard/usuarios/update/"+user.id} class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Configuración</a>
           </li>
           <li>
             <a href="/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Salir</a>

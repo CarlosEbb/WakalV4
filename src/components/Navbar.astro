@@ -7,7 +7,6 @@ const user = JSON.parse(Astro.cookies.get("session").value);
 const nombre = user.nombre;
 const apellido = user.apellido;
 const ultimaConexion = convertDateTime(user.ultima_conexion, 'DD MMM YYYY hh:mm:ss A');
-
 let iniciales = (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
 ---
 <div class="flex bg-custom-quaternary justify-between items-center">
@@ -36,6 +35,6 @@ let iniciales = (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
     </div>
     
    
-    <Dropdown text={iniciales}  id="dropdownDefaultButton" />
+    <Dropdown text={iniciales} user={user}  id="dropdownDefaultButton" />
   </div>
 

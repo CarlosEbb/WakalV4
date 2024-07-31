@@ -6,13 +6,18 @@ import CardContentPage from "../../components/CardContentPage.astro";
 import { apiController } from '../../scripts/request.js';
 
 
+const cliente_id = Astro.url.searchParams.get('c');
+
 const locals:any = Astro.locals;
 let data:any = {};
 let errors = {all: [] };
 let successMessage = {all: []};
-// if(locals.rol_id != 1 && locals.rol_id != 2){
-//     return Astro.redirect("/");
-// }
+
+if(locals.rol_id != 1 && locals.rol_id != 2){
+  if(cliente_id != locals.cliente_id){
+    return Astro.redirect("/");
+  }
+}
 
 if (Astro.request.method === "POST") {
     // const formData = await Astro.request.formData();
@@ -62,51 +67,96 @@ const config_params = [
             <div class="w-48"></div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-           
-            <CardReporteDashboard
-                id="libro_ventas"
-                value="0"
-                text="Libro de Ventas"
-                icon="list-check"
-                color="bg-gradient-to-r from-custom-denary to-custom-undenary"
-                tipo_busqueda="libro_ventas"
-                input="date"
-                options={config_params}
-            />
-           
+            {cliente_id &&
+        
+                <CardReporteDashboard
+                    id="libro_ventas"
+                    value="0"
+                    text="Libro de Ventas"
+                    icon="list-check"
+                    color="bg-gradient-to-r from-custom-denary to-custom-undenary"
+                    tipo_busqueda="libro_ventas"
+                    input="date"
+                    options={config_params}
+                />
             
-            <CardReporteDashboard
-                id="archivo_retorno"
-                value="0"
-                text="Archivo Retorno"
-                icon="report"
-                color="bg-gradient-to-r from-custom-senary to-custom-tertiary"
-                tipo_busqueda="archivo_retorno"
-                input="date"
-                options={config_params}
-            />
+                
+                <CardReporteDashboard
+                    id="archivo_retorno"
+                    value="0"
+                    text="Archivo Retorno"
+                    icon="report"
+                    color="bg-gradient-to-r from-custom-senary to-custom-tertiary"
+                    tipo_busqueda="archivo_retorno"
+                    input="date"
+                    options={config_params}
+                />
 
-            <CardReporteDashboard
-                id="rango_facturas"
-                value="0"
-                text="Rango de números de control"
-                icon="reorder"
-                color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
-                tipo_busqueda="rango_control"
-                input="range_control"
-                options={config_params}
-            />
+                <CardReporteDashboard
+                    id="rango_facturas"
+                    value="0"
+                    text="Rango de números de control"
+                    icon="reorder"
+                    color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
+                    tipo_busqueda="rango_control"
+                    input="range_control"
+                    options={config_params}
+                />
 
-            <CardReporteDashboard
-                id="rango_facturas"
-                value="0"
-                text="Rango de Facturas"
-                icon="reorder"
-                color="bg-gradient-to-r from-green-300 to-green-600"
-                tipo_busqueda="rango_facturas"
-                input="range_documento"
-                options={config_params}
-            />
+                <CardReporteDashboard
+                    id="rango_facturas"
+                    value="0"
+                    text="Rango de Facturas"
+                    icon="reorder"
+                    color="bg-gradient-to-r from-green-300 to-green-600"
+                    tipo_busqueda="rango_facturas"
+                    input="range_documento"
+                    options={config_params}
+                />
+            }
+
+            {!cliente_id &&
+                <CardReporteDashboard
+                    id="rango_facturas"
+                    value="0"
+                    text="Providencia 0032 (Art.28)"
+                    icon="list-check"
+                    color="bg-gradient-to-r from-custom-denary to-custom-undenary"
+                    tipo_busqueda="rango_facturas"
+                    input="month"
+                    options={config_params}
+                />
+                <CardReporteDashboard
+                    id="rango_facturas"
+                    value="0"
+                    text="Emisores - Entrega semanal"
+                    icon="report"
+                    color="bg-gradient-to-r from-custom-senary to-custom-tertiary"
+                    tipo_busqueda="rango_facturas"
+                    input="month"
+                    options={config_params}
+                />
+                <CardReporteDashboard
+                    id="rango_facturas"
+                    value="0"
+                    text="Rango de números de control"
+                    icon="reorder"
+                    color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
+                    tipo_busqueda="rango_facturas"
+                    input="month"
+                    options={config_params}
+                />
+                <CardReporteDashboard
+                    id="rango_facturas"
+                    value="0"
+                    text="Reporte Anual Emisores"
+                    icon="calendar-stats"
+                    color="bg-gradient-to-r from-green-300 to-green-600"
+                    tipo_busqueda="rango_facturas"
+                    input="year"
+                    options={config_params}
+                />
+            }
 
         </div>
     </div>

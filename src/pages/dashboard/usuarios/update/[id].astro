@@ -17,10 +17,13 @@ interface IUserCook {
   id: Number;
 }
 
+//hay que hacer un modulo de permisologia para ver si el usuario que esta logueado tiene acceso a editar otros usuarios del mismo cliente,
+//o si es admin que pueda editar todos los clientes, si es seniat que pueda editar todos los usuarios que sean rol seniat
+
 let userCook: IUserCook = JSON.parse(Astro.cookies.get("session").value);
 const responseData = await apiController(
   import.meta.env.PUBLIC_BASE_URL,
-  "/usuarios/" + userCook.id,
+  "/usuarios/" + Astro.params.id,//userCook.id,
   "GET",
   null,
   locals.token
@@ -40,7 +43,7 @@ if (Astro.request.method === "POST") {
     if (password == "" || password === newPassword) {
       const responseDataActualizar = await apiController(
         import.meta.env.PUBLIC_BASE_URL,
-        "/usuarios/" + userCook.id,
+        "/usuarios/" + Astro.params.id,//userCook.id,
         "PUT",
         formData,
         locals.token,

@@ -3,7 +3,7 @@ import CardContentPage from "../../../../components/CardContentPage.astro";
 import Layout from "../../../../layouts/Layout.astro";
 import DataForm from "../../../../components/DataForm/Usuarios.astro";
 
-import { apiController } from '../../../../scripts/request.js';
+import { apiController, formDataToObject } from '../../../../scripts/request.js';
 import ToastNotification from "../../../../components/ToastNotification.astro";
 import { Icon } from "astro-icon/components";
 
@@ -23,10 +23,37 @@ if(responseData.data.errors || responseData.code !== 200){
 }//else{
 //    successMessage.all = [responseData.message];
 //}
+
+if (Astro.request.method === "POST") {
+    const formData = await Astro.request.formData();
+    const data_form = formDataToObject(formData);
+    const responseData_form = await apiController(import.meta.env.PUBLIC_BASE_URL,`/usuarios/${formData.get('user_id')}/reporte`,'POST',data_form, locals.token);
+    if(responseData_form.data.errors || responseData_form.code !== 200){
+        errors.all = responseData_form.data.errors ? responseData_form.data.errors : [];
+    }else{
+        successMessage.all = [responseData_form.message];
+    }
+    
+}
 ---
 <Layout title="Dashboard" subTitle="Consultar Usuario" bodyClass="bg-gray-100" isSearchBar={false}>
     <CardContentPage>
         <div class="flex justify-end">
+            <!-- Dropdown menu -->
+            <button data-tippy-content="Enviar PDF" data-dropdown-toggle={"dropdown_user_email"} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center" type="button">
+                <Icon name="mail" stroke-width={2} class="text-2xl text-black" />
+            </button>
+            <div id={"dropdown_user_email"} class="z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-60 dark:bg-gray-700 absolute">
+                <form method="POST">
+                    <div class="flex py-5">
+                        <input required placeholder="Email" class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="email" name="email" />
+                        <input type="text" name="user_id" value={user.id} hidden>
+                        <button type="submit" class="text-center truncate w-16 bg-gradient-to-r from-custom-secundary to-custom-tertiary text-white rounded-full py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 capitalize flex items-center justify-center">
+                            <Icon name="send-2" class="text-xl text-white"/>
+                        </button>
+                    </div>
+                </form>
+            </div>
             <i class="icono2 cursor-pointer"><a id="download-btn-pdf" data-tippy-content="Descargar PDF"><Icon name="file-type-pdf" class="text-2xl" /></a></i>
         </div>
         <DataForm method="GET" formData={data} locals={locals} disabled/>
@@ -60,7 +87,7 @@ if(responseData.data.errors || responseData.code !== 200){
             const ruta_servicio = `/usuarios/${user.id}/reporte`;
             
             try {
-                await downloadReporte(ruta_servicio, {}, objeto.token, 'GET');
+                await downloadReporte(ruta_servicio, {}, objeto.token);
             } catch (error) {
                 console.error('Hubo un error al descargar el reporte:', error);
             } finally {

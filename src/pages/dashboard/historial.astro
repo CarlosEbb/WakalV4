@@ -29,15 +29,22 @@ if(responseData.data.errors || responseData.code !== 200){
 <Layout title="Dashboard" bodyClass="bg-gray-100">
     
     <CardContentPage>
-            <div class="flex items-center">
-                <div class="w-48"></div>
-                <h2 class="font-semibold text-custom-secundary text-xl text-center flex-grow">Historial de Actividades</h2>
-                
-                <div class="w-48"></div>
+            <div class="flex justify-between items-center p-6">
+                <div class="flex"></div>
+                <h1 class="text-2xl ml-8">Historial de Actividades</h1>
+            
+                <div class="flex space-x-4">
+                    <i class="icono1 cursor-pointer"><a id="download-btn" data-tippy-content="Descargar XML"><Icon name="file-type-xml" class="text-2xl" /></a></i>
+                    <i class="icono2 cursor-pointer"><a id="download-btn-pdf" data-tippy-content="Descargar PDF"><Icon name="file-type-pdf" class="text-2xl" /></a></i>
+                    <i class="icono3 cursor-pointer"><a id="download-btn-excel" data-tippy-content="Descargar EXCEL"><Icon name="file-type-csv" class="text-2xl" /></a></i>
+                </div>
             </div>
-                
+            <div class="relative overflow-x-auto h-[43vh]">
             <DynamicTable 
                 isValidVacio={auditorias.length != 0}
+                id="data-table"
+                addClassTable="tableBusqueda"
+                isScroll={true}
                 columnas={[
                     "Nº",
                     "Nombre y apellido",
@@ -45,7 +52,7 @@ if(responseData.data.errors || responseData.code !== 200){
                     "Rol",
                     "Actividad",
                     "Accion",
-                    "IP",
+                    //"IP",
                     "Fecha de Registro",
                     "Hora de Registro",
                 ]}>
@@ -56,10 +63,10 @@ if(responseData.data.errors || responseData.code !== 200){
                         {index+1}
                         </td>
                         
-                        <td class="w-40">{auditoria.nombre_usuario} {auditoria.apellido_usuario}</td>
-                        <td class="w-20">{auditoria.username}</td>
-                        <td class="w-20">{auditoria.nombre_rol}</td>
-                        <td>{translateUrl(auditoria.ruta)}</td>
+                        <td class="w-40 nombre_usuario">{auditoria.nombre_usuario} {auditoria.apellido_usuario}</td>
+                        <td class="w-20 username">{auditoria.username}</td>
+                        <td class="w-20 nombre_rol">{auditoria.nombre_rol}</td>
+                        <td class="ruta">{translateUrl(auditoria.ruta)}</td>
                         <td class="w-4">
                             <div class="flex">
                                 {translateMethod(auditoria.method)}
@@ -74,14 +81,168 @@ if(responseData.data.errors || responseData.code !== 200){
                             </div>
                         </td>
 
-                        <td class="w-44">{auditoria.ip_cliente}</td>
-                        <td class="w-20">{convertDateTime(auditoria.created_at, 'DD-MM-YYYY')}</td>
-                        <td class="w-20">{convertDateTime(auditoria.created_at, 'hh:mm:ss A')}</td>
+                        {/* <td class="w-44">{auditoria.ip_cliente}</td> */}
+                        <td class="w-20 fecha">{convertDateTime(auditoria.created_at, 'DD-MM-YYYY')}</td>
+                        <td class="w-20 hora">{convertDateTime(auditoria.created_at, 'hh:mm:ss A')}</td>
 
                     </tr>
                 ))}
             </DynamicTable>
+            </div>
     </CardContentPage>
     {errors.all.length > 0 && <ToastNotification slot="toast" type={'error'} textArray={errors.all}/>}
     {successMessage.all.length > 0 && <ToastNotification slot="toast" type={'success'} textArray={successMessage.all}/>}
 </Layout>
+<script>
+    import { obtenerCookie, getQueryParam, obtenerNombreDelMes, getAllQueryParams, getQueryString } from "../../scripts/utils.js";
+    import { apiController } from '../../scripts/request.js';
+    import { formatearNumeroControl, obtenerNumeroMes, formatNumber, findPlaceholder, convertDateTime, getTableData, downloadReporte} from '../../scripts/utils.js';
+    import { translateUrl, translateMethod, formatJSON } from '../../scripts/dictionaryAuditoria.js';
+
+    var cookies = obtenerCookie('others');
+    var objeto = JSON.parse(cookies);
+    var parametros = getQueryString(getAllQueryParams());
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const table = document.getElementById('data-table');
+        const tbody = table.querySelector('tbody');
+        const divtable = document.querySelector('.div_tableBusqueda');
+        
+        let page = 1; // Página inicial
+        const limit = 10; // Límite de registros por página
+        let offset = (page - 1) * limit + 1;
+        let loading = false; // Estado de carga
+
+        // Función para cargar datos desde la API
+        async function loadMoreData(page, offset) {
+            
+            loading = true;
+            try {
+                const response = await apiController(import.meta.env.PUBLIC_BASE_URL, `/auditorias?limit=${limit}&offset=${offset}`, 'GET', null, objeto.token);
+                
+                if (response.code !== 200 || response.data.errors) {
+                    alert('Error al cargar los datos');
+                } else {
+                    appendRows(response.data);
+                }
+            } catch (error) {
+                console.error('Error al cargar los datos:', error);
+            }
+            loading = false;
+        }
+
+        // Función para añadir filas a la tabla
+        function appendRows(data) {
+            data.forEach((auditoria, index) => {
+                const row = document.createElement('tr');
+                row.classList.add('bg-white', 'border-b', 'dark:bg-gray-800', 'dark:border-gray-700', 'hover:bg-gray-50', 'dark:hover:bg-gray-600');
+                
+                row.innerHTML = `
+                    <td class="w-4 p-4">${(page - 1) * limit + index + 1}</td>
+                    <td class="w-40 nombre_usuario">${auditoria.nombre_usuario} ${auditoria.apellido_usuario}</td>
+                    <td class="w-20 username">${auditoria.username}</td>
+                    <td class="w-20 nombre_rol">${auditoria.nombre_rol}</td>
+                    <td class="ruta">${translateUrl(auditoria.ruta)}</td>
+                    <td class="w-4">
+                        <div class="flex">
+                            ${translateMethod(auditoria.method)}
+                            ${auditoria.body !== '{}' ? `
+                                <a class="text-blue-600 dark:text-blue-500 hover:underline ml-1" data-tippy-content="${formatJSON(auditoria.body)}">
+                                    <Icon name="eye" size={25} />
+                                </a>
+                            ` : ''}
+                        </div>
+                    </td>
+                    <td class="w-20 fecha">${convertDateTime(auditoria.created_at, 'DD-MM-YYYY')}</td>
+                    <td class="w-20 hora">${convertDateTime(auditoria.created_at, 'hh:mm:ss A')}</td>
+                `;
+
+                tbody.appendChild(row);
+            });
+        }
+
+        // Evento de scroll para cargar más datos al llegar al final de la tabla
+        divtable.addEventListener('scroll', function() {
+            if (divtable.scrollTop + divtable.clientHeight >= divtable.scrollHeight - 500 && !loading) {
+                page++;
+                offset = (page - 1) * limit + 1;
+                console.log('Cargando más datos, página:', page);
+                loadMoreData(page, offset);
+            }
+            if (divtable.scrollTop === 0 && !loading) {
+           
+            }
+        });
+    });
+</script>
+
+<script>
+    import { obtenerCookie, getQueryParam, obtenerNombreDelMes, getAllQueryParams, getQueryString } from "../../scripts/utils.js";
+    import { apiController } from '../../scripts/request.js';
+    import { formatearNumeroControl, obtenerNumeroMes, formatNumber, findPlaceholder, convertDateTime, getTableData, downloadReporte} from '../../scripts/utils.js';
+    import {generateXML, downloadXML, collectRowData, generarXMLIndividual} from "../../scripts/generateXML";
+
+    let cliente_id = 1;
+    var cookies = obtenerCookie('others');
+    var objeto = JSON.parse(cookies);
+    var parametros = getQueryString(getAllQueryParams());
+    
+    document.getElementById('download-btn').addEventListener('click', () => {
+        const table = document.getElementById('data-table');
+        const data = [];
+        const rows = table.querySelectorAll('tbody tr');
+        
+        rows.forEach(row => {
+            const rowData = collectRowData(row);
+            console.log(row);
+            data.push(rowData);
+        });
+        console.log(data);
+        const xml = generateXML(data);
+        downloadXML(xml, 'XML.xml');
+    });
+
+    document.getElementById('download-btn-pdf').addEventListener('click', async function() {
+        // Mostrar el indicador de carga
+        document.getElementById('loading-screen').classList.remove('hidden');
+
+        const tableId = 'data-table'; // Reemplaza esto con el ID de tu tabla
+        const ruta_servicio = `/consultasCliente/${cliente_id}/generateDataPDFHTML`;
+        console.log(getTableData(tableId));
+        // Obtener los datos de la tabla y Construir el cuerpo de la solicitud
+        const tableData = {
+            tableData: getTableData(tableId),
+        };
+
+        try {
+            await downloadReporte(ruta_servicio, tableData, objeto.token);
+        } catch (error) {
+            console.error('Hubo un error al descargar el reporte:', error);
+        } finally {
+            // Ocultar el indicador de carga
+            document.getElementById('loading-screen').classList.add('hidden');
+        }
+        });
+
+        document.getElementById('download-btn-excel').addEventListener('click', async function() {
+        // Mostrar el indicador de carga
+        document.getElementById('loading-screen').classList.remove('hidden');
+
+        const tableId = 'data-table'; // Reemplaza esto con el ID de tu tabla
+        const ruta_servicio = `/consultasCliente/${cliente_id}/generateDataExcelHTML`;
+        
+        // Obtener los datos de la tabla y Construir el cuerpo de la solicitud
+        const tableData = {
+            tableData: getTableData(tableId),
+        };
+
+        try {
+            await downloadReporte(ruta_servicio, tableData, objeto.token);
+        } catch (error) {
+            console.error('Hubo un error al descargar el reporte:', error);
+        } finally {
+            // Ocultar el indicador de carga
+            document.getElementById('loading-screen').classList.add('hidden');
+        }
+    });
+</script>

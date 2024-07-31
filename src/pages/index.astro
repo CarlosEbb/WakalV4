@@ -61,14 +61,14 @@ if (Astro.request.method === "POST") {
         }
       );
 
-      if (responseData.data.isFirstLogin == 1) {
+      if (responseData.data.isFirstLogin == 1 && responseData.data.rol_id == 3) {
         return Astro.redirect(
           "/dashboard/usuarios/update/" + responseData.data.id
         );
       }
 
       if (responseData.data.rol_id == 1) {
-        return Astro.redirect("/dashboard/home");
+        return Astro.redirect("/dashboard/clientes");
       }
       if (responseData.data.rol_id == 2) {
         return Astro.redirect("/auth/selectedAction");
@@ -177,17 +177,17 @@ if (msg_success) {
               placeholder="Contraseña"
               addClass="mb-8"
             />
-            <div class="mb-3">
+            <div class="mb-3 w-64">
               {
                 errors.all && (
-                  <p class="text-min -mt-3 ml-4 text-custom-Quinquadrenary">
+                  <p class="text-min -mt-3 ml-4 text-custom-Quinquadrenary break-words">
                     {errors.all}
                   </p>
                 )
               }
               {
                 successMessage.all && (
-                  <p class="text-min -mt-3 ml-4 text-custom-Sedenary">
+                  <p class="text-min -mt-3 ml-4 text-custom-Sedenary break-words">
                     {successMessage.all}
                   </p>
                 )

@@ -12,9 +12,11 @@ interface Props {
     color: string;
     addClassValue?: string;
     tipo_busqueda: string;
-    input: "day" | "date" | "month" | "range_control" | "range_documento";
+    input: "day" | "date" | "month" | "year" | "range_control" | "range_documento";
     options?: any;
 }
+
+
 
 const { id ,value = '0', text = 'Titulo', icon = 'chart-bar' , color = 'bg-gradient-to-r from-custom-secundary to-custom-tertiary', addClassValue, tipo_busqueda, input, options = [] } = Astro.props;
 const tipo = input == "month" ? "month" : 'date';
@@ -24,8 +26,10 @@ options_filter = filterConfigByAvailable(options, tipo_busqueda);
 const cliente_id = Astro.url.searchParams.get('c');
 
 let textInput, espaciadoInput;
-
-if (input == "month") {
+if (input == "year") {
+    textInput = "Se obtiene por año.";
+    espaciadoInput = "col-span-8";
+}else if (input == "month") {
     textInput = "Se obtiene por año y mes.";
     espaciadoInput = "col-span-8";
 } else if (input == "date") {
@@ -39,6 +43,10 @@ if (input == "month") {
     espaciadoInput = "col-span-4";
 }
 
+const currentYear = new Date().getFullYear();
+const startYear = 2022;
+const lastYears = Array.from({ length: currentYear - startYear + 1 }, (_, i) => startYear + i).reverse();
+
 ---
 <form id={tipo_busqueda}>
     <div class="bg-white p-5 mt-5 rounded-xl shadow-md">
@@ -51,7 +59,7 @@ if (input == "month") {
                     <div>
                         <div class="relative inline-block text-left menu-trigger mx-3 no-imprimir">
                             {options_filter.length > countWithoutAvailable(options_filter) && 
-                            <button data-dropdown-toggle={"dropdown_"+tipo_busqueda} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center" type="button">
+                            <button data-dropdown-toggle={"dropdown_"+tipo_busqueda} class="text-gray-600 font-medium rounded-lg text-sm text-center inline-flex items-center" data-tippy-content="Configuración de contenido" type="button">
                             <Icon name="settings-plus" class="text-lg" />
                             </button>
                             }
@@ -108,6 +116,23 @@ if (input == "month") {
                     </div>
                 }
 
+                {(input === 'year') && (
+                    <div class={`${espaciadoInput} items-center justify-center`}>
+                    <select 
+                        required 
+                        class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none"
+                        name="year"
+                    >
+                        {lastYears.map(year => (
+                        <option value={year}>
+                            {year}
+                        </option>
+                        ))}
+                    </select>
+                    </div>
+                )}
+                
+
                 { (input == 'date') &&
                     <div class={`${espaciadoInput} items-center justify-center`}>
                         <input required class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none" type="date" name="fecha_final" />
@@ -138,7 +163,7 @@ if (input == "month") {
                     </button>
 
                     <input required class="hidden" type="text" name="tipo_reporte" value={tipo_busqueda}/>
-                    <input required class="hidden" type="text" name="c" value={1}/>
+                    <input required class="hidden" type="text" name="c" value={cliente_id}/>
                     <input required class="hidden" type="text" name="tipo_fecha" value="asignacion"/>
                 </div>
             </div>
@@ -151,6 +176,8 @@ if (input == "month") {
     import { downloadReporte } from '../scripts/utils.js';
     import { formDataToObject } from '../scripts/request.js';
 
+    const cliente_id = getQueryParam('c');
+    
     document.addEventListener("DOMContentLoaded", () => {
         const forms = document.querySelectorAll('form');
         
@@ -163,7 +190,7 @@ if (input == "month") {
                 // Mostrar el indicador de carga
                 document.getElementById('loading-screen').classList.remove('hidden');
 
-                const ruta_servicio = `/consultasCliente/13/getDataReporte`;
+                const ruta_servicio = `/consultasCliente/${cliente_id}/getDataReporte`;
 
                 const formData = new FormData(form);
                 const requestBody = formDataToObject(formData);

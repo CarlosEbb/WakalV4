@@ -40,7 +40,7 @@ export const dictionary = {
   // Función que traduce un método de auditoría a su equivalente en español
   export function translateMethod(metodo) {
     const auditoriaMethods = {
-        GET: 'Obtener',
+        GET: 'Consultar',
         PUT: 'Actualizar',
         POST: 'Crear',
         DELETE: 'Eliminar'

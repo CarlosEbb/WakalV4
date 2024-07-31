@@ -1,47 +1,87 @@
 import {create} from "xmlbuilder2";
 
 export function generateXML(dataTable) {
-    const doc = create({ version: '1.0', encoding: 'UTF-8' })
+  const doc = create({ version: '1.0', encoding: 'UTF-8' })
       .ele('CLIENTES');
-    
-    dataTable.forEach((data, index) => {
-      doc.ele(`CLIENTE${index + 1}`)
-        .ele('RIFPrestador').txt(data.RIFPrestador).up()
-        .ele('TipoDocumento').txt(data.TipoDocumento).up()
-        .ele('NumeroDocumento').txt(data.NumeroDocumento).up()
-        .ele('FechaDocumento').txt(data.FechaDocumento).up()
-        .ele('HoraEmision').txt(data.HoraEmision).up()
-        .ele('RIFCliente').txt(data.RIFCliente).up()
-        .ele('CodigoOperacion').txt(data.CodigoOperacion).up()
-        .ele('Precio').txt(data.Precio).up()
-        .ele('MontoBaseImponibleIVA').txt(data.MontoBaseImponibleIVA).up()
-        .ele('MontoIVA').txt(data.MontoIVA).up()
-        .ele('totalExento').txt(data.totalExento).up()
-        .ele('totalAPagar').txt(data.totalAPagar).up()
-        .ele('MontoIGTF').txt(data.MontoIGTF).up()
-        .up();
-    });
-    
-    return doc.end({ prettyPrint: true });
+
+  dataTable.forEach((data, index) => {
+      const cliente = doc.ele(`CLIENTE${index + 1}`);
+      
+      Object.keys(data).forEach(key => {
+          if (data[key] !== undefined && data[key] !== null) {
+              cliente.ele(key).txt(data[key]).up();
+          }
+      });
+  });
+
+  return doc.end({ prettyPrint: true });
 }
 
 export function collectRowData(row) {
-  return {
-      RIFPrestador: row.querySelector('.rif_prestador').innerText,
-      TipoDocumento: row.querySelector('.tipo_documento').innerText,
-      NumeroDocumento: row.querySelector('.numero_documento').innerText,
-      FechaDocumento: row.querySelector('.fecha_emision').innerText,
-      HoraEmision: row.querySelector('.hora_emision').innerText,
-      RIFCliente: row.querySelector('.rif').innerText, // Asegúrate de usar la clase correcta si hay otra para RIFCliente
-      CodigoOperacion: row.querySelector('.codigo_operacion').innerText,
-      Precio: row.querySelector('.neto_pagar').innerText, // Asegúrate de que esta clase sea correcta
-      MontoBaseImponibleIVA: row.querySelector('.base_imponible').innerText,
-      MontoIVA: row.querySelector('.monto_iva').innerText,
-      totalExento: row.querySelector('.monto_exento').innerText,
-      totalAPagar: row.querySelector('.total_pagar').innerText,
-      MontoIGTF: row.querySelector('.igtf').innerText
-  };
+  const data = {};
+
+  const rifPrestador = row.querySelector('.rif_prestador');
+  if (rifPrestador) data.RIFPrestador = rifPrestador.innerText;
+
+  const tipoDocumento = row.querySelector('.tipo_documento');
+  if (tipoDocumento) data.TipoDocumento = tipoDocumento.innerText;
+
+  const numeroDocumento = row.querySelector('.numero_documento');
+  if (numeroDocumento) data.NumeroDocumento = numeroDocumento.innerText;
+
+  const fechaDocumento = row.querySelector('.fecha_emision');
+  if (fechaDocumento) data.FechaDocumento = fechaDocumento.innerText;
+
+  const horaEmision = row.querySelector('.hora_emision');
+  if (horaEmision) data.HoraEmision = horaEmision.innerText;
+
+  const rifCliente = row.querySelector('.rif');
+  if (rifCliente) data.RIFCliente = rifCliente.innerText;
+
+  const codigoOperacion = row.querySelector('.codigo_operacion');
+  if (codigoOperacion) data.CodigoOperacion = codigoOperacion.innerText;
+
+  const precio = row.querySelector('.neto_pagar');
+  if (precio) data.Precio = precio.innerText;
+
+  const montoBaseImponibleIVA = row.querySelector('.base_imponible');
+  if (montoBaseImponibleIVA) data.MontoBaseImponibleIVA = montoBaseImponibleIVA.innerText;
+
+  const montoIVA = row.querySelector('.monto_iva');
+  if (montoIVA) data.MontoIVA = montoIVA.innerText;
+
+  const totalExento = row.querySelector('.monto_exento');
+  if (totalExento) data.totalExento = totalExento.innerText;
+
+  const totalAPagar = row.querySelector('.total_pagar');
+  if (totalAPagar) data.totalAPagar = totalAPagar.innerText;
+
+  const montoIGTF = row.querySelector('.igtf');
+  if (montoIGTF) data.MontoIGTF = montoIGTF.innerText;
+
+  // Datos adicionales
+  const nombreUsuario = row.querySelector('.nombre_usuario');
+  if (nombreUsuario) data.NombreUsuario = nombreUsuario.innerText;
+
+  const username = row.querySelector('.username');
+  if (username) data.Username = username.innerText;
+
+  const nombreRol = row.querySelector('.nombre_rol');
+  if (nombreRol) data.NombreRol = nombreRol.innerText;
+
+  const ruta = row.querySelector('.ruta');
+  if (ruta) data.Ruta = ruta.innerText;
+
+  const fecha = row.querySelector('.fecha');
+  if (fecha) data.Fecha = fecha.innerText;
+
+  const hora = row.querySelector('.hora');
+  if (hora) data.Hora = hora.innerText;
+
+  return data;
 }
+
+
 
 export function downloadXML(xml, filename) {
     const blob = new Blob([xml], { type: 'application/xml' });

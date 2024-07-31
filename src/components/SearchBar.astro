@@ -14,6 +14,7 @@ let clientes = [];
 const cliente_id = Astro.url.searchParams.get('c');
 
 const ispage = Astro.url.pathname == '/dashboard/home';
+const notPage = Astro.url.pathname == '/dashboard/reportes';
 
 const ocultar = ispage ? 'hidden' : '';
 
@@ -21,7 +22,7 @@ const {subTitle = '', isSearchBar = true} = Astro.props;
 
 const locals:any = Astro.locals;
 
-if(!cliente_id && locals.rol_id == 1 || locals.rol_id == 2 ){
+if(cliente_id && locals.rol_id == 1 || locals.rol_id == 2 ){
   const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/clientes','GET',null,locals.token);
   const clientes = Array.isArray(responseData.data) ? responseData.data : [];
   formattedClientes = clientes.map(cliente => ({
@@ -36,7 +37,6 @@ if(!cliente_id && locals.rol_id == 1 || locals.rol_id == 2 ){
   }
 }
 
-
 let errors = {all: [] };
 let successMessage = {all: []};
 
@@ -50,7 +50,7 @@ let successMessage = {all: []};
     <h2 class="text-white font-semibold">{nombreCliente}</h2>
   }
 
-  {(ispage || cliente_id) && 
+  {(ispage && !notPage || cliente_id && !notPage) && 
     <form id="formSearchBar" method="GET" action={"/dashboard/clientes/dashboardSearch"}>
       
         {ispage && 
@@ -101,7 +101,7 @@ let successMessage = {all: []};
     </form>
   }
 
-  {(!cliente_id && !ispage) &&
+  {((!cliente_id && !ispage) || notPage) &&
     <div class="mt-14"></div>
   }
 </div>

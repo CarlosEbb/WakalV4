@@ -367,6 +367,15 @@ export async function procesarConsulta(cliente_id, cookies, objeto) {
       var selectTipoBusqueda = document.querySelector('.tipoBusqueda');
       selectTipoBusqueda.innerHTML = '';
 
+      // Crear la opción deshabilitada
+      var defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.text = 'Seleccionar';
+      defaultOption.disabled = true;
+      defaultOption.selected = true;
+      selectTipoBusqueda.appendChild(defaultOption);
+
+      // Agregar las opciones disponibles desde los datos
       data.forEach(item => {
           var option = document.createElement('option');
           option.value = item.id;
