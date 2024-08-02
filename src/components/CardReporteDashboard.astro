@@ -3,22 +3,23 @@ import { Icon } from 'astro-icon/components';
 import InputField from "./InputField.astro";
 import ButtonAction from "./ButtonAction.astro";
 import { filterConfigByAvailable, countWithoutAvailable } from '../scripts/utils';
+import { apiController } from '../scripts/request.js';
 
 interface Props {
     id?: string;
+    api?: string;
     value: string;
     text: string;
     icon: string;
     color: string;
     addClassValue?: string;
     tipo_busqueda: string;
-    input: "day" | "date" | "month" | "year" | "range_control" | "range_documento";
+    input: "day" | "date" | "month" | "year" | "range_control" | "range_documento" | "api";
     options?: any;
+    format?: string[];
 }
 
-
-
-const { id ,value = '0', text = 'Titulo', icon = 'chart-bar' , color = 'bg-gradient-to-r from-custom-secundary to-custom-tertiary', addClassValue, tipo_busqueda, input, options = [] } = Astro.props;
+const { id ,value = '0', text = 'Titulo', icon = 'chart-bar' , color = 'bg-gradient-to-r from-custom-secundary to-custom-tertiary', addClassValue, tipo_busqueda, input, options = [], api, format } = Astro.props;
 const tipo = input == "month" ? "month" : 'date';
 let options_filter = [];
 options_filter = filterConfigByAvailable(options, tipo_busqueda);
@@ -26,7 +27,10 @@ options_filter = filterConfigByAvailable(options, tipo_busqueda);
 const cliente_id = Astro.url.searchParams.get('c');
 
 let textInput, espaciadoInput;
-if (input == "year") {
+if (input == "api") {
+    textInput = "Se obtiene por selección.";
+    espaciadoInput = "col-span-8";
+}else if (input == "year") {
     textInput = "Se obtiene por año.";
     espaciadoInput = "col-span-8";
 }else if (input == "month") {
@@ -46,6 +50,13 @@ if (input == "year") {
 const currentYear = new Date().getFullYear();
 const startYear = 2022;
 const lastYears = Array.from({ length: currentYear - startYear + 1 }, (_, i) => startYear + i).reverse();
+
+let responseData:any = {}
+
+if(api){
+    responseData = await apiController(api,'','GET');
+    console.log(responseData);
+}
 
 ---
 <form id={tipo_busqueda}>
@@ -96,16 +107,26 @@ const lastYears = Array.from({ length: currentYear - startYear + 1 }, (_, i) => 
                     <p class="text-xs pt-1">{textInput}</p>
                 </div>
                 <div class="truncate flex text-gray-500 items-center">
-                    <Icon id={`pdf-icon-${tipo_busqueda}`} name="file-type-pdf" class="text-xl mt-1 mr-2 cursor-pointer text-blue-500 focus:outline-none" data-tippy-content="Formato PDF" />
-                    <input id={`pdf-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="pdf" checked/>
-                    <Icon id={`xls-icon-${tipo_busqueda}`} name="file-type-xls" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato XLS" />
-                    <input id={`xls-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="excel"/>
-                    <Icon id={`csv-icon-${tipo_busqueda}`} name="file-type-csv" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato CSV" />
-                    <input id={`csv-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="csv"/>
-                    <Icon id={`txt-icon-${tipo_busqueda}`} name="file-type-txt" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato TXT" />
-                    <input id={`txt-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="txt"/>
-                    <Icon id={`xml-icon-${tipo_busqueda}`} name="file-type-xml" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato XML" />
-                    <input id={`xml-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="xml"/>
+                    { format.includes('pdf') &&
+                        <Icon id={`pdf-icon-${tipo_busqueda}`} name="file-type-pdf" class="text-xl mt-1 mr-2 cursor-pointer text-blue-500 focus:outline-none" data-tippy-content="Formato PDF" />
+                        <input id={`pdf-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="pdf" checked/>
+                    }
+                    { format.includes('xls') &&
+                        <Icon id={`xls-icon-${tipo_busqueda}`} name="file-type-xls" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato XLS" />
+                        <input id={`xls-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="excel"/>
+                    }
+                    { format.includes('csv') &&
+                        <Icon id={`csv-icon-${tipo_busqueda}`} name="file-type-csv" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato CSV" />
+                        <input id={`csv-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="csv"/>
+                    }
+                    { format.includes('txt') &&
+                        <Icon id={`txt-icon-${tipo_busqueda}`} name="file-type-txt" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato TXT" />
+                        <input id={`txt-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="txt"/>
+                    }
+                    { format.includes('xml') &&
+                        <Icon id={`xml-icon-${tipo_busqueda}`} name="file-type-xml" class="text-xl mt-1 mr-2 cursor-pointer focus:outline-none" data-tippy-content="Formato XML" />
+                        <input id={`xml-radio-${tipo_busqueda}`} required class="hidden" type="radio" name="formato" value="xml"/>
+                    }
                 </div>
             </div>
         
@@ -129,6 +150,24 @@ const lastYears = Array.from({ length: currentYear - startYear + 1 }, (_, i) => 
                         </option>
                         ))}
                     </select>
+                    </div>
+                )}
+
+                {(input === 'api') && (
+                    <div class={`${espaciadoInput} items-center justify-center`}>
+                        <select 
+                            required 
+                            class="w-full px-4 py-3 mx-2 rounded-full focus:border-blue-500 border-none text-sm bg-custom-quaternary select-none"
+                            name="api"
+                            id="select_api"
+                        >
+                            <option disabled selected>Seleccionar</option>
+                            {responseData.data.map(item => (
+                                <option value={item.link_final}>
+                                    {`${item.mes} - ${item.fecha_inicial} - ${item.fecha_final}`}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 )}
                 
@@ -157,11 +196,18 @@ const lastYears = Array.from({ length: currentYear - startYear + 1 }, (_, i) => 
                     </div>
                 } 
                 <div class="col-span-4 md:col-span-2 items-center justify-center flex">
-                    <button type="submit" class="text-center truncate w-full bg-gradient-to-r from-custom-secundary to-custom-tertiary text-white rounded-full py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 capitalize flex items-center justify-center">
-                        <Icon name="search" class="text-xl text-white"/>
-                        <span class="md:hidden pl-2">Buscar</span>
-                    </button>
-
+                    {input === 'api' &&
+                        <a href="#" id="button-redirect" class="text-center truncate w-full bg-gradient-to-r from-custom-secundary to-custom-tertiary text-white rounded-full py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 capitalize flex items-center justify-center">
+                            <Icon name="search" class="text-xl text-white"/>
+                            <span class="md:hidden pl-2">Buscar</span>
+                        </a>
+                    }
+                    {input != 'api' &&
+                        <button type="submit" class="text-center truncate w-full bg-gradient-to-r from-custom-secundary to-custom-tertiary text-white rounded-full py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 capitalize flex items-center justify-center">
+                            <Icon name="search" class="text-xl text-white"/>
+                            <span class="md:hidden pl-2">Buscar</span>
+                        </button>
+                    }
                     <input required class="hidden" type="text" name="tipo_reporte" value={tipo_busqueda}/>
                     <input required class="hidden" type="text" name="c" value={cliente_id}/>
                     <input required class="hidden" type="text" name="tipo_fecha" value="asignacion"/>
@@ -170,6 +216,16 @@ const lastYears = Array.from({ length: currentYear - startYear + 1 }, (_, i) => 
     </div>
     <input type="text" name="name_config_params" value={JSON.stringify(options_filter)} hidden>
 </form>
+
+
+<script>
+   
+    document.getElementById('select_api').addEventListener('change', function() {
+        var selectedValue = this.value;
+        var buttonRedirect = document.getElementById('button-redirect');
+        buttonRedirect.href = selectedValue;
+    });
+</script>
 
 <script>
     import { obtenerCookie, getQueryParam } from "../scripts/utils.js";

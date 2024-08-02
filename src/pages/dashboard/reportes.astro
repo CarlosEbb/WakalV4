@@ -67,7 +67,7 @@ const config_params = [
             <div class="w-48"></div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {cliente_id &&
+            {cliente_id && cliente_id != '13' &&
         
                 <CardReporteDashboard
                     id="libro_ventas"
@@ -78,6 +78,7 @@ const config_params = [
                     tipo_busqueda="libro_ventas"
                     input="date"
                     options={config_params}
+                    format={["pdf","xls","csv","txt","xml"]}
                 />
             
                 
@@ -90,6 +91,7 @@ const config_params = [
                     tipo_busqueda="archivo_retorno"
                     input="date"
                     options={config_params}
+                    format={['pdf','xls','csv','txt','xml']}
                 />
 
                 <CardReporteDashboard
@@ -101,6 +103,7 @@ const config_params = [
                     tipo_busqueda="rango_control"
                     input="range_control"
                     options={config_params}
+                    format={['pdf','xls','csv','txt','xml']}
                 />
 
                 <CardReporteDashboard
@@ -112,6 +115,7 @@ const config_params = [
                     tipo_busqueda="rango_facturas"
                     input="range_documento"
                     options={config_params}
+                    format={['pdf','xls','csv','txt','xml']}
                 />
             }
 
@@ -125,6 +129,7 @@ const config_params = [
                     tipo_busqueda="rango_facturas"
                     input="month"
                     options={config_params}
+                    format={['pdf','xls','csv','txt','xml']}
                 />
                 <CardReporteDashboard
                     id="rango_facturas"
@@ -135,6 +140,7 @@ const config_params = [
                     tipo_busqueda="rango_facturas"
                     input="month"
                     options={config_params}
+                    format={['pdf','xls','csv','txt','xml']}
                 />
                 <CardReporteDashboard
                     id="rango_facturas"
@@ -145,6 +151,7 @@ const config_params = [
                     tipo_busqueda="rango_facturas"
                     input="month"
                     options={config_params}
+                    format={['pdf','xls','csv','txt','xml']}
                 />
                 <CardReporteDashboard
                     id="rango_facturas"
@@ -155,6 +162,22 @@ const config_params = [
                     tipo_busqueda="rango_facturas"
                     input="year"
                     options={config_params}
+                    format={['pdf','xls','csv','txt','xml']}
+                />
+            }
+
+            {cliente_id == '13' &&
+                <CardReporteDashboard
+                    id="libro_ventas"
+                    api={"https://wakal-simpletv.solucioneslaser.com/scriptPHP/service_lib_ventas_listar.php"}
+                    value="0"
+                    text="Libro de Ventas"
+                    icon="list-check"
+                    color="bg-gradient-to-r from-custom-denary to-custom-undenary"
+                    tipo_busqueda="api"
+                    input="api"
+                    options={config_params}
+                    format={["csv"]}
                 />
             }
 

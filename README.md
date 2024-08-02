@@ -11,7 +11,7 @@ npm i moment
 npm install flowbite-datepicker --save
 npm install guidechimp
 npm install xmlbuilder2
-
+npm install node-fetch
 
 opcionales
 npm install shepherd.js --save

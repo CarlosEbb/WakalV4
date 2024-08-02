@@ -3,7 +3,8 @@ import Layout from "../../layouts/Layout.astro";
 
 import ChartAngleCircle from "../../components/ChartAngleCircle.astro";
 import CardInfoDashboard from "../../components/CardInfoDashboard.astro";
-
+import { Image } from 'astro:assets';
+import BannerSeniat from '../../images/banner_seniat.webp';
 
 const locals:any = Astro.locals;
 
@@ -14,57 +15,7 @@ if(locals.rol_id != 1 && locals.rol_id != 2){
 ---
 
 <Layout title="Dashboard" bodyClass="bg-gray-100">
-  
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pl-6 pr-6 -mt-16">
-      <!-- Card 1 -->
-      <CardInfoDashboard
-        addClassValue={"card_1_"}
-        value="0"
-        text="Cant. Total de Doc Emitidos."
-        icon="chart-area-line"
-        color="bg-gradient-to-r from-custom-senary to-custom-tertiary"
-      />
-
-      <CardInfoDashboard
-        addClassValue={"card_2_"}
-        value="0"
-        text="Cant. Nº Control Mes Anterior."
-        icon="chart-bar"
-        color="bg-gradient-to-r from-custom-septenary to-custom-tertiary"
-      />
-
-      <CardInfoDashboard
-        addClassValue={"card_3_"}
-        value="0"
-        text="Cant. Nº Control Mes Actual."
-        icon="timeline"
-        color="bg-gradient-to-r from-custom-denary to-custom-undenary"
-      />
-
-      <CardInfoDashboard
-        addClassValue={"card_4_"}
-        value="0"
-        text="Correos Enviados."
-        icon="mail-forward"
-        color="bg-gradient-to-r from-custom-denary to-custom-undenary"
-      />
-    </div>
-
-    <div class="grid md:grid-cols-2 gap-4 p-6 mt-2">
-      <div>
-        <div class="bg-white p-4 mb-4 rounded-xl m-1">
-         
-        </div>
-        <div class="bg-white p-4 rounded-xl m-1 mt-5">
-         
-        </div>
-      </div>
-      <div class="m-1">
-        <div class="bg-white p-4 h-full rounded-xl">
-          
-        </div>
-      </div>
-    </div>
+  <Image src={BannerSeniat} alt="Imagen" loading="eager" class="w-full h-22 object-cover p-7 -mt-16 select-none overflow-hidden" />
 </Layout>
 
 <script>
