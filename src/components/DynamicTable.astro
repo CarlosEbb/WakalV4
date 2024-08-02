@@ -19,7 +19,7 @@ if(isScroll){
 
 <style>
     .miTabla thead th {
-        @apply sticky top-0 bg-white z-10;
+        @apply sticky top-0 bg-white;
     }
 
     /* Estilo personalizado para la barra de desplazamiento */
@@ -40,7 +40,7 @@ if(isScroll){
 
 <div class={"div_"+addClassTable+" "+addClassScroll}>
 
-    <table id={id} class=`${addClassTable} w-full ${sizeText} text-center rtl:text-right text-gray-500 miTabla`>
+    <table id={id} class=`${addClassTable} w-full ${sizeText} text-center rtl:text-right text-gray-500 miTabla z-10`>
         <thead class="text-min text-gray-700 border-b-2 border-gray-200">
             <tr>
                 {columnas.map((columna, index) => (
