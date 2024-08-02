@@ -93,13 +93,14 @@ const { title, subTitle = 'Seleccione su consulta', bodyClass = '', isSearchBar 
 			// Reinicializar después de cambiar de página
 			document.addEventListener("astro:after-swap", init);
 		</script>
-
-		<script is:inline src='https://cdn.jsdelivr.net/npm/kore-web-sdk@11.4.0/dist/umd/kore-web-sdk-umd-chat.min.js'></script>
-		<script is:inline>
-			KoreChatSDK.chatConfig.botOptions.API_KEY_CONFIG.KEY = '98556fdd73f54a68b6541d4e1da541e82931cf3d42e444c684d10e3d4e5fcd6astcc';
-			KoreChatSDK.chatConfig.enableThemes = true; 
-			new KoreChatSDK.chatWindow().show(KoreChatSDK.chatConfig);
-		</script>
+		{!import.meta.env.PUBLIC_BASE_URL.includes('localhost') &&
+			<script is:inline src='https://cdn.jsdelivr.net/npm/kore-web-sdk@11.4.0/dist/umd/kore-web-sdk-umd-chat.min.js'></script>
+			<script is:inline>
+				KoreChatSDK.chatConfig.botOptions.API_KEY_CONFIG.KEY = '98556fdd73f54a68b6541d4e1da541e82931cf3d42e444c684d10e3d4e5fcd6astcc';
+				KoreChatSDK.chatConfig.enableThemes = true; 
+				new KoreChatSDK.chatWindow().show(KoreChatSDK.chatConfig);
+			</script>
+		}
 	</body>
 </html>
 <script>
