@@ -23,7 +23,7 @@ const {subTitle = '', isSearchBar = true} = Astro.props;
 
 const locals:any = Astro.locals;
 
-if(!cliente_id && locals.rol_id == 1 || locals.rol_id == 2 ){
+if(cliente_id && locals.rol_id == 1 || locals.rol_id == 2 ){
   const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/clientes','GET',null,locals.token);
   const clientes = Array.isArray(responseData.data) ? responseData.data : [];
   formattedClientes = clientes.map(cliente => ({
