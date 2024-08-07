@@ -1,0 +1,53 @@
+- Login
+    -Olvidaste la contraseña
+        -Correo de recuperacion
+        -Cambiar la contraseña
+
+- Usuario Cliente
+    -Dashboard
+        -Graficas interactivas
+    -Configuracion (Actualizacion de datos)
+    -Resultados de Busqueda
+        -Ordenar resultado de manera Ascendente y Descendente
+        -Generar Reportes XML, PDF, CSV
+        -Visualizar Documento
+        -Boton regresar atras
+    -Usuarios
+        -Añadir nuevos usuarios
+        -Editar usuarios
+        -Consultar Usuarios
+        -Visualizar Usuarios
+            -Descargar Perfil de usuario
+            -Enviar por correo Perfil de usuario
+    -Reportes
+        -Libro de Ventas
+        -Archivo Retorno
+        -Rango de numeros de control
+        -Rango de Facturas
+    -Auditoria
+        -Descargar XML PDF CSV
+
+- Usuario Seniat
+    -Contribuyentes
+        -Filtro de contribuyentes
+        -Realizar consultas en contribuyente
+    -Imprenta
+        -Realizar consultas por cliente
+    -Usuarios
+        -Añadir nuevos usuarios
+        -Colocar Jurisdiccion
+        -Editar usuarios
+        -Consultar Usuarios
+        -Visualizar Usuarios
+            -Descargar Perfil de usuario
+            -Enviar por correo Perfil de usuario
+    -Reportes
+        -Providencia 0032 (Art.28)
+        -Emisores - Entrega semanal
+        -Rango de números de control
+        -Reporte Anual Emisores
+    -Auditoria
+        -Descargar XML PDF CSV
+
+- Usuario Administrador
+    -Gestionar tipos de Busqueda por cliente
