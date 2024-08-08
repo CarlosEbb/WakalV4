@@ -24,7 +24,7 @@ if (Astro.request.method === "POST") {
     const password = data.get("password");
     const recuerdame = data.get("recuerdame");
     const responseData = await apiController(
-      import.meta.env.PUBLIC_BASE_URL,
+      import.meta.env.PUBLIC_BASE_URL_IP_INTERNA,
       "/auth/login",
       "POST",
       { email, password }
