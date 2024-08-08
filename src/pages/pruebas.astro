@@ -9,5 +9,5 @@ const clientes = Array.isArray(responseData.data) ? responseData.data : [];
 
 
 {clientes.map((cliente, index) => (
-    <Image src={cliente.logo} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
+    <Image src={import.meta.env.PUBLIC_BASE_URL+cliente.logo} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
 ))}
