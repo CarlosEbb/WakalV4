@@ -3,7 +3,7 @@ import { apiController } from '../scripts/request.js';
 import { Image } from 'astro:assets';
 
 const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/clientes','GET',null);
-
+console.log(responseData);
 const clientes = Array.isArray(responseData.data) ? responseData.data : [];
 ---
 

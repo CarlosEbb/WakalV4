@@ -35,7 +35,7 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
     }
 
     // Agregar el token CSRF a los encabezados
-    headers['csrf-token'] = csrfToken;
+    //headers['csrf-token'] = csrfToken;
     headers['IpClient'] = ipClient;
 
     const options = {
