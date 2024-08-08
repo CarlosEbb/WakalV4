@@ -9,9 +9,9 @@ const requestOptions3:any = {
             redirect: "follow"
         };
 
-const rutaIp = "http://172.16.10.31:8001"; //esta sirve
+//const rutaIp = "http://172.16.10.31:8001"; //esta sirve
 //                http://localhost:8001/api
-fetch(rutaIp+"/pruebaGet", requestOptions3)
+fetch(import.meta.env.PUBLIC_BASE_URL+"/pruebaGet", requestOptions3)
     .then((response) => response.text())
     .then((result) => console.log(result))
     .catch((error) => console.error(error));
@@ -25,7 +25,7 @@ const requestOptions4:any = {
     redirect: "follow"
 };
 
-fetch(rutaIp+"/pruebaPost", requestOptions4)
+fetch(import.meta.env.PUBLIC_BASE_URL+"/pruebaPost", requestOptions4)
     .then((response) => response.text())
     .then((result) => console.log(result))
     .catch((error) => console.error(error));
