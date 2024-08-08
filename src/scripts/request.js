@@ -3,6 +3,7 @@ import { obtenerCookie } from "./utils.js";
 // Función para obtener el token CSRF desde el servicio
 async function obtenerCSRFToken(baseURL) {
   try {
+    console.log(baseURL+'/csrf-token');
     const response = await fetch(baseURL+'/csrf-token', {
       credentials: 'include'  // Indicar al navegador que incluya cookies y credenciales
     });
@@ -54,7 +55,7 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
         options.body = JSON.stringify(requestBody);
       }
     }
-
+    console.log(url);
     const response = await fetch(url, options);
     if (response.ok) {
       if (isBlob) {
