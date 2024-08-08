@@ -1,0 +1,13 @@
+---
+import { apiController } from '../scripts/request.js';
+import { Image } from 'astro:assets';
+
+const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/clientes','GET',null);
+
+const clientes = Array.isArray(responseData.data) ? responseData.data : [];
+---
+
+
+{clientes.map((cliente, index) => (
+    <Image src={import.meta.env.PUBLIC_BASE_URL+cliente.logo} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
+))}
