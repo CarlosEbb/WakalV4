@@ -25,7 +25,7 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
     let ipClient = 'xx.xx.xxx.xx';
 
     // Obtener el token CSRF
-    //const csrfToken = await obtenerCSRFToken(baseURL);
+    const csrfToken = await obtenerCSRFToken(baseURL);
    
     const url = `${baseURL}${endpoint}`;
     let headers = {};
@@ -35,7 +35,7 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
     }
 
     // Agregar el token CSRF a los encabezados
-    //headers['csrf-token'] = csrfToken;
+    headers['csrf-token'] = csrfToken;
     headers['IpClient'] = ipClient;
 
     const options = {
@@ -54,7 +54,7 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
         options.body = JSON.stringify(requestBody);
       }
     }
-    console.log(url, options);
+
     const response = await fetch(url, options);
     if (response.ok) {
       if (isBlob) {
