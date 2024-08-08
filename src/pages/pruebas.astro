@@ -2,12 +2,129 @@
 import { apiController } from '../scripts/request.js';
 import { Image } from 'astro:assets';
 
-const responseData = await apiController(import.meta.env.PUBLIC_BASE_URL,'/clientes','GET',null);
-console.log(responseData);
-const clientes = Array.isArray(responseData.data) ? responseData.data : [];
+console.log("aqui funciona node del lado del front");
+
+const requestOptions3:any = {
+            method: "GET",
+            redirect: "follow"
+        };
+
+fetch(import.meta.env.PUBLIC_BASE_URL+"/pruebaGet", requestOptions3)
+    .then((response) => response.text())
+    .then((result) => console.log(result))
+    .catch((error) => console.error(error));
+
+const requestOptions4:any = {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ valor: "HOLA" }), // Aquí se incluye el cuerpo de la petición
+    redirect: "follow"
+};
+
+fetch(import.meta.env.PUBLIC_BASE_URL+"/pruebaPost", requestOptions4)
+    .then((response) => response.text())
+    .then((result) => console.log(result))
+    .catch((error) => console.error(error));
+
+
 ---
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fetch Example</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    button {
+      background-color: #4CAF50; /* Verde */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
 
-{clientes.map((cliente, index) => (
-    <Image src={import.meta.env.PUBLIC_BASE_URL+cliente.logo} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/>  
-))}
+  <table>
+    <thead>
+      <tr>
+        <th>Imagen</th>
+        <th>Ruta</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><Image src={import.meta.env.PUBLIC_BASE_URL + "/uploads/logo_clientes/8c975e2ae8a7da3908639e883ebd16f4.jpg"} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/></td>
+        <td>{import.meta.env.PUBLIC_BASE_URL + "/uploads/logo_clientes/8c975e2ae8a7da3908639e883ebd16f4.jpg"}</td>
+      </tr>
+      <tr>
+        <td><Image src={import.meta.env.PUBLIC_BASE_URL + "/uploads/logo_clientes/dbff700f43db54d16cc7a6095dfffd0f.jpg"} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/></td>
+        <td>{import.meta.env.PUBLIC_BASE_URL + "/uploads/logo_clientes/dbff700f43db54d16cc7a6095dfffd0f.jpg"}</td>
+      </tr>
+      <tr>
+        <td><Image src={import.meta.env.PUBLIC_BASE_URL + "/uploads/img_perfil/57422a21cde0fcefd1f95397be3be1fb.jpg"} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/></td>
+        <td>{import.meta.env.PUBLIC_BASE_URL + "/uploads/img_perfil/57422a21cde0fcefd1f95397be3be1fb.jpg"}</td>
+      </tr>
+      <tr>
+        <td><Image src={import.meta.env.PUBLIC_BASE_URL + "/uploads/img_perfil/844efba0301e9eb45feb189f770f3162.jpg"} alt="Descripción de la imagen" width={45} height={45} class="rounded-full select-none"/></td>
+        <td>{import.meta.env.PUBLIC_BASE_URL + "/uploads/img_perfil/844efba0301e9eb45feb189f770f3162.jpg"}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button id="fetchButton">Peticion GET del lado del navegador</button>
+  <button id="fetchButton2">Peticion POST del lado del navegador</button>
+
+  <script>
+    document.getElementById("fetchButton").addEventListener("click", function() {
+        alert("boton precionado GET");
+        const requestOptions:any = {
+            method: "GET",
+            redirect: "follow"
+        };
+
+    fetch("http://localhost:8001/pruebaGet", requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+    });
+
+    document.getElementById("fetchButton2").addEventListener("click", function() {
+    alert("boton precionado POST");
+
+    const requestOptions2:any = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ valor: "HOLA" }), // Aquí se incluye el cuerpo de la petición
+        redirect: "follow"
+    };
+
+    fetch("http://localhost:8001/pruebaPost", requestOptions2)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+    });
+
+  </script>
+</body>
+</html>
