@@ -9,7 +9,7 @@ const requestOptions3:any = {
             redirect: "follow"
         };
 
-const rutaIp = "172.16.10.31:8001";
+const rutaIp = "http://172.16.10.31:8001";
 
 fetch(rutaIp+"/pruebaGet", requestOptions3)
     .then((response) => response.text())
