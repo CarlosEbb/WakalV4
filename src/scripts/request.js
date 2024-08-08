@@ -54,7 +54,7 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
         options.body = JSON.stringify(requestBody);
       }
     }
-
+    console.log(url, options);
     const response = await fetch(url, options);
     if (response.ok) {
       if (isBlob) {
