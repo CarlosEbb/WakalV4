@@ -24,7 +24,7 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
   try {
 
     const baseURLEstatic = typeof window === 'undefined' 
-    ? 'https://wakalplusqa.solucioneslaser.com' 
+    ? 'http://localhost:8001/api' 
     : '';
 
     let ipClient = 'xx.xx.xxx.xx';
