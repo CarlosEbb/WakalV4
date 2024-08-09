@@ -22,10 +22,12 @@ async function obtenerCSRFToken(baseURL) {
 // Función para realizar solicitudes con CSRF
 export async function apiController(baseURL, endpoint, method, requestBody, token = null, contentType = 'application/json', isBlob = false) {
   try {
-
-    const baseURLEstatic = typeof window === 'undefined' 
-    ? 'http://localhost:8001' 
-    : '';
+    let baseURLEstatic = '';
+    if(import.meta.env.PUBLIC_PROD == 'true'){
+      baseURLEstatic = typeof window === 'undefined' 
+      ? 'http://localhost:8001' 
+      : '';
+    }
 
     let ipClient = 'xx.xx.xxx.xx';
 
