@@ -24,7 +24,7 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
   try {
 
     const baseURLEstatic = typeof window === 'undefined' 
-    ? 'http://localhost:8001/api' 
+    ? 'http://localhost:8001' 
     : '';
 
     let ipClient = 'xx.xx.xxx.xx';
