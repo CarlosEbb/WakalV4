@@ -30,7 +30,7 @@ export async function apiController(baseURL, endpoint, method, requestBody, toke
     let ipClient = 'xx.xx.xxx.xx';
 
     // Obtener el token CSRF
-    const csrfToken = await obtenerCSRFToken(baseURL);
+    const csrfToken = await obtenerCSRFToken(baseURLEstatic+baseURL);
    
     const url = `${baseURLEstatic}${baseURL}${endpoint}`;
     let headers = {};
