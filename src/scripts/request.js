@@ -23,12 +23,16 @@ async function obtenerCSRFToken(baseURL) {
 export async function apiController(baseURL, endpoint, method, requestBody, token = null, contentType = 'application/json', isBlob = false) {
   try {
 
+    const baseURLEstatic = typeof window === 'undefined' 
+    ? 'https://wakalplusqa.solucioneslaser.com' 
+    : '';
+
     let ipClient = 'xx.xx.xxx.xx';
 
     // Obtener el token CSRF
     const csrfToken = await obtenerCSRFToken(baseURL);
    
-    const url = `${baseURL}${endpoint}`;
+    const url = `${baseURLEstatic}${baseURL}${endpoint}`;
     let headers = {};
 
     if (token) {
